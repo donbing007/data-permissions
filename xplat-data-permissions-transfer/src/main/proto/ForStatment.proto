@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.xforceplus.ultraman.permissions;
+option java_package = "com.xforceplus.ultraman.permissions.grpc";
+option java_outer_classname = "ForStatmentGrpc";
+option optimize_for = SPEED;
+
+import "Base.proto";
+
+service StatmentCheckService {
+    rpc check (Statment) returns (StatmentResult);
+}
+
+message Statment {
+    string sql = 1; // 当前需要运行的 sql.
+    User user = 2; // 当前用户.
+}
+
+message StatmentResult {
+    bool pass = 1; // true 表示通过可以执行,false 表示不允许执行.
+    string newSql = 2; // 如果允许执行,那么此为新的可以执行 sql.
+}

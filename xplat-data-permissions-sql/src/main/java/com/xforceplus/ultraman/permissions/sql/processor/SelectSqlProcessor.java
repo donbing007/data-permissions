@@ -1,0 +1,34 @@
+package com.xforceplus.ultraman.permissions.sql.processor;
+
+import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
+
+/**
+ * Select 语句的 process 定义.
+ *
+ * @version 0.1 2019/10/25 17:28
+ * @auth dongbin
+ * @since 1.8
+ */
+public interface SelectSqlProcessor extends SqlProcessor {
+
+    /**
+     * 得到条件操作实例.
+     *
+     * @return 实例.
+     */
+    ConditionHandler buildConditionHandler();
+
+    /**
+     * 得到来源表操作实例.
+     * @return 实例.
+     */
+    FromHandler buildFromHandler();
+
+    /**
+     * 得到查询字段列表操作实例.
+     * @return 实例.
+     */
+    SelectItemHandler buildColumnHandler();
+}

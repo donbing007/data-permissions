@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.xforceplus.ultraman.permissions;
+
+option java_package = "com.xforceplus.ultraman.permissions.grpc";
+option java_outer_classname = "UserGrpc";
+option optimize_for = SPEED;
+
+message User {
+    string id = 1; // 用户 id.
+    Role role = 2; // 用户角色.
+}
+
+message Role {
+    string id = 1; // 角色 id.
+    string name = 2; // 角色名称.
+}
