@@ -60,32 +60,32 @@ public class ConversionHelper {
         return convert(column, null);
     }
 
-    public static Field convert(Column column, String alias) {
+    public static Field convert(Column column, Alias alias) {
         String tableName = null;
         if (column.getTable() != null) {
             tableName = column.getTable().getName();
         }
 
-        return new Field(tableName, column.getColumnName(), alias);
+        return new Field(tableName, column.getColumnName(), convert(alias));
     }
 
     public static Func convert(TimeKeyExpression expr) {
         return new Func(expr.getStringValue(), null, null);
     }
 
-    public static Func convert(TimeKeyExpression expr, String alias) {
-        return new Func(expr.getStringValue(), alias);
+    public static Func convert(TimeKeyExpression expr, Alias alias) {
+        return new Func(expr.getStringValue(), convert(alias));
     }
 
     public static Func convert(Function function) {
         return convert(function, null);
     }
 
-    public static Func convert(Function function, String alias) {
+    public static Func convert(Function function, Alias alias) {
         ExpressionList parameterList = function.getParameters();
 
         if (function.isAllColumns()) {
-            return new Func(function.getName(), Arrays.asList(new Field("*")),alias);
+            return new Func(function.getName(), Arrays.asList(new Field("*")), convert(alias));
         }
 
         List<Expression> parameters = null;
@@ -100,7 +100,15 @@ public class ConversionHelper {
             }
         }
 
-        return new Func(function.getName(), paramItemList, alias);
+        return new Func(function.getName(), paramItemList, convert(alias));
+    }
+
+    public static com.xforceplus.ultraman.permissions.sql.define.Alias convert(Alias alias) {
+        if (alias == null) {
+            return null;
+        } else {
+            return new com.xforceplus.ultraman.permissions.sql.define.Alias(alias.getName(), alias.isUseAs());
+        }
     }
 
     private static void conversionFuncParam(List<Item> paramItemList, Expression expr) {

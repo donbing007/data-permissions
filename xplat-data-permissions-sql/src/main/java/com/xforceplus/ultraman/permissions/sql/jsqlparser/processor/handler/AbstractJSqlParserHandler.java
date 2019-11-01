@@ -3,7 +3,9 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.update.Update;
 
 /**
@@ -15,6 +17,7 @@ import net.sf.jsqlparser.statement.update.Update;
 public abstract class AbstractJSqlParserHandler {
 
     private Statement statement;
+    private PlainSelect plainSelect; // select 特殊的子类.
     private Class clazz;
 
     public AbstractJSqlParserHandler(Statement statement) {
@@ -24,6 +27,15 @@ public abstract class AbstractJSqlParserHandler {
     public AbstractJSqlParserHandler(Statement statement, Class clazz) {
         this.clazz = clazz;
         setStatement(statement);
+    }
+
+    /**
+     * 专门处理 select 的 plainSelect.
+     * @param plainSelect 目标 painSelect 实例.
+     */
+    public AbstractJSqlParserHandler(PlainSelect plainSelect) {
+        this.plainSelect = plainSelect;
+        this.clazz = Select.class;
     }
 
     public Statement getStatement() {
@@ -46,8 +58,12 @@ public abstract class AbstractJSqlParserHandler {
         return (Insert) this.statement;
     }
 
+    public PlainSelect getSubSelect() {
+        return plainSelect;
+    }
+
     public boolean isSelect() {
-        return Select.class.isInstance(statement);
+        return plainSelect != null;
     }
 
     public boolean isUpdate() {
@@ -62,6 +78,10 @@ public abstract class AbstractJSqlParserHandler {
         return Insert.class.isInstance(statement);
     }
 
+    public boolean isSubSelect() {
+        return plainSelect != null;
+    }
+
     public final void setStatement(Statement statement) {
         if (!clazz.isInstance(statement)) {
             throw new IllegalArgumentException(
@@ -69,5 +89,9 @@ public abstract class AbstractJSqlParserHandler {
         }
 
         this.statement = statement;
+
+        if (isSelect()) {
+            plainSelect = (PlainSelect) ((Select) this.statement).getSelectBody();
+        }
     }
 }

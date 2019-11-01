@@ -48,7 +48,7 @@ public class JSqlParserConditionHandlerTest {
 
             handler.add(cp.newCondition, cp.conditional, cp.isolation);
 
-            Assert.assertEquals(cp.expected, statement.toString());
+            Assert.assertEquals(sql,cp.expected, statement.toString());
         }
     }
 
@@ -122,7 +122,7 @@ public class JSqlParserConditionHandlerTest {
             pack = caseData.get(sql);
             handler.remove(pack.removeCondition);
 
-            Assert.assertEquals(pack.expectedSql, statement.toString());
+            Assert.assertEquals(sql,pack.expectedSql, statement.toString());
         }
     }
 
@@ -167,6 +167,41 @@ public class JSqlParserConditionHandlerTest {
                 CCJSqlParserUtil.parse("select * from t1 where c1=2").toString()
             ));
 
+        data.put("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
+                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
+                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
+                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+                "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
+                "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
+                "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
+                "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
+                "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
+                "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
+                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+                "'cs' then '中心客户&供应商' end,year_of_month) m " +
+                "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
+            new RemoveConditionPack(
+                new Condition(new Field("m", "group_code", null), ConditionOperator.EQUALS, new StringValue("test")),
+                CCJSqlParserUtil.parse("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
+                    "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
+                    "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
+                    "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+                    "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
+                    "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
+                    "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
+                    "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
+                    "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
+                    "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
+                    "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+                    "'cs' then '中心客户&供应商' end,year_of_month) m " +
+                    "group by group_code,group_name,year_of_month,company_type,company_type_desc").toString()
+            )
+        );
+
         return data;
     }
 
@@ -193,10 +228,10 @@ public class JSqlParserConditionHandlerTest {
 
             List<Condition> current = handler.list();
 
-            Assert.assertEquals(caseData.get(sql).size(), current.size());
+            Assert.assertEquals(sql,caseData.get(sql).size(), current.size());
             List<Condition> expected = caseData.get(sql);
             for (int i = 0; i < expected.size(); i++) {
-                Assert.assertEquals(expected.get(i), current.get(i));
+                Assert.assertEquals(sql,expected.get(i), current.get(i));
             }
         }
 
@@ -257,6 +292,56 @@ public class JSqlParserConditionHandlerTest {
                     new LongValue(20)
                 )
             ));
+
+        data.put("select * from t1 where c1 not in (select * from t2) and c2 not in (1,2,3)",
+            Arrays.asList(
+                new Condition(
+                    new Field("c2"),
+                    ConditionOperator.NOT_IN,
+                    Arrays.asList(new LongValue(1), new LongValue(2), new LongValue(3)))
+            )
+        );
+
+        data.put("select * from t1 where c1 = any(select * from t2) and c2=1",
+            Arrays.asList(
+                new Condition(new Field("c2"), ConditionOperator.EQUALS, Arrays.asList(new LongValue(1)))
+            )
+        );
+
+        data.put("select * from t1 where c1 = some(select * from t2) and c2=1",
+            Arrays.asList(
+                new Condition(new Field("c2"), ConditionOperator.EQUALS, Arrays.asList(new LongValue(1)))
+            )
+        );
+
+        data.put("select * from t1 where exists (select * from t2 where c22=1)",
+            Collections.emptyList()
+        );
+
+        data.put("select * from t1 where c1=10 union select * from t2",
+            Arrays.asList(
+            )
+        );
+
+        data.put("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
+            "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
+            "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
+            "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+            "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+            "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
+            "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
+            "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
+            "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
+            "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
+            "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
+            "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
+            "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+            "'cs' then '中心客户&供应商' end,year_of_month) m " +
+            "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
+            Arrays.asList(
+                new Condition(new Field("m","group_code", null), ConditionOperator.EQUALS, new StringValue("test"))
+            )
+        );
 
         return data;
     }

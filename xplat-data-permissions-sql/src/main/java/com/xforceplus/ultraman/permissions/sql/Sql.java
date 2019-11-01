@@ -1,8 +1,10 @@
 package com.xforceplus.ultraman.permissions.sql;
 
 
+import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitor;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public interface Sql {
+public interface Sql extends Item {
 
     /**
      * 得到当前SQL 的字符串表示.
@@ -29,14 +31,21 @@ public interface Sql {
     SqlProcessor buildProcessor();
 
     /**
+     * 使用访问者模式得到处理器实例.
+     * @param visitor 访问器.
+     */
+    void visit(SqlProcessorVisitor visitor);
+
+    /**
      * 得到当前 SQL 的类型.
      * @return 类型实例.
      */
     SqlType type();
 
     /**
-     * 返回子查询语句,如果有的话.没有则返回 null.
-     * @return 子查询.
+     * 是否联合查询.
+     * @return true 联合查询,false 非联合查询.
      */
-    List<Sql> subSql();
+    boolean isUnion();
+
 }

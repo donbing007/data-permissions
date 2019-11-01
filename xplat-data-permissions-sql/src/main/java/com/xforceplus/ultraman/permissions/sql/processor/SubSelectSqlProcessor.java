@@ -1,21 +1,17 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
-import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.SubSqlHandler;
 
-import java.util.List;
-
 /**
- * Select 语句的 process 定义.
- *
- * @version 0.1 2019/10/25 17:28
+ * 子查询处理.
+ * @version 0.1 2019/10/31 19:28
  * @auth dongbin
  * @since 1.8
  */
-public interface SelectSqlProcessor extends SqlProcessor {
+public interface SubSelectSqlProcessor extends SqlProcessor{
 
     /**
      * 得到条件操作实例.

@@ -7,6 +7,7 @@ import com.xforceplus.ultraman.permissions.sql.define.values.ArithmeticValue;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.TimeKeyExpression;
@@ -27,6 +28,9 @@ import java.util.stream.Collectors;
  */
 public class JSqlParserSelectItemHandler extends AbstractJSqlParserHandler implements SelectItemHandler {
 
+    public JSqlParserSelectItemHandler(PlainSelect plainSelect) {
+        super(plainSelect);
+    }
 
     public JSqlParserSelectItemHandler(Statement statement) {
         super(statement, Select.class);
@@ -46,98 +50,129 @@ public class JSqlParserSelectItemHandler extends AbstractJSqlParserHandler imple
 
     private void doRemove(Item item) {
         String sqlString = item.toSqlString();
-        SelectBody selectBody = getSelect().getSelectBody();
-        selectBody.accept(new SelectVisitorAdapter() {
-            @Override
-            public void visit(PlainSelect plainSelect) {
-                List<SelectItem> selectItems = plainSelect.getSelectItems();
-                if (selectItems != null) {
-                    List<SelectItem> newSelectItems = selectItems.stream()
-                        .filter(s -> !s.toString().equals(sqlString)).collect(Collectors.toList());
-                    plainSelect.setSelectItems(newSelectItems);
-
-                }
-            }
-        });
+        if (isSubSelect()) {
+            getSubSelect().accept(new RemoveSelectVisitorImpl(sqlString));
+        } else {
+            SelectBody selectBody = getSelect().getSelectBody();
+            selectBody.accept(new RemoveSelectVisitorImpl(sqlString));
+        }
     }
 
 
     @Override
     public List<Item> list() {
-        SelectBody selectBody = getSelect().getSelectBody();
-
-
         List<Item> selectFields = new ArrayList<>();
-        selectBody.accept(new SelectVisitorAdapter() {
-            @Override
-            public void visit(PlainSelect plainSelect) {
 
-                List<SelectItem> items = plainSelect.getSelectItems();
-                if (items == null) {
-                    return;
-                }
+        if (isSubSelect()) {
 
-                for (SelectItem item : items) {
-                    item.accept(new SelectItemVisitorAdapter() {
-                        @Override
-                        public void visit(AllColumns columns) {
-                            selectFields.add(Field.getAllField());
-                        }
+            getSubSelect().accept(new ListSelectVisitorImpl(selectFields));
 
-                        @Override
-                        public void visit(SelectExpressionItem item) {
-                            final String alias;
-                            if (item.getAlias() != null) {
-
-                                alias = item.getAlias().getName();
-
-                            } else {
-
-                                alias = null;
-
-                            }
-
-                            if (ValueHelper.isValueExpr(item.getExpression())) {
-
-                                selectFields.add(ConversionHelper.convertValue(item.getExpression()));
-
-                            } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
-
-                                selectFields.add(new ArithmeticValue(item.getExpression().toString()));
-
-                            } else {
-
-                                item.getExpression().accept(new ExpressionVisitorAdapter() {
-                                    @Override
-                                    public void visit(Column column) {
-
-                                        selectFields.add(ConversionHelper.convert(column, alias));
-
-                                    }
-
-                                    @Override
-                                    public void visit(Function function) {
-
-                                        selectFields.add(ConversionHelper.convert(function, alias));
-
-                                    }
-
-                                    @Override
-                                    public void visit(TimeKeyExpression timeKeyExpression) {
-
-                                        selectFields.add(ConversionHelper.convert(timeKeyExpression, alias));
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                }
-
-            }
-        });
+        } else {
+            SelectBody selectBody = getSelect().getSelectBody();
+            selectBody.accept(new ListSelectVisitorImpl(selectFields));
+        }
 
         return selectFields;
+    }
+
+    private static class ListSelectVisitorImpl extends SelectVisitorAdapter {
+
+        private List<Item> selectFields;
+
+        public ListSelectVisitorImpl(List<Item> selectFields) {
+            this.selectFields = selectFields;
+        }
+
+        @Override
+        public void visit(PlainSelect plainSelect) {
+
+            List<SelectItem> items = plainSelect.getSelectItems();
+            if (items == null) {
+                return;
+            }
+
+            for (SelectItem item : items) {
+                item.accept(new SelectItemVisitorAdapter() {
+                    @Override
+                    public void visit(AllColumns columns) {
+                        selectFields.add(Field.getAllField());
+                    }
+
+                    @Override
+                    public void visit(SelectExpressionItem item) {
+                        final Alias alias;
+                        if (item.getAlias() != null) {
+
+                            alias = item.getAlias();
+
+                        } else {
+
+                            alias = null;
+
+                        }
+
+                        if (ValueHelper.isValueExpr(item.getExpression())) {
+
+                            selectFields.add(ConversionHelper.convertValue(item.getExpression()));
+
+                        } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
+
+                            selectFields.add(new ArithmeticValue(item.getExpression().toString()));
+
+                        } else {
+
+                            item.getExpression().accept(new ExpressionVisitorAdapter() {
+                                @Override
+                                public void visit(Column column) {
+
+                                    selectFields.add(ConversionHelper.convert(column, alias));
+
+                                }
+
+                                @Override
+                                public void visit(Function function) {
+
+                                    selectFields.add(ConversionHelper.convert(function, alias));
+
+                                }
+
+                                @Override
+                                public void visit(TimeKeyExpression timeKeyExpression) {
+
+                                    selectFields.add(ConversionHelper.convert(timeKeyExpression, alias));
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }
+
+        }
+    }
+
+    private static class RemoveSelectVisitorImpl extends SelectVisitorAdapter {
+
+        private String sqlString;
+
+        public RemoveSelectVisitorImpl(String sqlString) {
+            this.sqlString = sqlString;
+        }
+
+        @Override
+        public void visit(PlainSelect plainSelect) {
+            List<SelectItem> selectItems = plainSelect.getSelectItems();
+            if (selectItems != null) {
+                List<SelectItem> newSelectItems = selectItems.stream()
+                    .filter(s -> !s.toString().equals(sqlString)).collect(Collectors.toList());
+                plainSelect.setSelectItems(newSelectItems);
+            }
+        }
+
+        @Override
+        public void visit(SetOperationList setOpList) {
+            visit((PlainSelect) setOpList.getSelects().get(0));
+        }
     }
 
 }

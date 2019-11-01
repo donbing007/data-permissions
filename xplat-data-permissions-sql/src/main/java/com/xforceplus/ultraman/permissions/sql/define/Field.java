@@ -15,7 +15,7 @@ public class Field implements Item {
 
     private String table;
     private String name;
-    private String alias;
+    private Alias alias;
 
     public static Field getAllField() {
         return ALL_ITEM;
@@ -25,11 +25,11 @@ public class Field implements Item {
         this(null, name, null);
     }
 
-    public Field(String name, String alias) {
+    public Field(String name, Alias alias) {
         this(null, name, alias);
     }
 
-    public Field(String table, String name, String alias) {
+    public Field(String table, String name, Alias alias) {
         this.table = table;
         this.name = name;
         this.alias = alias;
@@ -52,7 +52,7 @@ public class Field implements Item {
         return name;
     }
 
-    public String getAlias() {
+    public Alias getAlias() {
         return alias;
     }
 
@@ -91,8 +91,8 @@ public class Field implements Item {
             buff.append(table).append(".");
         }
         buff.append(name);
-        if (alias != null && !alias.isEmpty()) {
-            buff.append(" AS ").append(alias);
+        if (alias != null) {
+            buff.append(alias.toSqlString());
         }
 
         return buff.toString();

@@ -13,14 +13,14 @@ import java.util.Objects;
  */
 public class Func implements Item {
     private String name;
-    private String alias;
+    private Alias alias;
     private List<Item> parameters;
 
     public Func(String name) {
         this(name, null, null);
     }
 
-    public Func(String name, String alias) {
+    public Func(String name, Alias alias) {
         this(name,null, alias);
     }
 
@@ -28,7 +28,7 @@ public class Func implements Item {
         this(name,parameters, null);
     }
 
-    public Func(String name, List<Item> parameters, String alias) {
+    public Func(String name, List<Item> parameters, Alias alias) {
         this.name = name;
         this.parameters = parameters;
         this.alias = alias;
@@ -88,7 +88,7 @@ public class Func implements Item {
 
         buff.append(")");
         if (alias != null) {
-            buff.append(" AS ").append(alias);
+            buff.append(alias.toSqlString());
         }
         return buff.toString();
     }

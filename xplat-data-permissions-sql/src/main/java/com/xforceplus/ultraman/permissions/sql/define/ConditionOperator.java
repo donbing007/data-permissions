@@ -8,6 +8,7 @@ package com.xforceplus.ultraman.permissions.sql.define;
 public enum ConditionOperator {
     BETWEEN("BETWEEN"),
     IN("IN"),
+    NOT_IN("NOT IN"),
     LIKE("LIKE"),
     EQUALS("="),
     NOT_EQUALS("!="),

@@ -12,8 +12,7 @@ public enum SqlType {
     SELECT("SELECT"),
     DELETE("DELETE"),
     UPDATE("UPDATE"),
-    INSERT("INSERT"),
-    ALTER("ALTER");
+    INSERT("INSERT");
 
     private String symbol;
 

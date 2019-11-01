@@ -20,17 +20,17 @@ public class From implements Item {
     /**
      * 别名,如果没有为 null.
      */
-    private String alias;
+    private Alias alias;
 
     public From(String table) {
         this(table, null, false);
     }
 
-    public From(String table, String alias) {
+    public From(String table, Alias alias) {
         this(table, alias, false);
     }
 
-    public From(String table, String alias, boolean sub) {
+    public From(String table, Alias alias, boolean sub) {
         this.sub = sub;
         this.table = table;
         this.alias = alias;
@@ -44,7 +44,7 @@ public class From implements Item {
         return table;
     }
 
-    public String getAlias() {
+    public Alias getAlias() {
         return alias;
     }
 
@@ -76,8 +76,8 @@ public class From implements Item {
     public String toSqlString() {
         StringBuilder buff = new StringBuilder();
         buff.append(table);
-        if (alias != null && !alias.isEmpty()) {
-            buff.append(" ").append(alias);
+        if (alias != null) {
+            buff.append(alias.toSqlString());
         }
         return buff.toString();
     }

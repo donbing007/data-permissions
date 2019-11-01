@@ -5,7 +5,6 @@ import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ExceptionHelper;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
@@ -19,10 +18,7 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
-import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 
 import java.text.ParseException;
@@ -42,6 +38,11 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
     private static final Expression ROOT_FLAG = new RootExpression();
 
     private Expression where;
+
+    public JSqlParserConditionHandler(PlainSelect plainSelect) {
+        super(plainSelect);
+        where = plainSelect.getWhere();
+    }
 
     public JSqlParserConditionHandler(Statement statement) {
         super(statement);
@@ -128,6 +129,7 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
 
         List<Condition> conditions = new ArrayList();
         where.accept(new ExpressionVisitorAdapter() {
+
             @Override
             public void visit(Between expr) {
                 Column c = (Column) expr.getLeftExpression();
@@ -143,12 +145,22 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
             public void visit(InExpression expr) {
                 Column c = (Column) expr.getLeftExpression();
 
+                // 不处理子查询.
+                if (!ExpressionList.class.isInstance(expr.getRightItemsList())) {
+                    return;
+                }
+
                 ExpressionList expressionList = (ExpressionList) expr.getRightItemsList();
                 List<Expression> expressions = expressionList.getExpressions();
                 List<Value> values = expressions.stream().map(e -> ConversionHelper.convertValue(e)).collect(Collectors.toList());
 
-                conditions.add(buildConditionFromColumn(c, values, ConditionOperator.IN));
+                if (expr.isNot()) {
+                    conditions.add(buildConditionFromColumn(c, values, ConditionOperator.NOT_IN));
+                } else {
+                    conditions.add(buildConditionFromColumn(c, values, ConditionOperator.IN));
+                }
             }
+
 
             @Override
             public void visit(IsNullExpression expr) {
@@ -198,6 +210,11 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
             }
 
             private void doAddComparisionCondition(ComparisonOperator expr, ConditionOperator operator) {
+                // 忽略 any some,因为里面只有子查询.
+                if (AnyComparisonExpression.class.isInstance(expr.getRightExpression())) {
+                    return;
+                }
+
                 Expression leftExpr = expr.getLeftExpression();
                 if (Column.class.isInstance(leftExpr)) {
 
@@ -211,6 +228,7 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
                     List<Value> values = Arrays.asList(ConversionHelper.convertValue(expr.getRightExpression()));
                     conditions.add(buildConditionFromFunction(f, values, operator));
                 }
+
             }
 
         });
@@ -243,30 +261,37 @@ public class JSqlParserConditionHandler extends AbstractJSqlParserHandler implem
     }
 
     private void setWhere(Expression newWhere) {
-        getStatement().accept(new StatementVisitorAdapter() {
-            @Override
-            public void visit(Select select) {
-                SelectBody selectBody = select.getSelectBody();
-                if (selectBody != null) {
-                    selectBody.accept(new SelectVisitorAdapter() {
-                        @Override
-                        public void visit(PlainSelect plainSelect) {
-                            plainSelect.setWhere(newWhere);
-                        }
-                    });
+
+        if (isSubSelect()) {
+
+            getSubSelect().setWhere(newWhere);
+
+        } else {
+            getStatement().accept(new StatementVisitorAdapter() {
+                @Override
+                public void visit(Select select) {
+                    SelectBody selectBody = select.getSelectBody();
+                    if (selectBody != null) {
+                        selectBody.accept(new SelectVisitorAdapter() {
+                            @Override
+                            public void visit(PlainSelect plainSelect) {
+                                plainSelect.setWhere(newWhere);
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void visit(Delete delete) {
-                delete.setWhere(newWhere);
-            }
+                @Override
+                public void visit(Delete delete) {
+                    delete.setWhere(newWhere);
+                }
 
-            @Override
-            public void visit(Update update) {
-                update.setWhere(newWhere);
-            }
-        });
+                @Override
+                public void visit(Update update) {
+                    update.setWhere(newWhere);
+                }
+            });
+        }
     }
 
     private Expression buildExpression(Condition condition) throws ParseException {

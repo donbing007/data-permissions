@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler;
 
+import com.xforceplus.ultraman.permissions.sql.define.Alias;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
@@ -69,7 +70,7 @@ public class JSqlParserSelectItemHandlerTest {
         data.put("select c1 as a1, sum(t.c2) as sum from t1 t",
             new RemovePack(
                 new Func("sum",
-                    Arrays.asList(new Field("t", "c2", null)), "sum"),
+                    Arrays.asList(new Field("t", "c2", null)), new Alias("sum", true)),
                 CCJSqlParserUtil.parse("select c1 as a1 from t1 t").toString())
         );
 
@@ -99,9 +100,9 @@ public class JSqlParserSelectItemHandlerTest {
                 JSqlParserSelectItemHandler handler = new JSqlParserSelectItemHandler(CCJSqlParserUtil.parse(sql));
                 List<Item> items = handler.list();
                 List<Item> expectedItems = caseData.get(sql);
-                Assert.assertEquals(expectedItems.size(), items.size());
+                Assert.assertEquals(sql, expectedItems.size(), items.size());
                 for (int i = 0; i < expectedItems.size(); i++) {
-                    Assert.assertEquals(expectedItems.get(i), items.get(i));
+                    Assert.assertEquals(sql, expectedItems.get(i), items.get(i));
                 }
 
             } catch (Exception ex) {
@@ -133,8 +134,22 @@ public class JSqlParserSelectItemHandlerTest {
             Arrays.asList(
                 new Field("c1"),
                 new Func("count", Arrays.asList(new Field("*"))),
-                new Func("max",Arrays.asList(new Field("c1")),"top"),
+                new Func("max",Arrays.asList(new Field("c1")),new Alias("top", true)),
                 new Func("current_time")
+            )
+        );
+
+        data.put("select c1,c2 from t1 union select c3,c4 from t2",
+            Arrays.asList(
+                new Field("c1"),
+                new Field("c2")
+            )
+        );
+
+        data.put("select c1,c2 from t1 where exists (select c3,c4 from t2)",
+            Arrays.asList(
+                new Field("c1"),
+                new Field("c2")
             )
         );
 
