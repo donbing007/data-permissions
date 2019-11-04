@@ -1,9 +1,11 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserDeleteFieldFromHandler;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.DeleteSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
 import net.sf.jsqlparser.statement.Statement;
 
@@ -26,5 +28,10 @@ public class JDeleteSqlProcessor extends JSqlProcessor implements DeleteSqlProce
     @Override
     public FromHandler buildFromHandler() {
         return new JSqlParserFromHandler(getStatement());
+    }
+
+    @Override
+    public FieldFromHandler buildFieldFromHandler() {
+        return new JSqlParserDeleteFieldFromHandler(getStatement());
     }
 }

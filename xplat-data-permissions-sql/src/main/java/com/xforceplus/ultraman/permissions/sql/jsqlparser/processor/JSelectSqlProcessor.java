@@ -1,19 +1,10 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserSelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserSubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
-
-import java.util.List;
 
 /**
  * select
@@ -38,13 +29,18 @@ public class JSelectSqlProcessor extends JSqlProcessor implements SelectSqlProce
     }
 
     @Override
-    public SelectItemHandler buildColumnHandler() {
+    public SelectItemHandler buildSelectItemHandler() {
         return new JSqlParserSelectItemHandler(getStatement());
     }
 
     @Override
     public SubSqlHandler buildSubSqlHandler() {
         return new JSqlParserSubSqlHandler((Select) getStatement());
+    }
+
+    @Override
+    public FieldFromHandler buildFieldFromHandler() {
+        return new JSqlParserSelectFieldFromHandler(getStatement());
     }
 
 

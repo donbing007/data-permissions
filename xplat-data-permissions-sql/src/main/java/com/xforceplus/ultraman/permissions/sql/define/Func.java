@@ -63,6 +63,10 @@ public class Func implements Item {
         return this.parameters != null && !this.parameters.isEmpty();
     }
 
+    public Alias getAlias() {
+        return alias;
+    }
+
     @Override
     public String toString() {
         return "Funcion{" +
@@ -88,7 +92,7 @@ public class Func implements Item {
 
         buff.append(")");
         if (alias != null) {
-            buff.append(alias.toSqlString());
+            buff.append(" ").append(alias.toSqlString());
         }
         return buff.toString();
     }

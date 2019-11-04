@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.utils;
 
 import com.xforceplus.ultraman.permissions.sql.define.Field;
+import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.values.ArithmeticValue;
@@ -9,6 +10,7 @@ import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +103,14 @@ public class ConversionHelper {
         }
 
         return new Func(function.getName(), paramItemList, convert(alias));
+    }
+
+    public static From convert(Table table) {
+        if (table == null) {
+            return null;
+        } else {
+            return new From(table.getName(), ConversionHelper.convert(table.getAlias()));
+        }
     }
 
     public static com.xforceplus.ultraman.permissions.sql.define.Alias convert(Alias alias) {

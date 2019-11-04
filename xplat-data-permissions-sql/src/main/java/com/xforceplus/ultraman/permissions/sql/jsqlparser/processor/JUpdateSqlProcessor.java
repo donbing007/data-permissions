@@ -2,9 +2,11 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserUpdateFieldFromHandler;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserUpdateSetHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.UpdateSetHandler;
 import net.sf.jsqlparser.statement.Statement;
@@ -34,4 +36,10 @@ public class JUpdateSqlProcessor extends JSqlProcessor implements UpdateSqlProce
     public UpdateSetHandler buildUpdateSetHandler() {
         return new JSqlParserUpdateSetHandler(getStatement());
     }
+
+    @Override
+    public FieldFromHandler buildFieldFromHandler() {
+        return new JSqlParserUpdateFieldFromHandler(getStatement());
+    }
+
 }

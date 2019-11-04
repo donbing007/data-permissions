@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.sql.define.ArithmeticSymbol;
 import java.util.Objects;
 
 /**
- * 表示值为一个运行.
+ * 表示值为一个运算.
  * @version 0.1 2019/10/29 19:03
  * @auth dongbin
  * @since 1.8

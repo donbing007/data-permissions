@@ -1,9 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
 
 /**
  * 子查询处理.
@@ -37,4 +34,10 @@ public interface SubSelectSqlProcessor extends SqlProcessor{
      * @return 语句列表.
      */
     SubSqlHandler buildSubSqlHandler();
+
+    /**
+     * 得到当前字段实际表名搜索处理器.
+     * @return 处理器实例.
+     */
+    FieldFromHandler buildFieldFromHandler();
 }

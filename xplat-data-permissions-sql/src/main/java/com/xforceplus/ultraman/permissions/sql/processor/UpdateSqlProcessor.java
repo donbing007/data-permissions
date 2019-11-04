@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
 import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
 import com.xforceplus.ultraman.permissions.sql.processor.handler.UpdateSetHandler;
 
@@ -29,4 +30,10 @@ public interface UpdateSqlProcessor extends SqlProcessor {
      * @return 实例.
      */
     UpdateSetHandler buildUpdateSetHandler();
+
+    /**
+     * 字段来源搜索器.
+     * @return 字段来源.
+     */
+    FieldFromHandler buildFieldFromHandler();
 }

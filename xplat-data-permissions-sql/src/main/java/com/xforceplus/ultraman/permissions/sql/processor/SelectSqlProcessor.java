@@ -1,10 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.define.Field;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
 
 import java.util.List;
 
@@ -34,11 +32,17 @@ public interface SelectSqlProcessor extends SqlProcessor {
      * 得到查询字段列表操作实例.
      * @return 实例.
      */
-    SelectItemHandler buildColumnHandler();
+    SelectItemHandler buildSelectItemHandler();
 
     /**
      * 得到当前的嵌套查询和子查询.
      * @return 语句列表.
      */
     SubSqlHandler buildSubSqlHandler();
+
+    /**
+     * 得到当前字段实际表名搜索处理器.
+     * @return 处理器实例.
+     */
+    FieldFromHandler buildFieldFromHandler();
 }

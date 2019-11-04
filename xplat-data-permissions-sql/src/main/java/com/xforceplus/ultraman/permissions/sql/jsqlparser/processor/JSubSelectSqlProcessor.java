@@ -1,14 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserSelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserSubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SubSelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SelectItemHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.SubSqlHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
 /**
@@ -43,6 +37,11 @@ public class JSubSelectSqlProcessor implements SubSelectSqlProcessor {
     @Override
     public SubSqlHandler buildSubSqlHandler() {
         return new JSqlParserSubSqlHandler(plainSelect);
+    }
+
+    @Override
+    public FieldFromHandler buildFieldFromHandler() {
+        return new JSqlParserSelectFieldFromHandler(plainSelect);
     }
 
 }
