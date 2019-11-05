@@ -1,14 +1,14 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserUpdateFieldFromHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserUpdateSetHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserConditionAbility;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserFromAbility;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserUpdateFieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserUpdateSetAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.UpdateSetHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.UpdateSetAbility;
 import net.sf.jsqlparser.statement.Statement;
 
 /**
@@ -23,23 +23,23 @@ public class JUpdateSqlProcessor extends JSqlProcessor implements UpdateSqlProce
     }
 
     @Override
-    public ConditionHandler buildConditionHandler() {
-        return new JSqlParserConditionHandler(getStatement());
+    public ConditionAbility buildConditionAbility() {
+        return new JSqlParserConditionAbility(getStatement());
     }
 
     @Override
-    public FromHandler buildFromHandler() {
-        return new JSqlParserFromHandler(getStatement());
+    public FromAbility buildFromAbility() {
+        return new JSqlParserFromAbility(getStatement());
     }
 
     @Override
-    public UpdateSetHandler buildUpdateSetHandler() {
-        return new JSqlParserUpdateSetHandler(getStatement());
+    public UpdateSetAbility buildUpdateSetAbility() {
+        return new JSqlParserUpdateSetAbility(getStatement());
     }
 
     @Override
-    public FieldFromHandler buildFieldFromHandler() {
-        return new JSqlParserUpdateFieldFromHandler(getStatement());
+    public FieldFromAbility buildFieldFromAbility() {
+        return new JSqlParserUpdateFieldFromAbility(getStatement());
     }
 
 }

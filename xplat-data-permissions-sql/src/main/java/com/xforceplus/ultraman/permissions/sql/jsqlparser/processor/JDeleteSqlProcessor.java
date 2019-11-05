@@ -1,12 +1,12 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserDeleteFieldFromHandler;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.JSqlParserFromHandler;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserConditionAbility;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserDeleteFieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.DeleteSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 import net.sf.jsqlparser.statement.Statement;
 
 /**
@@ -21,17 +21,17 @@ public class JDeleteSqlProcessor extends JSqlProcessor implements DeleteSqlProce
     }
 
     @Override
-    public ConditionHandler buildConditionHandler() {
-        return new JSqlParserConditionHandler(getStatement());
+    public ConditionAbility buildConditionAbility() {
+        return new JSqlParserConditionAbility(getStatement());
     }
 
     @Override
-    public FromHandler buildFromHandler() {
-        return new JSqlParserFromHandler(getStatement());
+    public FromAbility buildFromAbility() {
+        return new JSqlParserFromAbility(getStatement());
     }
 
     @Override
-    public FieldFromHandler buildFieldFromHandler() {
-        return new JSqlParserDeleteFieldFromHandler(getStatement());
+    public FieldFromAbility buildFieldFromAbility() {
+        return new JSqlParserDeleteFieldFromAbility(getStatement());
     }
 }

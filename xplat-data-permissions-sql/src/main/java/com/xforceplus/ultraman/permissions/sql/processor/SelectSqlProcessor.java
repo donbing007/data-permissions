@@ -1,10 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
-import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
-
-import java.util.List;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.*;
 
 /**
  * Select 语句的 process 定义.
@@ -20,29 +16,29 @@ public interface SelectSqlProcessor extends SqlProcessor {
      *
      * @return 实例.
      */
-    ConditionHandler buildConditionHandler();
+    ConditionAbility buildConditionAbility();
 
     /**
      * 得到来源表操作实例.
      * @return 实例.
      */
-    FromHandler buildFromHandler();
+    FromAbility buildFromAbility();
 
     /**
      * 得到查询字段列表操作实例.
      * @return 实例.
      */
-    SelectItemHandler buildSelectItemHandler();
+    SelectItemAbility buildSelectItemAbility();
 
     /**
      * 得到当前的嵌套查询和子查询.
      * @return 语句列表.
      */
-    SubSqlHandler buildSubSqlHandler();
+    SubSqlAbility buildSubSqlAbility();
 
     /**
      * 得到当前字段实际表名搜索处理器.
      * @return 处理器实例.
      */
-    FieldFromHandler buildFieldFromHandler();
+    FieldFromAbility buildFieldFromAbility();
 }

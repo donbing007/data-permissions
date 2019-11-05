@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
-import com.xforceplus.ultraman.permissions.sql.processor.handler.ConditionHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FieldFromHandler;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.FromHandler;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 
 /**
  * 删除语句操作定义.
@@ -17,18 +17,18 @@ public interface DeleteSqlProcessor extends SqlProcessor {
      *
      * @return 实例.
      */
-    ConditionHandler buildConditionHandler();
+    ConditionAbility buildConditionAbility();
 
     /**
      * 得到来源表操作实例.
      * @return 实例.
      */
-    FromHandler buildFromHandler();
+    FromAbility buildFromAbility();
 
     /**
      * 得到当前字段实际表名搜索处理器.
      * @return 处理器实例.
      */
-    FieldFromHandler buildFieldFromHandler();
+    FieldFromAbility buildFieldFromAbility();
 
 }

@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.*;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SubSelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.*;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
 /**
@@ -20,28 +20,28 @@ public class JSubSelectSqlProcessor implements SubSelectSqlProcessor {
     }
 
     @Override
-    public ConditionHandler buildConditionHandler() {
-        return new JSqlParserConditionHandler(plainSelect);
+    public ConditionAbility buildConditionAbility() {
+        return new JSqlParserConditionAbility(plainSelect);
     }
 
     @Override
-    public FromHandler buildFromHandler() {
-        return new JSqlParserFromHandler(plainSelect);
+    public FromAbility buildFromAbility() {
+        return new JSqlParserFromAbility(plainSelect);
     }
 
     @Override
-    public SelectItemHandler buildColumnHandler() {
-        return new JSqlParserSelectItemHandler(plainSelect);
+    public SelectItemAbility buildSelectItemAbility() {
+        return new JSqlParserSelectItemAbility(plainSelect);
     }
 
     @Override
-    public SubSqlHandler buildSubSqlHandler() {
-        return new JSqlParserSubSqlHandler(plainSelect);
+    public SubSqlAbility buildSubSqlAbility() {
+        return new JSqlParserSubSqlAbility(plainSelect);
     }
 
     @Override
-    public FieldFromHandler buildFieldFromHandler() {
-        return new JSqlParserSelectFieldFromHandler(plainSelect);
+    public FieldFromAbility buildFieldFromAbility() {
+        return new JSqlParserSelectFieldFromAbility(plainSelect);
     }
 
 }

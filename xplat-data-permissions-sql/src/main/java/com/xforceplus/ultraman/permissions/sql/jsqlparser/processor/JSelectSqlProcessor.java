@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor;
 
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.handler.*;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.handler.*;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.*;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
 
@@ -19,28 +19,28 @@ public class JSelectSqlProcessor extends JSqlProcessor implements SelectSqlProce
     }
 
     @Override
-    public ConditionHandler buildConditionHandler() {
-        return new JSqlParserConditionHandler(getStatement());
+    public ConditionAbility buildConditionAbility() {
+        return new JSqlParserConditionAbility(getStatement());
     }
 
     @Override
-    public FromHandler buildFromHandler() {
-        return new JSqlParserFromHandler(getStatement());
+    public FromAbility buildFromAbility() {
+        return new JSqlParserFromAbility(getStatement());
     }
 
     @Override
-    public SelectItemHandler buildSelectItemHandler() {
-        return new JSqlParserSelectItemHandler(getStatement());
+    public SelectItemAbility buildSelectItemAbility() {
+        return new JSqlParserSelectItemAbility(getStatement());
     }
 
     @Override
-    public SubSqlHandler buildSubSqlHandler() {
-        return new JSqlParserSubSqlHandler((Select) getStatement());
+    public SubSqlAbility buildSubSqlAbility() {
+        return new JSqlParserSubSqlAbility((Select) getStatement());
     }
 
     @Override
-    public FieldFromHandler buildFieldFromHandler() {
-        return new JSqlParserSelectFieldFromHandler(getStatement());
+    public FieldFromAbility buildFieldFromAbility() {
+        return new JSqlParserSelectFieldFromAbility(getStatement());
     }
 
 
