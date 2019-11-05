@@ -60,7 +60,7 @@ public class JSqlParserSubSqlAbilityTest {
 
                         @Override
                         public void visit(SubSelectSqlProcessor processor) {
-                            queue.addAll(processor.buildSubSqlHandler().list());
+                            queue.addAll(processor.buildSubSqlAbility().list());
                         }
                     });
                 }

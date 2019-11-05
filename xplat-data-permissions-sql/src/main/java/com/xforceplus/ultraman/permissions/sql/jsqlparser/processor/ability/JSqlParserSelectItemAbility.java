@@ -153,10 +153,10 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
     private static class RemoveSelectVisitorImpl extends SelectVisitorAdapter {
 
-        private String sqlString;
+        private String targetFieldSql;
 
-        public RemoveSelectVisitorImpl(String sqlString) {
-            this.sqlString = sqlString;
+        public RemoveSelectVisitorImpl(String targetFieldSql) {
+            this.targetFieldSql = targetFieldSql;
         }
 
         @Override
@@ -164,14 +164,15 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
             List<SelectItem> selectItems = plainSelect.getSelectItems();
             if (selectItems != null) {
                 List<SelectItem> newSelectItems = selectItems.stream()
-                    .filter(s -> !s.toString().equals(sqlString)).collect(Collectors.toList());
+                    .filter(s -> !s.toString().equals(targetFieldSql)).collect(Collectors.toList());
                 plainSelect.setSelectItems(newSelectItems);
             }
         }
 
         @Override
         public void visit(SetOperationList setOpList) {
-            visit((PlainSelect) setOpList.getSelects().get(0));
+            final int first = 0; // 如果有子表或者 union,只处理首条语句.
+            visit((PlainSelect) setOpList.getSelects().get(first));
         }
     }
 

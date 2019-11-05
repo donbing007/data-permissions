@@ -7,6 +7,7 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 
@@ -50,16 +51,21 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
                 @Override
                 public void visit(Delete delete) {
                     Table table = delete.getTable();
-                    From from = new From(table.getName(), ConversionHelper.convert(table.getAlias()));
-                    items.add(from);
+                    items.add(ConversionHelper.convert(table));
                 }
 
                 @Override
                 public void visit(Update update) {
                     Table table = update.getTable();
-                    From from = new From(table.getName(), ConversionHelper.convert(table.getAlias()));
-                    items.add(from);
+                    items.add(ConversionHelper.convert(table));
                 }
+
+                @Override
+                public void visit(Insert insert) {
+                    Table table = insert.getTable();
+                    items.add(ConversionHelper.convert(table));
+                }
+
             });
         }
 

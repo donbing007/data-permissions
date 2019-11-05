@@ -29,7 +29,7 @@ public class JSqlParserFromAbilityTest {
     @Test
     public void testIterFrom() throws Exception {
 
-        Map<String,List<From>> data = buildCase();
+        Map<String, List<From>> data = buildCase();
         Set<String> sqls = data.keySet();
         JSqlParserFromAbility handler;
         for (String sql : sqls) {
@@ -46,7 +46,7 @@ public class JSqlParserFromAbilityTest {
             Iterator<From> fromIterator = froms.iterator();
 
             int index = 0;
-            while(fromIterator.hasNext()) {
+            while (fromIterator.hasNext()) {
                 Assert.assertEquals(sql, expected.get(index++), fromIterator.next());
             }
         }
@@ -54,7 +54,7 @@ public class JSqlParserFromAbilityTest {
 
     private Map<String, List<From>> buildCase() {
 
-        Map<String,List<From>> data = new HashMap();
+        Map<String, List<From>> data = new HashMap();
         data.put("select * from t1",
             Arrays.asList(
                 new From("t1")
@@ -104,7 +104,25 @@ public class JSqlParserFromAbilityTest {
                 "'cs' then '中心客户&供应商' end,year_of_month) m " +
                 "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
             Arrays.asList(
-                new From("", new Alias("m"),true)
+                new From("", new Alias("m"), true)
+            )
+        );
+
+        data.put("insert into t (c1,c2,c3) values(1,2,3)",
+            Arrays.asList(
+                new From("t")
+            )
+        );
+
+        data.put("update t set c1=2 where c1=1",
+            Arrays.asList(
+                new From("t")
+            )
+        );
+
+        data.put("delete from t where c1=1",
+            Arrays.asList(
+                new From("t")
             )
         );
 

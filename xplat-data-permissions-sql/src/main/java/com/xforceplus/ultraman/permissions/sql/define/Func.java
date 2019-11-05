@@ -92,7 +92,7 @@ public class Func implements Item {
 
         buff.append(")");
         if (alias != null) {
-            buff.append(" ").append(alias.toSqlString());
+            buff.append(alias.toSqlString());
         }
         return buff.toString();
     }

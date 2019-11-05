@@ -137,13 +137,6 @@ public class JSqlParserSelectItemAbilityTest {
             )
         );
 
-        data.put("select c1,c2 from t1 union select c3,c4 from t2",
-            Arrays.asList(
-                new Field("c1"),
-                new Field("c2")
-            )
-        );
-
         data.put("select c1,c2 from t1 where exists (select c3,c4 from t2)",
             Arrays.asList(
                 new Field("c1"),
