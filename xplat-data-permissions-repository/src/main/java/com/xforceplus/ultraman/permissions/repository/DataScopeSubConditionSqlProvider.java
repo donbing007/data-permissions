@@ -54,8 +54,8 @@ public class DataScopeSubConditionSqlProvider {
             sql.VALUES("value_type_id", "#{valueTypeId,jdbcType=BIGINT}");
         }
         
-        if (record.getOperator() != null) {
-            sql.VALUES("`operator`", "#{operator,jdbcType=VARCHAR}");
+        if (record.getOperation() != null) {
+            sql.VALUES("`operation`", "#{operation,jdbcType=VARCHAR}");
         }
         
         if (record.getIndex() != null) {
@@ -88,7 +88,7 @@ public class DataScopeSubConditionSqlProvider {
         }
         sql.SELECT("conditions_id");
         sql.SELECT("value_type_id");
-        sql.SELECT("`operator`");
+        sql.SELECT("`operation`");
         sql.SELECT("`index`");
         sql.SELECT("`value`");
         sql.SELECT("link");
@@ -127,8 +127,8 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
         }
         
-        if (record.getOperator() != null) {
-            sql.SET("`operator` = #{record.operator,jdbcType=VARCHAR}");
+        if (record.getOperation() != null) {
+            sql.SET("`operation` = #{record.operation,jdbcType=VARCHAR}");
         }
         
         if (record.getIndex() != null) {
@@ -160,7 +160,7 @@ public class DataScopeSubConditionSqlProvider {
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("conditions_id = #{record.conditionsId,jdbcType=BIGINT}");
         sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
-        sql.SET("`operator` = #{record.operator,jdbcType=VARCHAR}");
+        sql.SET("`operation` = #{record.operation,jdbcType=VARCHAR}");
         sql.SET("`index` = #{record.index,jdbcType=SMALLINT}");
         sql.SET("`value` = #{record.value,jdbcType=VARCHAR}");
         sql.SET("link = #{record.link,jdbcType=TINYINT}");
@@ -188,8 +188,8 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("value_type_id = #{valueTypeId,jdbcType=BIGINT}");
         }
         
-        if (record.getOperator() != null) {
-            sql.SET("`operator` = #{operator,jdbcType=VARCHAR}");
+        if (record.getOperation() != null) {
+            sql.SET("`operation` = #{operation,jdbcType=VARCHAR}");
         }
         
         if (record.getIndex() != null) {

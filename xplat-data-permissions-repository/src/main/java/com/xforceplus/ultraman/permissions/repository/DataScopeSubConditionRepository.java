@@ -58,10 +58,10 @@ public interface DataScopeSubConditionRepository {
      */
     @Insert({
         "insert into data_scope_sub_condition (conditions_id, value_type_id, ",
-        "`operator`, `index`, ",
+        "`operation`, `index`, ",
         "`value`, link)",
         "values (#{conditionsId,jdbcType=BIGINT}, #{valueTypeId,jdbcType=BIGINT}, ",
-        "#{operator,jdbcType=VARCHAR}, #{index,jdbcType=SMALLINT}, ",
+        "#{operation,jdbcType=VARCHAR}, #{index,jdbcType=SMALLINT}, ",
         "#{value,jdbcType=VARCHAR}, #{link,jdbcType=TINYINT})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
@@ -88,7 +88,7 @@ public interface DataScopeSubConditionRepository {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="conditions_id", property="conditionsId", jdbcType=JdbcType.BIGINT),
         @Result(column="value_type_id", property="valueTypeId", jdbcType=JdbcType.BIGINT),
-        @Result(column="operator", property="operator", jdbcType=JdbcType.VARCHAR),
+        @Result(column="operation", property="operation", jdbcType=JdbcType.VARCHAR),
         @Result(column="index", property="index", jdbcType=JdbcType.SMALLINT),
         @Result(column="value", property="value", jdbcType=JdbcType.VARCHAR),
         @Result(column="link", property="link", jdbcType=JdbcType.TINYINT)
@@ -103,7 +103,7 @@ public interface DataScopeSubConditionRepository {
      */
     @Select({
         "select",
-        "id, conditions_id, value_type_id, `operator`, `index`, `value`, link",
+        "id, conditions_id, value_type_id, `operation`, `index`, `value`, link",
         "from data_scope_sub_condition",
         "where id = #{id,jdbcType=BIGINT}"
     })
@@ -111,7 +111,7 @@ public interface DataScopeSubConditionRepository {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="conditions_id", property="conditionsId", jdbcType=JdbcType.BIGINT),
         @Result(column="value_type_id", property="valueTypeId", jdbcType=JdbcType.BIGINT),
-        @Result(column="operator", property="operator", jdbcType=JdbcType.VARCHAR),
+        @Result(column="operation", property="operation", jdbcType=JdbcType.VARCHAR),
         @Result(column="index", property="index", jdbcType=JdbcType.SMALLINT),
         @Result(column="value", property="value", jdbcType=JdbcType.VARCHAR),
         @Result(column="link", property="link", jdbcType=JdbcType.TINYINT)
@@ -155,7 +155,7 @@ public interface DataScopeSubConditionRepository {
         "update data_scope_sub_condition",
         "set conditions_id = #{conditionsId,jdbcType=BIGINT},",
           "value_type_id = #{valueTypeId,jdbcType=BIGINT},",
-          "`operator` = #{operator,jdbcType=VARCHAR},",
+          "`operation` = #{operation,jdbcType=VARCHAR},",
           "`index` = #{index,jdbcType=SMALLINT},",
           "`value` = #{value,jdbcType=VARCHAR},",
           "link = #{link,jdbcType=TINYINT}",

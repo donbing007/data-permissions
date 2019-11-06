@@ -24,7 +24,7 @@ create table data_scope_sub_condition
     id            bigint auto_increment primary key,
     conditions_id bigint             not null comment '主条件标识.',
     value_type_id bigint             not null comment '值的数据类型.',
-    operator      varchar(255)       not null comment '条件操作符',
+    operation      varchar(255)       not null comment '条件操作符',
     `index`       smallint default 0 not null comment '当前条件在主条件中处于的位置,从0开始.',
     value         varchar(255)       not null comment '操作目标数据.',
     link          tinyint  default 0 not null comment '和上一子条件的连接方式,0表示 and,1表示 or.'

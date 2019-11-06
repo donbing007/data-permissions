@@ -41,7 +41,7 @@ public interface ScopeSelectRepository {
 
     @Select({
         "select",
-        "dssc.id,dssc.conditions_id,dssc.value_type_id,dssc.operator,dssc.index,dssc.value,dssc.link",
+        "dssc.id,dssc.conditions_id,dssc.value_type_id,dssc.operation,dssc.index,dssc.value,dssc.link",
         "from data_scope_sub_condition dssc",
         "inner join data_scope_conditions dsc on dssc.conditions_id=dsc.id",
         "inner join data_scope ds on dsc.data_scope_id=ds.id",
