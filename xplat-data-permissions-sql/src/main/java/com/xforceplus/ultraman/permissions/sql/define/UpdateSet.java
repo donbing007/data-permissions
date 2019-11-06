@@ -53,6 +53,11 @@ public class UpdateSet implements Item {
     }
 
     @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UpdateSet)) return false;

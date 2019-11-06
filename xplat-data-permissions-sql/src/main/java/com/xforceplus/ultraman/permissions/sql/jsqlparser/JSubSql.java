@@ -18,6 +18,7 @@ import java.util.Objects;
 public class JSubSql implements Sql {
 
     private PlainSelect subSelect;
+    private JSubSelectSqlProcessor subSelectSqlProcessor;
 
     public JSubSql(PlainSelect subSelect) {
         this.subSelect = subSelect;
@@ -25,12 +26,16 @@ public class JSubSql implements Sql {
 
     @Override
     public SqlProcessor buildProcessor() {
-        return new JSubSelectSqlProcessor(subSelect);
+        if (subSelectSqlProcessor == null) {
+            subSelectSqlProcessor = new JSubSelectSqlProcessor(subSelect);
+        }
+        return subSelectSqlProcessor;
     }
 
     @Override
     public void visit(SqlProcessorVisitor visitor) {
-        visitor.visit(new JSubSelectSqlProcessor(subSelect));
+        SqlProcessor processor = buildProcessor();
+        visitor.visit((JSubSelectSqlProcessor)processor);
     }
 
     @Override
@@ -42,6 +47,11 @@ public class JSubSql implements Sql {
     public boolean isUnion() {
         // 子查询不会是联合查询.
         return false;
+    }
+
+    @Override
+    public boolean isSub() {
+        return true;
     }
 
     @Override

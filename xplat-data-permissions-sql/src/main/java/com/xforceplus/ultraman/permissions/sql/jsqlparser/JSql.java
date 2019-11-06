@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
+import com.xforceplus.ultraman.permissions.sql.define.ItemVisitor;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.JDeleteSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.JInsertSqlProcessor;
@@ -34,6 +35,12 @@ public class JSql implements Sql {
     private Statement statement;
     private SqlType type;
 
+    private JSelectSqlProcessor selectSqlProcessor;
+    private JUpdateSqlProcessor updateSqlProcessor;
+    private JInsertSqlProcessor insertSqlProcessor;
+    private JDeleteSqlProcessor deleteSqlProcessor;
+
+
     public JSql(Statement statement) {
         this.statement = statement;
 
@@ -43,14 +50,34 @@ public class JSql implements Sql {
     @Override
     public SqlProcessor buildProcessor() {
         switch(type) {
-            case SELECT:
-                return new JSelectSqlProcessor(statement);
-            case UPDATE:
-                return new JUpdateSqlProcessor(statement);
-            case INSERT:
-                return new JInsertSqlProcessor(statement);
-            case DELETE:
-                return new JDeleteSqlProcessor(statement);
+            case SELECT: {
+                if (selectSqlProcessor == null) {
+                    selectSqlProcessor = new JSelectSqlProcessor(statement);
+                }
+
+                return selectSqlProcessor;
+            }
+            case UPDATE: {
+                if (updateSqlProcessor == null) {
+                    updateSqlProcessor = new JUpdateSqlProcessor(statement);
+                }
+
+                return updateSqlProcessor;
+            }
+            case INSERT:{
+                if (insertSqlProcessor == null) {
+                    insertSqlProcessor = new JInsertSqlProcessor(statement);
+                }
+
+                return insertSqlProcessor;
+            }
+            case DELETE:{
+                if (deleteSqlProcessor == null) {
+                    deleteSqlProcessor = new JDeleteSqlProcessor(statement);
+                }
+
+                return deleteSqlProcessor;
+            }
             default:
                 return UnableOperateSqlProcessor.getInstance();
         }
@@ -58,15 +85,20 @@ public class JSql implements Sql {
 
     @Override
     public void visit(SqlProcessorVisitor visitor) {
+        SqlProcessor processor = buildProcessor();
         switch(type) {
             case SELECT:
-                visitor.visit(new JSelectSqlProcessor(statement));
+                visitor.visit((JSelectSqlProcessor)processor);
+                break;
             case UPDATE:
-                visitor.visit(new JUpdateSqlProcessor(statement));
+                visitor.visit((JUpdateSqlProcessor)processor);
+                break;
             case INSERT:
-                visitor.visit(new JInsertSqlProcessor(statement));
+                visitor.visit((JInsertSqlProcessor)processor);
+                break;
             case DELETE:
-                visitor.visit(new JDeleteSqlProcessor(statement));
+                visitor.visit((JDeleteSqlProcessor)processor);
+                break;
             default:
                 visitor.visit(UnableOperateSqlProcessor.getInstance());
         }
@@ -88,6 +120,11 @@ public class JSql implements Sql {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isSub() {
+        return true;
     }
 
     @Override

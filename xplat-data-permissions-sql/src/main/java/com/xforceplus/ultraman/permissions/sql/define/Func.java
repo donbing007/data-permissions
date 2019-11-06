@@ -68,6 +68,11 @@ public class Func implements Item {
     }
 
     @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
     public String toString() {
         return "Funcion{" +
             "name='" + name + '\'' +

@@ -32,6 +32,11 @@ public class Alias implements Item {
         return buff.toString();
     }
 
+    @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
+    }
+
     public String getName() {
         return name;
     }

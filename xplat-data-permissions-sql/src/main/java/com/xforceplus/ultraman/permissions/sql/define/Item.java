@@ -14,4 +14,9 @@ public interface Item {
      */
     String toSqlString();
 
+    /**
+     * 访问元素.
+     * @param visitor 访问器.
+     */
+    void visit(ItemVisitor visitor);
 }

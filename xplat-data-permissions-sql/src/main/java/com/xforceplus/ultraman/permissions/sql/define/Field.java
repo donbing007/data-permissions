@@ -43,6 +43,10 @@ public class Field implements Item  {
         }
     }
 
+    @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
+    }
 
     public boolean isAllColumns() {
         return "*".equals(name);

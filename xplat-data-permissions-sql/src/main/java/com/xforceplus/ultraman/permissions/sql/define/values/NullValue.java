@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.define.values;
 
+import com.xforceplus.ultraman.permissions.sql.define.ItemVisitor;
+
 /**
  * null 值.
  * @version 0.1 2019/10/29 15:49
@@ -32,5 +34,10 @@ public class NullValue implements Value {
     public String toSqlString() {
         return SHOW_VALUE;
     }
-    
+
+    @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
+    }
+
 }

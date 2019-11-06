@@ -14,7 +14,7 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public interface Sql extends Item {
+public interface Sql {
 
     /**
      * 得到当前SQL 的字符串表示.
@@ -47,5 +47,17 @@ public interface Sql extends Item {
      * @return true 联合查询,false 非联合查询.
      */
     boolean isUnion();
+
+    /**
+     * 是否子句.
+     * @return true 子句,false 非子句.
+     */
+    boolean isSub();
+
+    /**
+     * sql 字符串表示.
+     * @return sql 字符串.
+     */
+    String toSqlString();
 
 }

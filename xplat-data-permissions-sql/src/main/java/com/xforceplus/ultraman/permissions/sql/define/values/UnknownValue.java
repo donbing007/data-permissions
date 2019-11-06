@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.define.values;
 
+import com.xforceplus.ultraman.permissions.sql.define.ItemVisitor;
+
 import java.util.Objects;
 
 /**
@@ -53,5 +55,10 @@ public class UnknownValue implements Value {
         return "UnknownValue{" +
             "value='" + value + '\'' +
             '}';
+    }
+
+    @Override
+    public void visit(ItemVisitor visitor) {
+        visitor.visit(this);
     }
 }
