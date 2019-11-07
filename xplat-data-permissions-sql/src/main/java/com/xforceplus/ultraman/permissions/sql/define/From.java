@@ -8,7 +8,7 @@ import java.util.Objects;
  * @auth dongbin
  * @since 1.8
  */
-public class From implements Item {
+public class From extends Aliasable implements Item {
     /**
      * true 表示一个子查询,false 非子查询.
      */
@@ -17,10 +17,6 @@ public class From implements Item {
      * 表名,如果是子查询将为 null.
      */
     private String table;
-    /**
-     * 别名,如果没有为 null.
-     */
-    private Alias alias;
 
     public From(String table) {
         this(table, null, false);
@@ -31,9 +27,9 @@ public class From implements Item {
     }
 
     public From(String table, Alias alias, boolean sub) {
+        super(alias);
         this.sub = sub;
         this.table = table;
-        this.alias = alias;
     }
 
     public boolean isSub() {
@@ -42,10 +38,6 @@ public class From implements Item {
 
     public String getTable() {
         return table;
-    }
-
-    public Alias getAlias() {
-        return alias;
     }
 
     @Override
@@ -73,7 +65,7 @@ public class From implements Item {
         return "From{" +
             "sub=" + sub +
             ", table='" + table + '\'' +
-            ", alias='" + alias + '\'' +
+            ", alias='" + (hasAlias() ? getAlias() : "null") + '\'' +
             '}';
     }
 
@@ -81,8 +73,8 @@ public class From implements Item {
     public String toSqlString() {
         StringBuilder buff = new StringBuilder();
         buff.append(table);
-        if (alias != null) {
-            buff.append(alias.toSqlString());
+        if (hasAlias()) {
+            buff.append(getAlias().toSqlString());
         }
         return buff.toString();
     }

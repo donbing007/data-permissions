@@ -11,9 +11,8 @@ import java.util.Objects;
  * @auth dongbin
  * @since 1.8
  */
-public class Func implements Item {
+public class Func extends Aliasable implements Item {
     private String name;
-    private Alias alias;
     private List<Item> parameters;
 
     public Func(String name) {
@@ -29,9 +28,9 @@ public class Func implements Item {
     }
 
     public Func(String name, List<Item> parameters, Alias alias) {
+        super(alias);
         this.name = name;
         this.parameters = parameters;
-        this.alias = alias;
 
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Invalid function name.");
@@ -63,10 +62,6 @@ public class Func implements Item {
         return this.parameters != null && !this.parameters.isEmpty();
     }
 
-    public Alias getAlias() {
-        return alias;
-    }
-
     @Override
     public void visit(ItemVisitor visitor) {
         visitor.visit(this);
@@ -76,7 +71,7 @@ public class Func implements Item {
     public String toString() {
         return "Funcion{" +
             "name='" + name + '\'' +
-            ", alias='" + alias + '\'' +
+            ", alias='" + (hasAlias() ? getAlias() : "null") + '\'' +
             ", parameters=" + parameters +
             '}';
     }
@@ -96,8 +91,8 @@ public class Func implements Item {
         }
 
         buff.append(")");
-        if (alias != null) {
-            buff.append(alias.toSqlString());
+        if (hasAlias()) {
+            buff.append(getAlias().toSqlString());
         }
         return buff.toString();
     }
@@ -108,13 +103,12 @@ public class Func implements Item {
         if (!(o instanceof Func)) return false;
         Func func = (Func) o;
         return Objects.equals(getName(), func.getName()) &&
-            Objects.equals(alias, func.alias) &&
-            Objects.equals(getParameters(), func.getParameters());
+            Objects.equals(getParameters(), func.getParameters()) &&
+            Objects.equals(getAlias(), func.getAlias());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), alias, getParameters());
+        return Objects.hash(getName(), getParameters(), getAlias());
     }
-
 }

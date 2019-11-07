@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.values.*;
 
 /**
@@ -9,10 +10,6 @@ import com.xforceplus.ultraman.permissions.sql.define.values.*;
  * @since 1.8
  */
 public class ItemVisitorAdapter implements ItemVisitor {
-    @Override
-    public void visit(ArithmeticValue item) {
-
-    }
 
     @Override
     public void visit(DoubleValue item) {
@@ -66,6 +63,16 @@ public class ItemVisitorAdapter implements ItemVisitor {
 
     @Override
     public void visit(UpdateSet item) {
+
+    }
+
+    @Override
+    public void visit(Parentheses item) {
+
+    }
+
+    @Override
+    public void visit(Arithmeitc item) {
 
     }
 }

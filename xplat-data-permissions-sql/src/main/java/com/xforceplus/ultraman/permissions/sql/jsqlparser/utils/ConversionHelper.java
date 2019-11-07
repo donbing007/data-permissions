@@ -1,13 +1,12 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.utils;
 
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.From;
-import com.xforceplus.ultraman.permissions.sql.define.Func;
-import com.xforceplus.ultraman.permissions.sql.define.Item;
-import com.xforceplus.ultraman.permissions.sql.define.values.ArithmeticValue;
+import com.xforceplus.ultraman.permissions.sql.define.*;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import com.xforceplus.ultraman.permissions.sql.define.values.UnknownValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -24,6 +23,70 @@ import java.util.List;
 public class ConversionHelper {
 
     private ConversionHelper() {}
+
+    public static Arithmeitc convertArithmeitc(Expression expr) {
+        return convertArithmeitc(expr, null);
+    }
+
+    public static Arithmeitc convertArithmeitc(Expression expr, Alias alias) {
+        if (ValueHelper.isArithmeticExpr(expr)) {
+
+            BinaryExpression binaryExpression = (BinaryExpression) expr;
+            Expression l = binaryExpression.getLeftExpression();
+            Expression r = binaryExpression.getRightExpression();
+
+            Item left = convertSmart(l);
+            Item right = convertSmart(r);
+
+            ArithmeticSymbol symbol = ArithmeticSymbol.getInstance(binaryExpression.getStringExpression());
+
+            return new Arithmeitc(left,right,symbol, convert(alias));
+        }
+
+        return null;
+    }
+
+    public static Item convertSmart(Expression expr) {
+        return convertSmart(expr,null);
+    }
+
+    public static Item convertSmart(Expression expr, Alias alias) {
+        if (ValueHelper.isArithmeticExpr(expr)) {
+
+            return convertArithmeitc(expr, alias);
+
+        } else if (ValueHelper.isValueExpr(expr)) {
+
+            return convertValue(expr);
+
+        } else if (Column.class.isInstance(expr)) {
+
+            return convert((Column) expr, alias);
+
+        } else if (Function.class.isInstance(expr)) {
+
+            return convert((Function) expr, alias);
+
+        } else if (Table.class.isInstance(expr)) {
+
+            return convert((Table) expr);
+
+        } else if (TimeKeyExpression.class.isInstance(expr)) {
+
+            return new Func(((TimeKeyExpression) expr).getStringValue(), convert(alias));
+
+        } else if (ValueHelper.isParenthesis(expr)) {
+
+            return new Parentheses(convertSmart(
+                ((Parenthesis) expr).getExpression()
+            ));
+
+        } else {
+
+            return UnknownValue.getInstance(expr.toString());
+
+        }
+    }
 
     /**
      * 转换值类型.
@@ -49,14 +112,11 @@ public class ConversionHelper {
                 return com.xforceplus.ultraman.permissions.sql.define.values.NullValue.getInstance();
 
             }
-        } else if (ValueHelper.isArithmeticExpr(expr)) {
-
-            return new ArithmeticValue(expr.toString());
-
         }
 
         return UnknownValue.getInstance(expr.toString());
     }
+
 
     public static Field convert(Column column) {
         return convert(column, null);

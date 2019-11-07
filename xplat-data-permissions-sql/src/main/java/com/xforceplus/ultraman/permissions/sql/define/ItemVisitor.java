@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.values.*;
 
 /**
@@ -10,7 +11,6 @@ import com.xforceplus.ultraman.permissions.sql.define.values.*;
  */
 public interface ItemVisitor {
 
-    void visit(ArithmeticValue item);
     void visit(DoubleValue item);
     void visit(LongValue item);
     void visit(NullValue item);
@@ -22,4 +22,6 @@ public interface ItemVisitor {
     void visit(From item);
     void visit(Func item);
     void visit(UpdateSet item);
+    void visit(Parentheses item);
+    void visit(Arithmeitc item);
 }

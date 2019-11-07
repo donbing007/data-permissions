@@ -1,9 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.utils;
 
-import com.xforceplus.ultraman.permissions.sql.define.values.ArithmeticValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.UnknownValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.Value;
-import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.Parenthesis;
 
 /**
  * JSqlParser 值类型的转换工厂.
@@ -45,8 +43,18 @@ public final class ValueHelper {
         return isPointPackage(clazz, ARITHMETIC_PACKAGE);
     }
 
+    /**
+     * 是否一个括号元素.
+     * @param expr 目标元素.
+     * @return ture 是括号元素,false 不是.
+     */
+    public static final boolean isParenthesis(Expression expr) {
+        return Parenthesis.class.isInstance(expr);
+    }
+
     private static final boolean isPointPackage(Class clazz, String packString) {
         Package pack = clazz.getPackage();
         return pack.getName().equals(packString);
     }
+
 }

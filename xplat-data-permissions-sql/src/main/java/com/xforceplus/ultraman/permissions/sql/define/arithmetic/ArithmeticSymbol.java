@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.permissions.sql.define;
+package com.xforceplus.ultraman.permissions.sql.define.arithmetic;
 
 /**
  * 运行符号.
@@ -18,7 +18,8 @@ public enum ArithmeticSymbol {
     BITWISE_RIGHT_SHIFT(">>"),
     BITWISE_OR("|"),
     BITWISE_XOR("^"),
-    CONCAT("||");
+    CONCAT("||"),
+    INTEGER_DIVISION("DIV");
 
     private String symbol;
 

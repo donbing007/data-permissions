@@ -3,7 +3,6 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
-import com.xforceplus.ultraman.permissions.sql.define.values.ArithmeticValue;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbility;
@@ -117,7 +116,7 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
                         } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
 
-                            selectFields.add(new ArithmeticValue(item.getExpression().toString()));
+                            selectFields.add(ConversionHelper.convertArithmeitc(item.getExpression(), alias));
 
                         } else {
 

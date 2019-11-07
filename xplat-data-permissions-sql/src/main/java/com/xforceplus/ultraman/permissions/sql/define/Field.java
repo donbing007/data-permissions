@@ -9,13 +9,12 @@ import java.util.Objects;
  * @auth dongbin
  * @since 1.8
  */
-public class Field implements Item  {
+public class Field extends Aliasable implements Item  {
 
     private static final Field ALL_ITEM = new Field("*");
 
     private String ref;
     private String name;
-    private Alias alias;
 
     public static Field getAllField() {
         return ALL_ITEM;
@@ -34,9 +33,9 @@ public class Field implements Item  {
     }
 
     public Field(String ref, String name, Alias alias) {
+        super(alias);
         this.ref = ref;
         this.name = name;
-        this.alias = alias;
 
         if (this.name == null) {
             throw new IllegalArgumentException("Invalid field name!");
@@ -58,10 +57,6 @@ public class Field implements Item  {
 
     public String getName() {
         return name;
-    }
-
-    public Alias getAlias() {
-        return alias;
     }
 
     public boolean isAll() {
@@ -88,7 +83,7 @@ public class Field implements Item  {
         return "Field{" +
             "ref='" + ref + '\'' +
             ", name='" + name + '\'' +
-            ", alias=" + alias +
+            ", alias='" + (hasAlias() ? getAlias() : "null") + '\'' +
             '}';
     }
 
@@ -99,8 +94,8 @@ public class Field implements Item  {
             buff.append(ref).append(".");
         }
         buff.append(name);
-        if (alias != null) {
-            buff.append(alias.toSqlString());
+        if (hasAlias()) {
+            buff.append(getAlias().toSqlString());
         }
 
         return buff.toString();

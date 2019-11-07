@@ -17,13 +17,13 @@ public class Condition implements Item{
 
     private Item column;
     private ConditionOperator operator;
-    private List<Value> values;
+    private List<Item> values;
 
-    public Condition(Item column, ConditionOperator operator, Value value) {
+    public Condition(Item column, ConditionOperator operator, Item value) {
         this(column, operator, Arrays.asList(value));
     }
 
-    public Condition(Item column, ConditionOperator operator, List<Value> values) {
+    public Condition(Item column, ConditionOperator operator, List<Item> values) {
         this.column = column;
         this.operator = operator;
         this.values = values;

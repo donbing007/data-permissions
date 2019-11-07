@@ -4,6 +4,8 @@ import com.xforceplus.ultraman.permissions.sql.define.Alias;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -43,7 +45,7 @@ public class JSqlParserSelectItemAbilityTest {
         RemovePack pack;
         Statement statement;
         for (String sql : sqls) {
-             statement = CCJSqlParserUtil.parse(sql);
+            statement = CCJSqlParserUtil.parse(sql);
             handler = new JSqlParserSelectItemAbility(statement);
 
             pack = caseData.get(sql);
@@ -104,7 +106,7 @@ public class JSqlParserSelectItemAbilityTest {
                 }
 
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(),ex);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
 
         });
@@ -132,7 +134,7 @@ public class JSqlParserSelectItemAbilityTest {
             Arrays.asList(
                 new Field("c1"),
                 new Func("count", Arrays.asList(new Field("*"))),
-                new Func("max",Arrays.asList(new Field("c1")),new Alias("top", true)),
+                new Func("max", Arrays.asList(new Field("c1")), new Alias("top", true)),
                 new Func("current_time")
             )
         );
@@ -141,6 +143,12 @@ public class JSqlParserSelectItemAbilityTest {
             Arrays.asList(
                 new Field("c1"),
                 new Field("c2")
+            )
+        );
+
+        data.put("select c1+c2 total from t1",
+            Arrays.asList(
+                new Arithmeitc(new Field("c1"), new Field("c2"), ArithmeticSymbol.ADDITION, new Alias("total"))
             )
         );
 

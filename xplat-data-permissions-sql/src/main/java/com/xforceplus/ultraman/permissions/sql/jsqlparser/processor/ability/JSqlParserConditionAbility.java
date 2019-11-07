@@ -2,11 +2,11 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ExceptionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
@@ -18,7 +18,10 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectBody;
+import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
 import net.sf.jsqlparser.statement.update.Update;
 
 import java.text.ParseException;
@@ -134,9 +137,9 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
             public void visit(Between expr) {
                 Column c = (Column) expr.getLeftExpression();
 
-                List<Value> values =
-                    Arrays.asList(ConversionHelper.convertValue(expr.getBetweenExpressionStart()),
-                        ConversionHelper.convertValue(expr.getBetweenExpressionEnd()));
+                List<Item> values =
+                    Arrays.asList(ConversionHelper.convertSmart(expr.getBetweenExpressionStart()),
+                        ConversionHelper.convertSmart(expr.getBetweenExpressionEnd()));
 
                 conditions.add(buildConditionFromColumn(c, values, ConditionOperator.BETWEEN));
             }
@@ -152,7 +155,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
 
                 ExpressionList expressionList = (ExpressionList) expr.getRightItemsList();
                 List<Expression> expressions = expressionList.getExpressions();
-                List<Value> values = expressions.stream().map(e -> ConversionHelper.convertValue(e)).collect(Collectors.toList());
+                List<Item> values = expressions.stream().map(e -> ConversionHelper.convertSmart(e)).collect(Collectors.toList());
 
                 if (expr.isNot()) {
                     conditions.add(buildConditionFromColumn(c, values, ConditionOperator.NOT_IN));
@@ -164,18 +167,20 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
 
             @Override
             public void visit(IsNullExpression expr) {
-                Column c = (Column) expr.getLeftExpression();
-                List<Value> values = Arrays.asList(NullValue.getInstance());
-
-                conditions.add(buildConditionFromColumn(c, values, ConditionOperator.IS_NUll));
+                conditions.add(
+                    buildConditionFromColumn(
+                        (Column) expr.getLeftExpression(),
+                        Arrays.asList(NullValue.getInstance()),
+                        ConditionOperator.IS_NUll));
             }
 
             @Override
             public void visit(LikeExpression expr) {
-                Column c = (Column) expr.getLeftExpression();
-                List<Value> values = Arrays.asList(ConversionHelper.convertValue(expr.getRightExpression()));
-
-                conditions.add(buildConditionFromColumn(c, values, ConditionOperator.LIKE));
+                conditions.add(
+                    buildConditionFromColumn(
+                        (Column) expr.getLeftExpression(),
+                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
+                        ConditionOperator.LIKE));
             }
 
             @Override
@@ -209,6 +214,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 doAddComparisionCondition(expr, ConditionOperator.NOT_EQUALS);
             }
 
+
             private void doAddComparisionCondition(ComparisonOperator expr, ConditionOperator operator) {
                 // 忽略 any some,因为里面只有子查询.
                 if (AnyComparisonExpression.class.isInstance(expr.getRightExpression())) {
@@ -219,13 +225,14 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 if (Column.class.isInstance(leftExpr)) {
 
                     Column c = (Column) leftExpr;
-                    List<Value> values = Arrays.asList(ConversionHelper.convertValue(expr.getRightExpression()));
+
+                    List<Item> values = Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression()));
                     conditions.add(buildConditionFromColumn(c, values, operator));
 
                 } else if (Function.class.isInstance(leftExpr)) {
 
                     Function f = (Function) leftExpr;
-                    List<Value> values = Arrays.asList(ConversionHelper.convertValue(expr.getRightExpression()));
+                    List<Item> values = Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression()));
                     conditions.add(buildConditionFromFunction(f, values, operator));
                 }
 
@@ -464,14 +471,14 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
         return null;
     }
 
-    private Condition buildConditionFromColumn(Column column, List<Value> values, ConditionOperator operator) {
+    private Condition buildConditionFromColumn(Column column, List<Item> values, ConditionOperator operator) {
 
         Field field = ConversionHelper.convert(column);
 
         return new Condition(field, operator, values);
     }
 
-    private Condition buildConditionFromFunction(Function f, List<Value> values, ConditionOperator operator) {
+    private Condition buildConditionFromFunction(Function f, List<Item> values, ConditionOperator operator) {
         Func func = ConversionHelper.convert(f);
 
         return new Condition(func, operator, values);
