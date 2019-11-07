@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertValueAbility;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -27,7 +28,7 @@ public class JSqlParserInsertValueAbility extends AbstractJSqlParserHandler impl
     }
 
     @Override
-    public List<Item> list(int index) {
+    public List<Item> list(int index) throws ProcessorException {
         List<Item> items = new ArrayList();
         getInsert().getItemsList().accept(new ItemsListVisitorAdapter() {
             @Override

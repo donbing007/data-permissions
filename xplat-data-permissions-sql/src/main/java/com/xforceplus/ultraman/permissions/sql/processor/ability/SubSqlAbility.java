@@ -1,7 +1,9 @@
 package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -16,5 +18,5 @@ public interface SubSqlAbility {
      * 列出当前的所有子句.
      * @return 子句列表.
      */
-    List<Sql> list();
+    List<Sql> list() throws ProcessorException;
 }

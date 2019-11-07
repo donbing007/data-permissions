@@ -3,7 +3,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ExceptionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Parenthesis;
@@ -76,7 +76,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
     }
 
     @Override
-    public void add(Condition condition, Conditional conditional, boolean isolation) throws ParseException {
+    public void add(Condition condition, Conditional conditional, boolean isolation) throws ProcessorException {
         Expression newCondition = buildExpression(condition);
 
         switch (conditional) {
@@ -89,23 +89,15 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 break;
             }
             default: {
-                throw new ParseException("Can not add condition!", -1);
+                throw new ProcessorException("Can not add condition!");
             }
         }
     }
 
     @Override
-    public void remove(Condition condition) throws ParseException {
+    public void remove(Condition condition) throws ProcessorException {
         if (where != null) {
             Expression targetExpression = buildExpression(condition);
-            if (!ComparisonOperator.class.isInstance(targetExpression)
-                && !Between.class.isInstance(targetExpression)
-                && !InExpression.class.isInstance(targetExpression)
-                && !LikeExpression.class.isInstance(targetExpression)
-                && !IsNullExpression.class.isInstance(targetExpression)) {
-                throw new ParseException(
-                    "Only support column=value, column between a and b, column in [a, b, c], column like a", -1);
-            }
 
             // 表示只有一个条件
             if (ComparisonOperator.class.isInstance(where)) {
@@ -125,7 +117,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
     }
 
     @Override
-    public List<Condition> list() throws ParseException {
+    public List<Condition> list() throws ProcessorException {
         if (where == null) {
             return Collections.EMPTY_LIST;
         }
@@ -301,13 +293,13 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
         }
     }
 
-    private Expression buildExpression(Condition condition) throws ParseException {
+    private Expression buildExpression(Condition condition) throws ProcessorException {
         String conditionSql = condition.toSqlString();
         Expression newCondition;
         try {
             newCondition = CCJSqlParserUtil.parseCondExpression(conditionSql);
         } catch (JSQLParserException e) {
-            throw ExceptionHelper.toParseException(e);
+            throw new ProcessorException(e.getMessage(), e);
         }
 
         return newCondition;

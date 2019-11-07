@@ -1,7 +1,9 @@
 package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Field;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -16,5 +18,5 @@ public interface InsertItemAbility {
      *
      * @return 迭代器.
      */
-    List<Field> list();
+    List<Field> list() throws ProcessorException;
 }

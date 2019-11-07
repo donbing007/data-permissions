@@ -3,7 +3,9 @@ package com.xforceplus.ultraman.permissions.sql.processor.ability;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
+import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.List;
 
@@ -22,5 +24,5 @@ public interface FieldFromAbility {
      * @param item 字段.
      * @return 来源名称列表.
      */
-    List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item);
+    List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException;
 }

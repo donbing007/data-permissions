@@ -4,6 +4,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.UpdateSet;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.UpdateSetAbility;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -11,6 +12,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.update.Update;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +31,7 @@ public class JSqlParserUpdateSetAbility extends AbstractJSqlParserHandler implem
     }
 
     @Override
-    public List<UpdateSet> list() {
+    public List<UpdateSet> list() throws ProcessorException {
         Update update = getUpdate();
         List<Column> columns = update.getColumns();
         if (columns == null || columns.isEmpty()) {

@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSubSql;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.Expression;
@@ -10,6 +11,7 @@ import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
     }
 
     @Override
-    public List<Sql> list() {
+    public List<Sql> list() throws ProcessorException {
         List<Sql> subSqls = new ArrayList<>();
         if (isSelect()) {
 

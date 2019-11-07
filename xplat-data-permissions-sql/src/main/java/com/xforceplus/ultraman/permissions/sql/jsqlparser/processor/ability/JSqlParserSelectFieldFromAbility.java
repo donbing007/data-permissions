@@ -5,12 +5,14 @@ import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -30,7 +32,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) {
+    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
 
         List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
         item.visit(new ItemVisitorAdapter() {

@@ -61,15 +61,15 @@ public class Condition implements Item{
         return Func.class.isInstance(column);
     }
 
-    public <T> T getColumn() {
-        return (T) column;
+    public Item getColumn() {
+        return column;
     }
 
     public ConditionOperator getOperator() {
         return operator;
     }
 
-    public List getValues() {
+    public List<Item> getValues() {
         return values;
     }
 

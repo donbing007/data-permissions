@@ -4,16 +4,13 @@ import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbility;
 import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
-import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.TimeKeyExpression;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,12 +34,12 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
 
     @Override
-    public void remove(Func func) {
+    public void remove(Func func) throws ProcessorException {
         doRemove(func);
     }
 
     @Override
-    public void remove(Field field) {
+    public void remove(Field field) throws ProcessorException {
         doRemove(field);
     }
 
@@ -59,7 +56,7 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
 
     @Override
-    public List<Item> list() {
+    public List<Item> list() throws ProcessorException {
         List<Item> selectFields = new ArrayList<>();
 
         if (isSubSelect()) {
@@ -112,38 +109,6 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
                         selectFields.add(ConversionHelper.convertSmart(item.getExpression(), alias));
 
-//                        if (ValueHelper.isValueExpr(item.getExpression())) {
-//
-//                            selectFields.add(ConversionHelper.convertSmart(item.getExpression()));
-//
-//                        } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
-//
-//                            selectFields.add(ConversionHelper.convertSmart(item.getExpression(), alias));
-//
-//                        } else {
-//
-//                            item.getExpression().accept(new ExpressionVisitorAdapter() {
-//                                @Override
-//                                public void visit(Column column) {
-//
-//                                    selectFields.add(ConversionHelper.convert(column, alias));
-//
-//                                }
-//
-//                                @Override
-//                                public void visit(Function function) {
-//
-//                                    selectFields.add(ConversionHelper.convert(function, alias));
-//
-//                                }
-//
-//                                @Override
-//                                public void visit(TimeKeyExpression timeKeyExpression) {
-//
-//                                    selectFields.add(ConversionHelper.convert(timeKeyExpression, alias));
-//                                }
-//                            });
-//                        }
                     }
 
                 });

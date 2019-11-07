@@ -4,6 +4,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -12,6 +13,7 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 
+import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +32,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) {
+    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
         return searchRealTableName((Field) item);
     }
 

@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Condition;
 import com.xforceplus.ultraman.permissions.sql.define.Conditional;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
 import java.text.ParseException;
 import java.util.List;
@@ -19,17 +20,17 @@ public interface ConditionAbility {
      * @param condition
      * @param conditional
      */
-    void add(Condition condition, Conditional conditional, boolean isolation) throws ParseException;
+    void add(Condition condition, Conditional conditional, boolean isolation) throws ProcessorException;
 
     /**
      * 删除条件.
      * @param condition 需要删除的目标条件.
      */
-    void remove(Condition condition) throws ParseException;
+    void remove(Condition condition) throws ProcessorException;
 
     /**
      * 得到当前条件的迭代器.
      * @return 迭代器实例.
      */
-    List<Condition> list() throws ParseException;
+    List<Condition> list() throws ProcessorException;
 }

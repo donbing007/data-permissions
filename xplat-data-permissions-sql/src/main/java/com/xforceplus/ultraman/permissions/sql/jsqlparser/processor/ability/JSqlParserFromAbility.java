@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
@@ -31,7 +32,7 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
     }
 
     @Override
-    public List<From> list() {
+    public List<From> list() throws ProcessorException {
 
         List<From> items = new ArrayList<>();
 

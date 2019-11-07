@@ -1,7 +1,9 @@
 package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.UpdateSet;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -16,5 +18,5 @@ public interface UpdateSetAbility {
      * 迭代 update set 区域.
      * @return 迭代器.
      */
-    List<UpdateSet> list();
+    List<UpdateSet> list() throws ProcessorException;
 }
