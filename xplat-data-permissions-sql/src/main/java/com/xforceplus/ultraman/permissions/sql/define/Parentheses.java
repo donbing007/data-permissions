@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
+import java.util.Objects;
+
 /**
  * 表示一个括号.
  * @version 0.1 2019/11/7 14:30
@@ -39,5 +41,28 @@ public class Parentheses extends Aliasable implements Item {
     @Override
     public void visit(ItemVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Parentheses)) return false;
+        if (!super.equals(o)) return false;
+        Parentheses that = (Parentheses) o;
+        return Objects.equals(getItem(), that.getItem()) &&
+            Objects.equals(getAlias(), that.getAlias());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getItem(), getAlias());
+    }
+
+    @Override
+    public String toString() {
+        return "Parentheses{" +
+            "item=" + item +
+            ", alias='" + (hasAlias() ? getAlias() : "null") + '\'' +
+            '}';
     }
 }

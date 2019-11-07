@@ -1,18 +1,15 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
-import com.xforceplus.ultraman.permissions.sql.define.Alias;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.Func;
-import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.*;
 
@@ -149,6 +146,14 @@ public class JSqlParserSelectItemAbilityTest {
         data.put("select c1+c2 total from t1",
             Arrays.asList(
                 new Arithmeitc(new Field("c1"), new Field("c2"), ArithmeticSymbol.ADDITION, new Alias("total"))
+            )
+        );
+
+        data.put("select (c1+c2) total from t1",
+            Arrays.asList(
+                new Parentheses(
+                    new Arithmeitc(new Field("c1"), new Field("c2"), ArithmeticSymbol.ADDITION),
+                    new Alias("total"))
             )
         );
 

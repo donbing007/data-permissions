@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.From;
+import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import net.sf.jsqlparser.expression.Expression;
@@ -23,8 +24,14 @@ import java.util.List;
  * @since 1.8
  */
 public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler implements FieldFromAbility {
+
     public JSqlParserUpdateFieldFromAbility(Statement statement) {
         super(statement, Update.class);
+    }
+
+    @Override
+    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) {
+        return searchRealTableName((Field) item);
     }
 
     /**
@@ -36,8 +43,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
      * @param field 查询的字段.
      * @return 结果.
      */
-    @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
 
         if (!exist(field)) {
             return Collections.emptyList();

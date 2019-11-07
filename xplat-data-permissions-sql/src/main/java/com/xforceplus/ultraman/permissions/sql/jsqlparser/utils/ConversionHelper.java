@@ -77,9 +77,10 @@ public class ConversionHelper {
 
         } else if (ValueHelper.isParenthesis(expr)) {
 
-            return new Parentheses(convertSmart(
-                ((Parenthesis) expr).getExpression()
-            ));
+            return new Parentheses(
+                convertSmart(((Parenthesis) expr).getExpression()),
+                convert(alias)
+            );
 
         } else {
 

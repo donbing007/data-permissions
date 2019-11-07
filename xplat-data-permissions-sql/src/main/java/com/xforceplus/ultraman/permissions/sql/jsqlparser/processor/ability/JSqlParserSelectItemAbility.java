@@ -110,39 +110,42 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
 
                         }
 
-                        if (ValueHelper.isValueExpr(item.getExpression())) {
+                        selectFields.add(ConversionHelper.convertSmart(item.getExpression(), alias));
 
-                            selectFields.add(ConversionHelper.convertValue(item.getExpression()));
-
-                        } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
-
-                            selectFields.add(ConversionHelper.convertArithmeitc(item.getExpression(), alias));
-
-                        } else {
-
-                            item.getExpression().accept(new ExpressionVisitorAdapter() {
-                                @Override
-                                public void visit(Column column) {
-
-                                    selectFields.add(ConversionHelper.convert(column, alias));
-
-                                }
-
-                                @Override
-                                public void visit(Function function) {
-
-                                    selectFields.add(ConversionHelper.convert(function, alias));
-
-                                }
-
-                                @Override
-                                public void visit(TimeKeyExpression timeKeyExpression) {
-
-                                    selectFields.add(ConversionHelper.convert(timeKeyExpression, alias));
-                                }
-                            });
-                        }
+//                        if (ValueHelper.isValueExpr(item.getExpression())) {
+//
+//                            selectFields.add(ConversionHelper.convertSmart(item.getExpression()));
+//
+//                        } else if (ValueHelper.isArithmeticExpr(item.getExpression())) {
+//
+//                            selectFields.add(ConversionHelper.convertSmart(item.getExpression(), alias));
+//
+//                        } else {
+//
+//                            item.getExpression().accept(new ExpressionVisitorAdapter() {
+//                                @Override
+//                                public void visit(Column column) {
+//
+//                                    selectFields.add(ConversionHelper.convert(column, alias));
+//
+//                                }
+//
+//                                @Override
+//                                public void visit(Function function) {
+//
+//                                    selectFields.add(ConversionHelper.convert(function, alias));
+//
+//                                }
+//
+//                                @Override
+//                                public void visit(TimeKeyExpression timeKeyExpression) {
+//
+//                                    selectFields.add(ConversionHelper.convert(timeKeyExpression, alias));
+//                                }
+//                            });
+//                        }
                     }
+
                 });
 
             }

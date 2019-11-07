@@ -1,11 +1,12 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.From;
-import com.xforceplus.ultraman.permissions.sql.define.Func;
-import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.*;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ValueHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
+import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
@@ -29,7 +30,45 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) {
+
+        List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
+        item.visit(new ItemVisitorAdapter() {
+            @Override
+            public void visit(Field field) {
+                froms.addAll(searchRealTableName(field));
+            }
+
+            @Override
+            public void visit(Func func) {
+                List<Item> parameters = func.getParameters();
+                for (Item p : parameters) {
+                    if (Field.class.isInstance(parameters)) {
+                        froms.addAll(searchRealTableName((Field) p));
+                    }
+                }
+            }
+
+            @Override
+            public void visit(Arithmeitc arithmeitc) {
+                Item l = arithmeitc.getLeft();
+                Item r = arithmeitc.getRight();
+
+                froms.addAll(searchRealTableName(l));
+                froms.addAll(searchRealTableName(r));
+            }
+
+            @Override
+            public void visit(Parentheses item) {
+                froms.addAll(searchRealTableName(item.getItem()));
+            }
+        });
+
+        return froms;
+    }
+
+
+    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
         if (isSubSelect()) {
 
             return doSearchFromPlainSelect(field, getSubSelect(), true);
@@ -125,6 +164,13 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
                     } else {
                         return froms;
                     }
+                } else if (Arithmeitc.class.isInstance(mappingItem)) {
+
+                    return iteratorItem(mappingItem, (PlainSelect) subSelect.getSelectBody());
+
+                } else if (Parentheses.class.isInstance(mappingItem)) {
+
+                    return iteratorItem(mappingItem, (PlainSelect) subSelect.getSelectBody());
                 }
 
             }
@@ -136,6 +182,54 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
 
         return Collections.emptyList();
 
+    }
+
+    private List<AbstractMap.SimpleEntry<Field, From>> iteratorItem(Item item, PlainSelect select) {
+        List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
+
+        Queue<Item> queue = new ArrayDeque<>();
+        queue.add(item);
+
+        Item currentItem;
+        while(!queue.isEmpty()) {
+            currentItem = queue.poll();
+            currentItem.visit(new ItemVisitorAdapter() {
+                @Override
+                public void visit(Arithmeitc item) {
+                    queue.add(item.getLeft());
+                    queue.add(item.getRight());
+                }
+
+                @Override
+                public void visit(Field item) {
+                    froms.addAll(doSearchFromPlainSelect(item, (PlainSelect) select, true));
+                }
+
+                @Override
+                public void visit(Parentheses item) {
+                    queue.add(item.getItem());
+                }
+
+                @Override
+                public void visit(Func func) {
+                    for (Item item : func.getParameters()) {
+                        if (Field.class.isInstance(item)) {
+
+                            visit((Field) item);
+
+                        } else {
+                            queue.add(item);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (froms.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return froms;
+        }
     }
 
     private List<AbstractMap.SimpleEntry<Field, From>> doSearchJoins(Field field, List<Join> joins, boolean equalsSubAlisa) {
@@ -155,11 +249,13 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         return Collections.emptyList();
     }
 
+    // 找到字段的在子句的映射,如果有的话.
     private Item findMappingField(Field source, PlainSelect select) {
         JSqlParserSelectItemAbility selectItemHandler = new JSqlParserSelectItemAbility(select);
         List<Item> selectItems = selectItemHandler.list();
         Field targetField;
         Func targetFunc;
+        Arithmeitc arithmeitc;
         for (Item item : selectItems) {
             if (Field.class.isInstance(item)) {
                 targetField = (Field) item;
@@ -171,10 +267,24 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
                 if (isTheSameField(source, targetFunc)) {
                     return targetFunc;
                 }
+            } else if (Arithmeitc.class.isInstance(item)) {
+                arithmeitc = (Arithmeitc) item;
+                if (isTheSameField(source, arithmeitc)) {
+                    return arithmeitc;
+                }
+
             }
         }
 
         return null;
+    }
+
+    private boolean isTheSameField(Field source, Arithmeitc target) {
+        if (target.getAlias() != null) {
+            return source.getName().equals(target.getAlias().getName());
+        } else {
+            return false;
+        }
     }
 
     private boolean isTheSameField(Field source, Func target) {

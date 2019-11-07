@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.From;
+import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import net.sf.jsqlparser.expression.BinaryExpression;
@@ -18,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 处理 delete 语句的字段来源查找.
+ * 只会处理 where 子句.
+ *
  * @version 0.1 2019/11/4 17:05
  * @auth dongbin
  * @since 1.8
@@ -28,8 +32,13 @@ public class JSqlParserDeleteFieldFromAbility extends AbstractJSqlParserHandler 
         super(statement, Delete.class);
     }
 
+
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) {
+        return searchRealTableName((Field) item);
+    }
+
+    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
 
         Expression where = getDelete().getWhere();
         if (where == null) {
@@ -64,11 +73,5 @@ public class JSqlParserDeleteFieldFromAbility extends AbstractJSqlParserHandler 
         }
 
         return false;
-    }
-
-    public static void main(String[] args) throws Exception {
-        String sql = "delete from t1 where t1.id=1 and t2.id=3+2";
-        Statement statement = CCJSqlParserUtil.parse(sql);
-        System.out.printf(statement.toString());
     }
 }

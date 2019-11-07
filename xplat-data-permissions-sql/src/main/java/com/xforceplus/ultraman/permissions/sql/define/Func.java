@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.define;
 
 import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +31,7 @@ public class Func extends Aliasable implements Item {
     public Func(String name, List<Item> parameters, Alias alias) {
         super(alias);
         this.name = name;
-        this.parameters = parameters;
+        this.parameters = parameters != null ? parameters : Collections.emptyList();
 
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Invalid function name.");
@@ -43,8 +44,8 @@ public class Func extends Aliasable implements Item {
 
         if (parameters != null && !parameters.isEmpty()) {
             parameters.stream().forEach(p -> {
-                if (!Field.class.isInstance(p) && !Value.class.isInstance(p)) {
-                    throw new IllegalArgumentException("Only Column and Value can be received!");
+                if (!Field.class.isInstance(p) && !Value.class.isInstance(p) && !Func.class.isInstance(p)) {
+                    throw new IllegalArgumentException("Only Column, Value and Function can be received!");
                 }
             });
         }

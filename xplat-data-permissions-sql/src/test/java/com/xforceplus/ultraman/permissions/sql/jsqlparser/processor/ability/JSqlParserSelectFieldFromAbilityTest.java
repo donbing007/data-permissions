@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
-import com.xforceplus.ultraman.permissions.sql.define.Alias;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.From;
+import com.xforceplus.ultraman.permissions.sql.define.*;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class JSqlParserSelectFieldFromAbilityTest {
 
                 JSqlParserSelectFieldFromAbility h = new JSqlParserSelectFieldFromAbility(CCJSqlParserUtil.parse(sql));
                 SearchPack pack = caseData.get(sql);
-                List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.field);
+                List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.item);
 
                 Assert.assertEquals(sql, pack.expectedFroms.size(), froms.size());
                 Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]), froms.toArray(new AbstractMap.SimpleEntry[0]));
@@ -56,20 +56,21 @@ public class JSqlParserSelectFieldFromAbilityTest {
         data.put("select t.id from t1 t",
             new SearchPack(new Field("t", "id", null),
                 Arrays.asList(
-                    new AbstractMap.SimpleEntry(new Field("t","id", null),
-                        new From("t1",new Alias("t", false), false))
-            ))
+                    new AbstractMap.SimpleEntry(
+                        new Field("t", "id", null),
+                        new From("t1", new Alias("t", false), false))
+                ))
         );
 
         data.put("select ta1.id from (" +
-                    "select ta2.id from (" +
-                        "select t1.id from t1" +
-                    ") ta2" +
+                "select ta2.id from (" +
+                "select t1.id from t1" +
+                ") ta2" +
                 ") ta1",
-            new SearchPack(new Field("ta1","id", null),
+            new SearchPack(new Field("ta1", "id", null),
                 Arrays.asList(
-                    new AbstractMap.SimpleEntry(new Field("t1","id", null), new From("t1"))
-            ))
+                    new AbstractMap.SimpleEntry(new Field("t1", "id", null), new From("t1"))
+                ))
         );
 
         data.put("select func(t.id) from t",
@@ -80,25 +81,54 @@ public class JSqlParserSelectFieldFromAbilityTest {
         );
 
         data.put("select ta1.total from (" +
-                    "select func(t1.id,t2.id) total from t1 inner join t2 on t1.id=t2.id" +
+                "select func(t1.id,t2.id) total from t1 inner join t2 on t1.id=t2.id" +
                 ") ta1",
-            new SearchPack(new Field("ta1","total", null),
+            new SearchPack(new Field("ta1", "total", null),
                 Arrays.asList(
-                    new AbstractMap.SimpleEntry(new Field("t1","id", null),new From("t1")),
-                    new AbstractMap.SimpleEntry(new Field("t2","id", null),new From("t2"))
+                    new AbstractMap.SimpleEntry(new Field("t1", "id", null), new From("t1")),
+                    new AbstractMap.SimpleEntry(new Field("t2", "id", null), new From("t2"))
                 )
             )
         );
+
+        data.put("select t.num from (select t1.c1+t1.c2 num from t1) t",
+            new SearchPack(new Field("t", "num"),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(new Field("t1", "c1", null), new From("t1")),
+                    new AbstractMap.SimpleEntry(new Field("t1", "c2", null), new From("t1"))
+                )
+            )
+        );
+
+
+        data.put("select (t.num + t2.c2) r from (select t1.id, t1.c1+t1.c2 num from t1) t inner join t2 on t2.id=t.id",
+            new SearchPack(
+                new Parentheses(
+                    new Arithmeitc(
+                        new Field("t", "num"),
+                        new Field("t2", "c2"),
+                        ArithmeticSymbol.ADDITION
+                    ),
+                    new Alias("r")
+                ),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(new Field("t1", "c1"), new From("t1")),
+                    new AbstractMap.SimpleEntry(new Field("t1", "c2"), new From("t1")),
+                    new AbstractMap.SimpleEntry(new Field("t2", "c2"), new From("t2"))
+                )
+            )
+        );
+
 
         return data;
     }
 
     private static class SearchPack {
-        private Field field;
+        private Item item;
         private List<AbstractMap.SimpleEntry<Field, From>> expectedFroms;
 
-        public SearchPack(Field field, List<AbstractMap.SimpleEntry<Field, From>> expectedFroms) {
-            this.field = field;
+        public SearchPack(Item item, List<AbstractMap.SimpleEntry<Field, From>> expectedFroms) {
+            this.item = item;
             this.expectedFroms = expectedFroms;
         }
     }
