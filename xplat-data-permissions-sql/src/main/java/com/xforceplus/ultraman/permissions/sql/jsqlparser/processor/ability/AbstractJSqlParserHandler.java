@@ -62,7 +62,7 @@ public abstract class AbstractJSqlParserHandler {
     }
 
     public boolean isSelect() {
-        return plainSelect != null;
+        return Select.class.isInstance(statement);
     }
 
     public boolean isUpdate() {
@@ -89,8 +89,5 @@ public abstract class AbstractJSqlParserHandler {
 
         this.statement = statement;
 
-        if (isSelect()) {
-            plainSelect = (PlainSelect) ((Select) this.statement).getSelectBody();
-        }
     }
 }

@@ -2,12 +2,10 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
-import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ExceptionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
-
-import java.text.ParseException;
 
 /**
  * 基于 jsqlparser 的实现.
@@ -20,13 +18,23 @@ import java.text.ParseException;
  */
 public class JSqlParser implements SqlParser {
 
+    private static final SqlParser SQL_PARSER = new JSqlParser();
+
+    private JSqlParser() {
+
+    }
+
+    public static SqlParser getInstance() {
+        return SQL_PARSER;
+    }
+
     @Override
-    public Sql parser(String sql) throws ParseException {
+    public Sql parser(String sql) throws ProcessorException {
         Statement statment;
         try {
             statment = CCJSqlParserUtil.parse(sql);
         } catch (JSQLParserException e) {
-            throw ExceptionHelper.toParseException(e);
+            throw new ProcessorException(e.getMessage(), e);
         }
 
         return new JSql(statment);

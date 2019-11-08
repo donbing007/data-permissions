@@ -253,43 +253,27 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
 
     // 找到字段的在子句的映射,如果有的话.
     private Item findMappingField(Field source, PlainSelect select) {
-        JSqlParserSelectItemAbility selectItemHandler = new JSqlParserSelectItemAbility(select);
-        List<Item> selectItems = selectItemHandler.list();
-        Field targetField;
-        Func targetFunc;
-        Arithmeitc arithmeitc;
+        JSqlParserSelectItemAbility selectItemAbility = new JSqlParserSelectItemAbility(select);
+        List<Item> selectItems = selectItemAbility.list();
         for (Item item : selectItems) {
-            if (Field.class.isInstance(item)) {
-                targetField = (Field) item;
-                if (isTheSameField(source, targetField)) {
-                    return targetField;
-                }
-            } else if (Func.class.isInstance(item)) {
-                targetFunc = (Func) item;
-                if (isTheSameField(source, targetFunc)) {
-                    return targetFunc;
-                }
-            } else if (Arithmeitc.class.isInstance(item)) {
-                arithmeitc = (Arithmeitc) item;
-                if (isTheSameField(source, arithmeitc)) {
-                    return arithmeitc;
-                }
 
+            if (Field.class.isInstance(item)) {
+                if (isTheSameField(source, (Field) item)) {
+                    return item;
+                }
+            } else if (Func.class.isInstance(item)
+                || Arithmeitc.class.isInstance(item)
+                || Parentheses.class.isInstance(item)) {
+                if (isTheSameField(source, (Aliasable) item)) {
+                    return item;
+                }
             }
         }
 
         return null;
     }
 
-    private boolean isTheSameField(Field source, Arithmeitc target) {
-        if (target.getAlias() != null) {
-            return source.getName().equals(target.getAlias().getName());
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isTheSameField(Field source, Func target) {
+    private boolean isTheSameField(Field source, Aliasable target) {
         if (target.getAlias() != null) {
             return source.getName().equals(target.getAlias().getName());
         } else {

@@ -2,14 +2,12 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSql;
-import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
-import com.xforceplus.ultraman.permissions.sql.processor.SubSelectSqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.processor.*;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.*;
 
@@ -47,7 +45,7 @@ public class JSqlParserSubSqlAbilityTest {
                 queue.add(root);
 
                 List<String> current = new ArrayList<>();
-                while(!queue.isEmpty()) {
+                while (!queue.isEmpty()) {
 
                     Sql s = queue.poll();
                     current.add(s.toSqlString());
@@ -62,15 +60,24 @@ public class JSqlParserSubSqlAbilityTest {
                         public void visit(SubSelectSqlProcessor processor) {
                             queue.addAll(processor.buildSubSqlAbility().list());
                         }
+
+                        @Override
+                        public void visit(DeleteSqlProcessor processor) {
+                            queue.addAll(processor.buildSubSqlAbility().list());
+                        }
+
+                        @Override
+                        public void visit(UpdateSqlProcessor processor) {
+                            queue.addAll(processor.buildSubSqlAbility().list());
+                        }
                     });
                 }
 
                 current.remove(0);// 删除首条.
 
 
-
                 List<String> expectedSqls = caseData.get(sql);
-                Assert.assertEquals(expectedSqls.size(), current.size());
+                Assert.assertEquals(sql, expectedSqls.size(), current.size());
                 for (int i = 0; i < expectedSqls.size(); i++) {
                     Assert.assertEquals(sql, expectedSqls.get(i), current.get(i));
                 }
@@ -119,6 +126,28 @@ public class JSqlParserSubSqlAbilityTest {
                 CCJSqlParserUtil.parse("select * from t1").toString()
             )
         );
+
+        data.put("select * from t where t.c1 in (select * from t2 union select * from t3)",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t2").toString(),
+                CCJSqlParserUtil.parse("select * from t3").toString()
+            )
+        );
+
+        data.put("update t1, (select * from t2 union select * from t3) t2 set t1.id=t2 where t1.id in(select r.id from r1 r)",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t2").toString(),
+                CCJSqlParserUtil.parse("select * from t3").toString(),
+                CCJSqlParserUtil.parse("select r.id from r1 r").toString()
+            )
+        );
+
+        data.put("delete from t1 where t1.id in (select r.id from r1 r)",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select r.id from r1 r").toString()
+            )
+        );
+
 
         return data;
     }

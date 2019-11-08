@@ -100,6 +100,15 @@ public class JSqlParserSelectFieldFromAbilityTest {
             )
         );
 
+        data.put("select t.num from (select (t1.c1+t1.c2) num from t1) t",
+            new SearchPack(new Field("t", "num"),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(new Field("t1", "c1", null), new From("t1")),
+                    new AbstractMap.SimpleEntry(new Field("t1", "c2", null), new From("t1"))
+                )
+            )
+        );
+
 
         data.put("select (t.num + t2.c2) r from (select t1.id, t1.c1+t1.c2 num from t1) t inner join t2 on t2.id=t.id",
             new SearchPack(

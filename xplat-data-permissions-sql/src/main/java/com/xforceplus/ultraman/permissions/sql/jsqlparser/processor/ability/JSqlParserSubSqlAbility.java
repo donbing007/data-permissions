@@ -25,7 +25,7 @@ import java.util.List;
 public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implements SubSqlAbility {
 
     public JSqlParserSubSqlAbility(Statement statement) {
-        super(statement, Select.class);
+        super(statement);
     }
 
     public JSqlParserSubSqlAbility(PlainSelect plainSelect) {
@@ -34,16 +34,45 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
 
     @Override
     public List<Sql> list() throws ProcessorException {
-        List<Sql> subSqls = new ArrayList<>();
-        if (isSelect()) {
+        List<Sql> subSqlPool = new ArrayList<>();
+        if (isSubSelect()) {
 
-            getSubSelect().accept(new ListSelectVisitorImpl(subSqls));
+            getSubSelect().accept(new ListSelectVisitorImpl(subSqlPool));
 
         } else {
-            getSelect().getSelectBody().accept(new ListSelectVisitorImpl(subSqls));
+
+            if (isSelect()) {
+
+                doSelect(getSelect().getSelectBody(), subSqlPool);
+
+            } else if (isUpdate()) {
+
+                getUpdate().getStartJoins().parallelStream().forEach(j -> {
+
+                    j.getRightItem().accept(new FromItemVisitorAdapter() {
+                        @Override
+                        public void visit(SubSelect subSelect) {
+                            doSelect(subSelect.getSelectBody(), subSqlPool);
+                        }
+                    });
+
+                });
+
+                doSubWhere(subSqlPool, getUpdate().getWhere());
+
+            } else if (isDelete()) {
+
+                doSubWhere(subSqlPool, getDelete().getWhere());
+
+            }
+
         }
 
-        return subSqls;
+        return subSqlPool;
+    }
+
+    private void doSelect(SelectBody selectBody, List<Sql> subSqlPool) {
+        selectBody.accept(new ListSelectVisitorImpl(subSqlPool));
     }
 
     private static class ListSelectVisitorImpl extends SelectVisitorAdapter {
@@ -67,7 +96,7 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
         }
     }
 
-    private static void doSubWhere(List<Sql> subSqls, Expression where) {
+    private static void doSubWhere(List<Sql> subSqlPool, Expression where) {
         if (where == null) {
             return;
         }
@@ -76,46 +105,46 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
 
             @Override
             public void visit(EqualsTo expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
             @Override
             public void visit(GreaterThan expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
             @Override
             public void visit(GreaterThanEquals expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
 
             @Override
             public void visit(MinorThan expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
             @Override
             public void visit(MinorThanEquals expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
             @Override
             public void visit(NotEqualsTo expr) {
-                doProcessComparisonOperator(subSqls, expr);
+                doProcessComparisonOperator(subSqlPool, expr);
             }
 
             @Override
             public void visit(ExistsExpression expr) {
                 if (SubSelect.class.isInstance(expr.getRightExpression())) {
-                    doAddPlainSelect(subSqls, (SubSelect) expr.getRightExpression());
+                    doAddPlainSelect(subSqlPool, (SubSelect) expr.getRightExpression());
                 }
             }
 
             @Override
             public void visit(InExpression expr) {
                 if (SubSelect.class.isInstance(expr.getRightItemsList())) {
-                    doAddPlainSelect(subSqls, (SubSelect) expr.getRightItemsList());
+                    doAddPlainSelect(subSqlPool, (SubSelect) expr.getRightItemsList());
                 }
             }
         });
@@ -156,7 +185,7 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
     private static void doProcessComparisonOperator(List<Sql> subs, ComparisonOperator expr) {
         if (AnyComparisonExpression.class.isInstance(expr.getRightExpression())) {
             AnyComparisonExpression any = (AnyComparisonExpression) expr.getRightExpression();
-            doAddPlainSelect(subs,any.getSubSelect());
+            doAddPlainSelect(subs, any.getSubSelect());
         }
     }
 

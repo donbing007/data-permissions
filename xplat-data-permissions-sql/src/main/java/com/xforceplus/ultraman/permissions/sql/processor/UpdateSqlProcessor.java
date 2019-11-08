@@ -1,9 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
-import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.UpdateSetAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.*;
 
 /**
  * update 语句的 processor 定义.
@@ -36,4 +33,10 @@ public interface UpdateSqlProcessor extends SqlProcessor {
      * @return 字段来源.
      */
     FieldFromAbility buildFieldFromAbility();
+
+    /**
+     * 得到当前的嵌套查询和子查询.
+     * @return 语句列表.
+     */
+    SubSqlAbility buildSubSqlAbility();
 }

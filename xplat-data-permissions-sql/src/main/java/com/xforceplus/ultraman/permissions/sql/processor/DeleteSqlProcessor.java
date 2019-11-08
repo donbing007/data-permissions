@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.sql.processor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;
 
 /**
  * 删除语句操作定义.
@@ -30,5 +31,11 @@ public interface DeleteSqlProcessor extends SqlProcessor {
      * @return 处理器实例.
      */
     FieldFromAbility buildFieldFromAbility();
+
+    /**
+     * 得到当前的嵌套查询和子查询.
+     * @return 语句列表.
+     */
+    SubSqlAbility buildSubSqlAbility();
 
 }

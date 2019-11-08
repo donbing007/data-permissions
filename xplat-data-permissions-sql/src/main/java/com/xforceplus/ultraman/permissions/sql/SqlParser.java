@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql;
 
-import java.text.ParseException;
+import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
 /**
  * sql 解析接口.
@@ -14,9 +14,9 @@ public interface SqlParser {
      * 解析 SQL 得到 SQL 实例.
      * @param sql sql 语句.
      * @return 解析结果.
-     * @throws ParseException 表示 sql 解析失败.
+     * @throws ProcessorException 表示 sql 解析失败.
      */
-    Sql parser(String sql) throws ParseException;
+    Sql parser(String sql) throws ProcessorException;
 
     /**
      * 判断指定的 sql 是否可以解析.
