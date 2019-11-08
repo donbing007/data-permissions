@@ -17,6 +17,27 @@ public class SubSqlIterator implements Iterator<Sql> {
 
     private SubSqlAbility subSqlAbility;
     private Queue<Sql> queue;
+    private SqlProcessorVisitor visitor = new SqlProcessorVisitorAdapter() {
+        @Override
+        public void visit(SelectSqlProcessor processor) {
+            queue.addAll(processor.buildSubSqlAbility().list());
+        }
+
+        @Override
+        public void visit(DeleteSqlProcessor processor) {
+            queue.addAll(processor.buildSubSqlAbility().list());
+        }
+
+        @Override
+        public void visit(UpdateSqlProcessor processor) {
+            queue.addAll(processor.buildSubSqlAbility().list());
+        }
+
+        @Override
+        public void visit(SubSelectSqlProcessor processor) {
+            queue.addAll(processor.buildSubSqlAbility().list());
+        }
+    };
 
     public SubSqlIterator(SubSqlAbility subSqlAbility) {
         this.subSqlAbility = subSqlAbility;
@@ -37,27 +58,7 @@ public class SubSqlIterator implements Iterator<Sql> {
 
         Sql sql = queue.poll();
 
-        sql.visit(new SqlProcessorVisitorAdapter() {
-            @Override
-            public void visit(SelectSqlProcessor processor) {
-                queue.addAll(processor.buildSubSqlAbility().list());
-            }
-
-            @Override
-            public void visit(DeleteSqlProcessor processor) {
-                queue.addAll(processor.buildSubSqlAbility().list());
-            }
-
-            @Override
-            public void visit(UpdateSqlProcessor processor) {
-                queue.addAll(processor.buildSubSqlAbility().list());
-            }
-
-            @Override
-            public void visit(SubSelectSqlProcessor processor) {
-                queue.addAll(processor.buildSubSqlAbility().list());
-            }
-        });
+        sql.visit(visitor);
 
         return sql;
     }
