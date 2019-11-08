@@ -1,7 +1,5 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
-import com.xforceplus.ultraman.permissions.sql.define.values.Value;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -51,14 +49,6 @@ public class Condition implements Item{
     @Override
     public void visit(ItemVisitor visitor) {
         visitor.visit(this);
-    }
-
-    public boolean isFieldCondition() {
-        return Field.class.isInstance(column);
-    }
-
-    public boolean isFuncCondition() {
-        return Func.class.isInstance(column);
     }
 
     public Item getColumn() {
