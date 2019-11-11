@@ -52,7 +52,7 @@ public class JSqlParserFromAbilityTest {
         }
     }
 
-    private Map<String, List<From>> buildCase() {
+    private Map<String, List<From>> buildCase() throws Exception {
 
         Map<String, List<From>> data = new HashMap();
         data.put("select * from t1",
@@ -73,12 +73,12 @@ public class JSqlParserFromAbilityTest {
 
         data.put("select * from (select * from t1) t",
             Arrays.asList(
-                new From("", new Alias("t"), true)
+                new From(CCJSqlParserUtil.parse("select * from t1").toString(), new Alias("t"), true)
             ));
 
         data.put("select * from (select * from t2) t2 inner join t1 on t1.id=t2.id",
             Arrays.asList(
-                new From("", new Alias("t2"), true),
+                new From(CCJSqlParserUtil.parse("select * from t2").toString(), new Alias("t2"), true),
                 new From("t1")
             )
         );
@@ -88,23 +88,10 @@ public class JSqlParserFromAbilityTest {
             )
         );
 
-        data.put("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
-                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
-                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
-                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
-                "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
-                "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
-                "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
-                "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
-                "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
-                "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
-                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
-                "'cs' then '中心客户&供应商' end,year_of_month) m " +
-                "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
+        data.put("select * from t1 inner join (select * from t2) t2 on t2.id=t1.id",
             Arrays.asList(
-                new From("", new Alias("m"), true)
+                new From("t1"),
+                new From(CCJSqlParserUtil.parse("select * from t2").toString(), new Alias("t2"), true)
             )
         );
 

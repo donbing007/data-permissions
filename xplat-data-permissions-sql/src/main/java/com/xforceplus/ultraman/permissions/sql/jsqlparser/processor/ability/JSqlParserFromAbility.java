@@ -4,8 +4,10 @@ import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.StatementVisitor;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -80,6 +82,21 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
     private static class SelectVisitImpl extends SelectVisitorAdapter {
 
         private List<From> items;
+        private FromItemVisitor visitor = new FromItemVisitorAdapter() {
+            @Override
+            public void visit(Table table) {
+                From from = new From(table.getName(), ConversionHelper.convert(table.getAlias()));
+                items.add(from);
+            }
+
+            @Override
+            public void visit(SubSelect subSelect) {
+                From from = new From(subSelect.getSelectBody().toString(),
+                    subSelect.getAlias() != null ? ConversionHelper.convert(subSelect.getAlias()) : null, true);
+                items.add(from);
+            }
+        };
+
 
         public SelectVisitImpl(List<From> items) {
             this.items = items;
@@ -88,35 +105,19 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
         @Override
         public void visit(PlainSelect plainSelect) {
             FromItem fromItem = plainSelect.getFromItem();
-            if (fromItem != null) {
-                fromItem.accept(new FromItemVisitorAdapter() {
-                    @Override
-                    public void visit(Table table) {
-                        From from = new From(table.getName(), ConversionHelper.convert(table.getAlias()));
-                        items.add(from);
-                    }
 
-                    @Override
-                    public void visit(SubSelect subSelect) {
-                        From from = new From(subSelect.toString(),
-                            subSelect.getAlias() != null ? ConversionHelper.convert(subSelect.getAlias()) : null, true);
-                        items.add(from);
-                    }
-                });
+            if (fromItem != null) {
+                fromItem.accept(visitor);
             }
 
             List<Join> joins = plainSelect.getJoins();
             if (joins != null) {
                 for (Join join : joins) {
-                    join.getRightItem().accept(new FromItemVisitorAdapter() {
-                        @Override
-                        public void visit(Table table) {
-                            From from = new From(table.getName(),ConversionHelper.convert(table.getAlias()));
-                            items.add(from);
-                        }
-                    });
+                    join.getRightItem().accept(visitor);
                 }
             }
         }
     }
+
+
 }
