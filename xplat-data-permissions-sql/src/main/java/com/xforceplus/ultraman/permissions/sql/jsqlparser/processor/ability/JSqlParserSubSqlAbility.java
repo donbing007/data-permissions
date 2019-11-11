@@ -147,6 +147,11 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
                     doAddPlainSelect(subSqlPool, (SubSelect) expr.getRightItemsList());
                 }
             }
+
+            @Override
+            public void visit(AnyComparisonExpression expr) {
+                doAddPlainSelect(subSqlPool, expr.getSubSelect());
+            }
         });
     }
 

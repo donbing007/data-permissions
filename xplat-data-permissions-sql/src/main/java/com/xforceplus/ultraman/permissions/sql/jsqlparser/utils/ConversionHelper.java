@@ -22,7 +22,8 @@ import java.util.List;
  */
 public class ConversionHelper {
 
-    private ConversionHelper() {}
+    private ConversionHelper() {
+    }
 
     public static Arithmeitc convertArithmeitc(Expression expr) {
         return convertArithmeitc(expr, null);
@@ -40,14 +41,14 @@ public class ConversionHelper {
 
             ArithmeticSymbol symbol = ArithmeticSymbol.getInstance(binaryExpression.getStringExpression());
 
-            return new Arithmeitc(left,right,symbol, convert(alias));
+            return new Arithmeitc(left, right, symbol, convert(alias));
         }
 
         return null;
     }
 
     public static Item convertSmart(Expression expr) {
-        return convertSmart(expr,null);
+        return convertSmart(expr, null);
     }
 
     public static Item convertSmart(Expression expr, Alias alias) {
@@ -82,6 +83,17 @@ public class ConversionHelper {
                 convert(alias)
             );
 
+        } else if (AnyComparisonExpression.class.isInstance(expr)) {
+
+            AnyComparisonExpression any = (AnyComparisonExpression) expr;
+            return new Func(any.getAnyType().name(),
+                Arrays.asList(
+                    new com.xforceplus.ultraman.permissions.sql.define.values.StringValue(
+                        ((AnyComparisonExpression) expr).getSubSelect().getSelectBody().toString()
+                    )
+                )
+            );
+
         } else {
 
             return UnknownValue.getInstance(expr.toString());
@@ -91,6 +103,7 @@ public class ConversionHelper {
 
     /**
      * 转换值类型.
+     *
      * @param expr jsql的值类型.
      * @return 本地定义值.
      */
@@ -185,7 +198,7 @@ public class ConversionHelper {
     private static void conversionFuncParam(List<Item> paramItemList, Expression expr) {
         if (Column.class.isInstance(expr)) {
 
-            paramItemList.add(ConversionHelper.convert((Column)expr));
+            paramItemList.add(ConversionHelper.convert((Column) expr));
 
         } else if (ValueHelper.isValueExpr(expr)) {
 

@@ -8,6 +8,7 @@ import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.StringValue;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import net.sf.jsqlparser.expression.AnyType;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import org.junit.After;
@@ -314,6 +315,10 @@ public class JSqlParserConditionAbilityTest {
         data.put("select * from t1 where c1 not in (select * from t2) and c2 not in (1,2,3)",
             Arrays.asList(
                 new Condition(
+                    new Field("c1"),
+                    ConditionOperator.NOT_IN,
+                    Arrays.asList(new StringValue(CCJSqlParserUtil.parse("select * from t2").toString()))),
+                new Condition(
                     new Field("c2"),
                     ConditionOperator.NOT_IN,
                     Arrays.asList(new LongValue(1), new LongValue(2), new LongValue(3)))
@@ -322,12 +327,22 @@ public class JSqlParserConditionAbilityTest {
 
         data.put("select * from t1 where c1 = any(select * from t2) and c2=1",
             Arrays.asList(
+                new Condition(
+                    new Field("c1"),
+                    ConditionOperator.EQUALS,
+                    Arrays.asList(new Func(AnyType.ANY.name(),
+                        Arrays.asList(new StringValue(CCJSqlParserUtil.parse("select * from t2").toString()))))),
                 new Condition(new Field("c2"), ConditionOperator.EQUALS, Arrays.asList(new LongValue(1)))
             )
         );
 
         data.put("select * from t1 where c1 = some(select * from t2) and c2=1",
             Arrays.asList(
+                new Condition(
+                    new Field("c1"),
+                    ConditionOperator.EQUALS,
+                    Arrays.asList(new Func(AnyType.SOME.name(),
+                        Arrays.asList(new StringValue(CCJSqlParserUtil.parse("select * from t2").toString()))))),
                 new Condition(new Field("c2"), ConditionOperator.EQUALS, Arrays.asList(new LongValue(1)))
             )
         );

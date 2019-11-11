@@ -148,7 +148,17 @@ public class JSqlParserSubSqlAbilityTest {
             )
         );
 
+        data.put("select * from t1 where c1 > any(select * from t2)",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t2").toString()
+            )
+        );
 
+        data.put("select * from t1 where c1 > some(select * from t2)",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t2").toString()
+            )
+        );
         return data;
     }
 } 

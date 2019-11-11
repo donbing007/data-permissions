@@ -18,10 +18,7 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
-import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 
 import java.text.ParseException;
@@ -116,6 +113,11 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
         }
     }
 
+    /**
+     * 对于in 如果值是了查询,将用转换为字符串表示整个子句.
+     * 对于 exists 将忽略,因为有专门的子句处理器.
+     * 对于 any 和 some 会被当做一个普通的处理函数.
+     */
     @Override
     public List<Condition> list() throws ProcessorException {
         if (where == null) {
@@ -133,35 +135,42 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                     Arrays.asList(ConversionHelper.convertSmart(expr.getBetweenExpressionStart()),
                         ConversionHelper.convertSmart(expr.getBetweenExpressionEnd()));
 
-                conditions.add(buildConditionFromColumn(c, values, ConditionOperator.BETWEEN));
+                conditions.add(buildCondition(c, values, ConditionOperator.BETWEEN));
             }
 
             @Override
             public void visit(InExpression expr) {
                 Column c = (Column) expr.getLeftExpression();
 
-                // 不处理子查询.
-                if (!ExpressionList.class.isInstance(expr.getRightItemsList())) {
-                    return;
-                }
-
-                ExpressionList expressionList = (ExpressionList) expr.getRightItemsList();
-                List<Expression> expressions = expressionList.getExpressions();
-                List<Item> values = expressions.stream().map(e -> ConversionHelper.convertSmart(e)).collect(Collectors.toList());
-
-                if (expr.isNot()) {
-                    conditions.add(buildConditionFromColumn(c, values, ConditionOperator.NOT_IN));
+                // 子查询,使用字符串值表示,原因是有专门的子查询处理器.
+                if (SubSelect.class.isInstance(expr.getRightItemsList())) {
+                    conditions.add(
+                        buildCondition(
+                            c,
+                            Arrays.asList(
+                                new com.xforceplus.ultraman.permissions.sql.define.values.StringValue(
+                                    ((SubSelect)expr.getRightItemsList()).getSelectBody().toString())),
+                            expr.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN));
                 } else {
-                    conditions.add(buildConditionFromColumn(c, values, ConditionOperator.IN));
+
+                    ExpressionList expressionList = (ExpressionList) expr.getRightItemsList();
+                    List<Expression> expressions = expressionList.getExpressions();
+                    List<Item> values = expressions.stream()
+                        .map(e -> ConversionHelper.convertSmart(e)).collect(Collectors.toList());
+
+                    conditions.add(
+                        buildCondition(
+                            c, values, (expr.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN)));
                 }
+
             }
 
 
             @Override
             public void visit(IsNullExpression expr) {
                 conditions.add(
-                    buildConditionFromColumn(
-                        (Column) expr.getLeftExpression(),
+                    buildCondition(
+                        expr.getLeftExpression(),
                         Arrays.asList(NullValue.getInstance()),
                         ConditionOperator.IS_NUll));
             }
@@ -169,8 +178,8 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
             @Override
             public void visit(LikeExpression expr) {
                 conditions.add(
-                    buildConditionFromColumn(
-                        (Column) expr.getLeftExpression(),
+                    buildCondition(
+                        expr.getLeftExpression(),
                         Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
                         ConditionOperator.LIKE));
             }
@@ -206,27 +215,13 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 doAddComparisionCondition(expr, ConditionOperator.NOT_EQUALS);
             }
 
-
             private void doAddComparisionCondition(ComparisonOperator expr, ConditionOperator operator) {
-                // 忽略 any some,因为里面只有子查询.
-                if (AnyComparisonExpression.class.isInstance(expr.getRightExpression())) {
-                    return;
-                }
 
-                Expression leftExpr = expr.getLeftExpression();
-                if (Column.class.isInstance(leftExpr)) {
-
-                    Column c = (Column) leftExpr;
-
-                    List<Item> values = Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression()));
-                    conditions.add(buildConditionFromColumn(c, values, operator));
-
-                } else if (Function.class.isInstance(leftExpr)) {
-
-                    Function f = (Function) leftExpr;
-                    List<Item> values = Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression()));
-                    conditions.add(buildConditionFromFunction(f, values, operator));
-                }
+                conditions.add(
+                    buildCondition(
+                        expr.getLeftExpression(),
+                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
+                        operator));
 
             }
 
@@ -454,25 +449,10 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
         }
     }
 
-    private String findTable(Column column) {
-        Table table = column.getTable();
-        if (table != null) {
-            return table.getFullyQualifiedName();
-        }
-
-        return null;
-    }
-
-    private Condition buildConditionFromColumn(Column column, List<Item> values, ConditionOperator operator) {
-
-        Field field = ConversionHelper.convert(column);
-
-        return new Condition(field, operator, values);
-    }
-
-    private Condition buildConditionFromFunction(Function f, List<Item> values, ConditionOperator operator) {
-        Func func = ConversionHelper.convert(f);
-
-        return new Condition(func, operator, values);
+    private Condition buildCondition(Expression left, List<Item> values, ConditionOperator operator) {
+        return new Condition(
+            ConversionHelper.convertSmart(left),
+            operator,
+            values);
     }
 }

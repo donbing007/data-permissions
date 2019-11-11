@@ -73,7 +73,10 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
         return items;
     }
 
-    // union 和 union all 将不处理.
+    /**
+     * union 和 union all 不处理,由专门的子句处理器处理.
+     * 子查询,会将子查询整个语句的字符串当做表名.
+     */
     private static class SelectVisitImpl extends SelectVisitorAdapter {
 
         private List<From> items;
@@ -95,7 +98,7 @@ public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements 
 
                     @Override
                     public void visit(SubSelect subSelect) {
-                        From from = new From("",
+                        From from = new From(subSelect.toString(),
                             subSelect.getAlias() != null ? ConversionHelper.convert(subSelect.getAlias()) : null, true);
                         items.add(from);
                     }

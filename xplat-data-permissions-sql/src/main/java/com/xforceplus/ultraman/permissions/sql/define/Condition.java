@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

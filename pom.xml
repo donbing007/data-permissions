@@ -92,7 +92,30 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.199</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.60</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>3.1.0</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
+
+
     </dependencyManagement>
 
     <distributionManagement>
@@ -113,7 +136,9 @@
         <module>xplat-data-permissions-transfer</module>
         <module>xplat-data-permissions-service</module>
         <module>xplat-data-permissions-sql</module>
-        <module>xplat-data-permission-rule</module>
+        <module>xplat-data-permissions-rule</module>
+        <module>xplat-data-permissions-repository</module>
+        <module>xplat-data-permissions-pojo</module>
     </modules>
 
     <properties>
