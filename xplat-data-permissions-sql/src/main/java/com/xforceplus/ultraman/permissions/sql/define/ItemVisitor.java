@@ -1,6 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.And;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Or;
 import com.xforceplus.ultraman.permissions.sql.define.values.*;
 
 /**
@@ -24,4 +26,6 @@ public interface ItemVisitor {
     void visit(UpdateSet item);
     void visit(Parentheses item);
     void visit(Arithmeitc item);
+    void visit(And and);
+    void visit(Or or);
 }

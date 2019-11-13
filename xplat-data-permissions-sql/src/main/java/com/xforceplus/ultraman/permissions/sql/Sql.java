@@ -17,12 +17,6 @@ import java.util.List;
 public interface Sql {
 
     /**
-     * 得到当前SQL 的字符串表示.
-     * @return 完整字符串.
-     */
-    String toString();
-
-    /**
      * 得到当前 SQL 的操作实例.
      * 通过此实例可以对 SQL 进行修改.
      *

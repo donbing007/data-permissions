@@ -17,12 +17,6 @@ public interface UpdateSqlProcessor extends SqlProcessor {
     ConditionAbility buildConditionAbility();
 
     /**
-     * 得到来源表操作实例.
-     * @return 实例.
-     */
-    FromAbility buildFromAbility();
-
-    /**
      * 得到更新语句 set 操作实例.
      * @return 实例.
      */

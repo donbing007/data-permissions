@@ -1,11 +1,14 @@
 package com.xforceplus.ultraman.permissions.rule.context;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.rule.DataRule;
+import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +18,9 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public class DefaultCheckContext implements CheckContext {
+public class DefaultContext implements Context {
+
+    private static final Searcher NULL_SEARCHER = new NullSearcher();
 
     private Sql sql;
     private Authorization authorization;
@@ -23,16 +28,17 @@ public class DefaultCheckContext implements CheckContext {
     private boolean refused;
     private String refusedCause;
     private List<Item> blackList;
+    private boolean updated;
 
-    public DefaultCheckContext(Sql sql) {
+    public DefaultContext(Sql sql) {
         this(sql, null, null);
     }
 
-    public DefaultCheckContext(Sql sql, Authorization authorization) {
-        this(sql, authorization, null);
+    public DefaultContext(Sql sql, Authorization authorization) {
+        this(sql, authorization, NULL_SEARCHER);
     }
 
-    public DefaultCheckContext(Sql sql, Authorization authorization, Searcher searcher) {
+    public DefaultContext(Sql sql, Authorization authorization, Searcher searcher) {
         this.sql = sql;
         this.authorization = authorization;
         blackList = new ArrayList<>();
@@ -48,7 +54,15 @@ public class DefaultCheckContext implements CheckContext {
     public Sql updateSql(Sql sql) {
         Sql old = this.sql;
         this.sql = sql;
+
+        updated = true;
+
         return old;
+    }
+
+    @Override
+    public boolean isUpdatedSql() {
+        return updated;
     }
 
     @Override
@@ -78,6 +92,11 @@ public class DefaultCheckContext implements CheckContext {
     }
 
     @Override
+    public String cause() {
+        return refusedCause;
+    }
+
+    @Override
     public Item[] blackList() {
         return blackList.toArray(new Item[0]);
     }
@@ -99,5 +118,21 @@ public class DefaultCheckContext implements CheckContext {
     @Override
     public Searcher getSercher() {
         return this.searcher;
+    }
+
+    /**
+     * 默认的搜索器,实际不会搜索任何规则.
+     */
+    private static class NullSearcher implements Searcher {
+
+        @Override
+        public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<DataRule> searchDataRule(Authorization auth, String entity) {
+            return Collections.emptyList();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.check;
 
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
 
 /**
  * 规则校验策略.
@@ -14,5 +14,5 @@ public interface Checker {
      * 规则检查.
      * @param context 规则检查上下文.
      */
-    void check(CheckContext context);
+    void check(Context context);
 }

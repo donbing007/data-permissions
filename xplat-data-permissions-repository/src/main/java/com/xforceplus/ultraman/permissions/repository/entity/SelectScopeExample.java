@@ -8,7 +8,7 @@ import java.util.Objects;
  * @auth dongbin
  * @since 1.8
  */
-public class SelectFieldScopeExample {
+public class SelectScopeExample {
 
     private String roleId;
 
@@ -16,10 +16,12 @@ public class SelectFieldScopeExample {
 
     private String entity;
 
-    public SelectFieldScopeExample() {
+    private String field;
+
+    public SelectScopeExample() {
     }
 
-    public SelectFieldScopeExample(String roleId, String tenantId, String entity) {
+    public SelectScopeExample(String roleId, String tenantId, String entity, String field) {
         this.roleId = roleId;
         this.tenantId = tenantId;
         this.entity = entity;
@@ -49,27 +51,37 @@ public class SelectFieldScopeExample {
         this.entity = entity;
     }
 
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SelectFieldScopeExample)) return false;
-        SelectFieldScopeExample that = (SelectFieldScopeExample) o;
+        if (!(o instanceof SelectScopeExample)) return false;
+        SelectScopeExample that = (SelectScopeExample) o;
         return Objects.equals(getRoleId(), that.getRoleId()) &&
             Objects.equals(getTenantId(), that.getTenantId()) &&
-            Objects.equals(getEntity(), that.getEntity());
+            Objects.equals(getEntity(), that.getEntity()) &&
+            Objects.equals(getField(), that.getField());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRoleId(), getTenantId(), getEntity());
+        return Objects.hash(getRoleId(), getTenantId(), getEntity(), getField());
     }
 
     @Override
     public String toString() {
-        return "SelectColumnScopeByExample{" +
+        return "SelectScopeExample{" +
             "roleId='" + roleId + '\'' +
             ", tenantId='" + tenantId + '\'' +
             ", entity='" + entity + '\'' +
+            ", field='" + field + '\'' +
             '}';
     }
 }

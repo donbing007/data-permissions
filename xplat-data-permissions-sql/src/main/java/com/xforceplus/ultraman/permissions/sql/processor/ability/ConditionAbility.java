@@ -2,9 +2,9 @@ package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Condition;
 import com.xforceplus.ultraman.permissions.sql.define.Conditional;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Relationship;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -16,11 +16,20 @@ import java.util.List;
 public interface ConditionAbility {
 
     /**
-     * 增加和件.
+     * 增加条件.
      * @param condition
      * @param conditional
      */
     void add(Condition condition, Conditional conditional, boolean isolation) throws ProcessorException;
+
+    /**
+     * 增加多个条件.
+     * @param conditions 条件,是一个基于Relationship的二叉树.
+     * @param conditional 和已有条件的关系.
+     * @param isolation 是否需要和已有条件隔离.
+     * @throws ProcessorException 操作异常.
+     */
+    void add(Relationship conditions, Conditional conditional, boolean isolation) throws ProcessorException;
 
     /**
      * 删除条件.

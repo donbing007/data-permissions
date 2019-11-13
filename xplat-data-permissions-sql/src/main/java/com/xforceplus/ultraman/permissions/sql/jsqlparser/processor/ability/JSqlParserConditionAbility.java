@@ -1,12 +1,15 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
-import com.xforceplus.ultraman.permissions.sql.define.*;
+import com.xforceplus.ultraman.permissions.sql.define.Condition;
+import com.xforceplus.ultraman.permissions.sql.define.ConditionOperator;
+import com.xforceplus.ultraman.permissions.sql.define.Conditional;
+import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Relationship;
 import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
@@ -14,14 +17,12 @@ import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.parser.SimpleNode;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,16 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
 
     @Override
     public void add(Condition condition, Conditional conditional, boolean isolation) throws ProcessorException {
-        Expression newCondition = buildExpression(condition);
+        addAll(condition, conditional, isolation);
+    }
+
+    @Override
+    public void add(Relationship conditions, Conditional conditional, boolean isolation) throws ProcessorException {
+        addAll(conditions, conditional, isolation);
+    }
+
+    private void addAll(Item conditions, Conditional conditional, boolean isolation) throws ProcessorException {
+        Expression newCondition = buildExpression(conditions);
 
         switch (conditional) {
             case AND: {
@@ -233,22 +243,26 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
 
     private void doAdd(boolean and, Expression oldWhere, Expression newCondition, boolean isolation) {
         if (oldWhere == null) {
-            setWhere(newCondition);
+            setWhere(isolation ? new Parenthesis(newCondition) : newCondition);
             return;
         }
 
         Expression newWhere;
         Expression oldConditions;
         if (isolation) {
-            oldConditions = new Parenthesis(oldWhere);
+            if (Parenthesis.class.isInstance(oldWhere)) {
+                oldConditions = oldWhere;
+            } else {
+                oldConditions = new Parenthesis(oldWhere);
+            }
         } else {
             oldConditions = oldWhere;
         }
 
         if (and) {
-            newWhere = new AndExpression(oldConditions, newCondition);
+            newWhere = new AndExpression(oldConditions, isolation ? new Parenthesis(newCondition) : newCondition);
         } else {
-            newWhere = new OrExpression(oldConditions, newCondition);
+            newWhere = new OrExpression(oldConditions, isolation ? new Parenthesis(newCondition) : newCondition);
         }
 
         setWhere(newWhere);
@@ -286,9 +300,11 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 }
             });
         }
+
+        this.where = newWhere;
     }
 
-    private Expression buildExpression(Condition condition) throws ProcessorException {
+    private Expression buildExpression(Item condition) throws ProcessorException {
         String conditionSql = condition.toSqlString();
         Expression newCondition;
         try {

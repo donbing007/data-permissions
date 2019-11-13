@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+
 /**
  * SQL 操作定义接口.
  *
@@ -9,4 +11,9 @@ package com.xforceplus.ultraman.permissions.sql.processor;
  */
 public interface SqlProcessor {
 
+    /**
+     * 得到来源表操作实例.
+     * @return 实例.
+     */
+    FromAbility buildFromAbility();
 }

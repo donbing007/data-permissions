@@ -1,8 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
-import com.xforceplus.ultraman.permissions.rule.check.common.validation.AllFieldCannotUseChecker;
-import com.xforceplus.ultraman.permissions.rule.context.DefaultCheckContext;
+import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
 import org.junit.Assert;
@@ -24,7 +23,7 @@ public class AllFieldCannotUseCheckerTest {
         Map<String, Boolean> caseData = buildCase();
         caseData.keySet().stream().forEach(sql -> {
 
-            DefaultCheckContext context = new DefaultCheckContext(sqlParser.parser(sql), auth);
+            DefaultContext context = new DefaultContext(sqlParser.parser(sql), auth);
             checker.check(context);
 
             Assert.assertEquals(sql, caseData.get(sql), context.isRefused());
@@ -39,8 +38,10 @@ public class AllFieldCannotUseCheckerTest {
         data.put("select c1 from t1", false);
         data.put("select t.c1 from (select * from t1) t", true);
         data.put("select t.c1 from t union select * from t2", true);
+        data.put(
+            "select count(t1.c1), tt.c2 from t1 inner join (select t2.c1,t2.c2 from (select * from t2) t2) tt on tt.id=t.id",
+            true);
 
-        data.put("select count(*) from t union select * from t2", true);
 
         return data;
     }

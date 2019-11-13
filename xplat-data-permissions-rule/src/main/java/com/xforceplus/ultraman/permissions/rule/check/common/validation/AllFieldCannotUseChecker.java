@@ -1,14 +1,16 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.xforceplus.ultraman.permissions.rule.check.Checker;
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
+import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 查询语句不可以使用"*"返回检查器.
@@ -17,31 +19,35 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public class AllFieldCannotUseChecker implements Checker {
+public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
 
+
+    public AllFieldCannotUseChecker() {
+        super(SqlType.SELECT);
+    }
 
     @Override
-    public void check(CheckContext context) {
-        Sql sql = context.sql();
+    protected void checkTypeSafe(Context context) {
 
-        sql.visit(new SqlProcessorVisitorAdapter() {
-            @Override
-            public void visit(SelectSqlProcessor processor) {
-                if (!doCheck(processor)) {
-                    context.refused("Select return values with '*' are not allowed.");
-                    return;
-                }
+        Queue<Sql> queue = new ArrayDeque<>();
+        queue.add(context.sql());
 
-                List<Sql> subSqls = processor.buildSubSqlAbility().list();
-                for (Sql subSql : subSqls) {
-                    if (!doCheck((SelectSqlProcessor) subSql.buildProcessor())) {
-                        context.refused("Select return values with '*' are not allowed.");
-                        return;
-                    }
-                }
+        SelectSqlProcessor processor;
+        Sql sql;
+        while(!queue.isEmpty()) {
+            sql = queue.poll();
+            processor = (SelectSqlProcessor) sql.buildProcessor();
+
+            if (!doCheck(processor)) {
+                context.refused("Select return values with '*' are not allowed.");
+                break;
+            } else {
+
+                queue.addAll(processor.buildSubSqlAbility().list());
+
             }
-        });
 
+        }
     }
 
     private boolean doCheck(SelectSqlProcessor processor) {

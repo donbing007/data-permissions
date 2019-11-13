@@ -1,8 +1,9 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.xforceplus.ultraman.permissions.rule.check.Checker;
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
+import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.sql.Sql;
+import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.processor.DeleteSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
@@ -14,11 +15,17 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;
  * @auth dongbin
  * @since 1.8
  */
-public class CanNotAllowSubChecker implements Checker {
+public class CanNotAllowSubChecker extends AbstractTypeSafeChecker {
+
+    public CanNotAllowSubChecker() {
+        super(new SqlType[] {
+            SqlType.UPDATE,
+            SqlType.DELETE
+        });
+    }
 
     @Override
-    public void check(CheckContext context) {
-
+    protected void checkTypeSafe(Context context) {
         Sql sql  = context.sql();
 
         sql.visit(new SqlProcessorVisitorAdapter() {
@@ -35,7 +42,7 @@ public class CanNotAllowSubChecker implements Checker {
         });
     }
 
-    private void doCheck(SubSqlAbility ability, CheckContext context) {
+    private void doCheck(SubSqlAbility ability, Context context) {
         if (ability.list().size() > 0) {
             context.refused("Subqueries are not allowed.");
         }

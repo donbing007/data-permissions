@@ -7,6 +7,7 @@ package com.xforceplus.ultraman.perissions.pojo.rule;
  * @since 1.8
  */
 public enum RuleConditionValueType {
+    UNKNOWN(0), // 未知
     INTEGER(1), // 整形
     STRING(2), // 字符串
     FLOAT(3), // 浮点
@@ -30,7 +31,7 @@ public enum RuleConditionValueType {
             }
         }
 
-        return null;
+        return UNKNOWN;
     }
 
 }

@@ -3,8 +3,8 @@ package com.xforceplus.ultraman.permissions.rule.check.select;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
-import com.xforceplus.ultraman.permissions.rule.context.DefaultCheckContext;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
+import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
@@ -49,7 +49,7 @@ public class SelectFieldCheckerTest {
                 }
 
 
-                CheckContext context = new DefaultCheckContext(sqlParser.parser(request.sql), auth, searcher);
+                Context context = new DefaultContext(sqlParser.parser(request.sql), auth, searcher);
                 checker.check(context);
 
                 Assert.assertEquals(request.sql, request.refused, context.isRefused());

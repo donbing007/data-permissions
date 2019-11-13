@@ -54,6 +54,10 @@ public class DataScopeSubConditionSqlProvider {
             sql.VALUES("value_type_id", "#{valueTypeId,jdbcType=BIGINT}");
         }
         
+        if (record.getField() != null) {
+            sql.VALUES("field", "#{field,jdbcType=VARCHAR}");
+        }
+        
         if (record.getOperation() != null) {
             sql.VALUES("`operation`", "#{operation,jdbcType=VARCHAR}");
         }
@@ -88,6 +92,7 @@ public class DataScopeSubConditionSqlProvider {
         }
         sql.SELECT("conditions_id");
         sql.SELECT("value_type_id");
+        sql.SELECT("field");
         sql.SELECT("`operation`");
         sql.SELECT("`index`");
         sql.SELECT("`value`");
@@ -127,6 +132,10 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
         }
         
+        if (record.getField() != null) {
+            sql.SET("field = #{record.field,jdbcType=VARCHAR}");
+        }
+        
         if (record.getOperation() != null) {
             sql.SET("`operation` = #{record.operation,jdbcType=VARCHAR}");
         }
@@ -160,6 +169,7 @@ public class DataScopeSubConditionSqlProvider {
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("conditions_id = #{record.conditionsId,jdbcType=BIGINT}");
         sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
+        sql.SET("field = #{record.field,jdbcType=VARCHAR}");
         sql.SET("`operation` = #{record.operation,jdbcType=VARCHAR}");
         sql.SET("`index` = #{record.index,jdbcType=SMALLINT}");
         sql.SET("`value` = #{record.value,jdbcType=VARCHAR}");
@@ -186,6 +196,10 @@ public class DataScopeSubConditionSqlProvider {
         
         if (record.getValueTypeId() != null) {
             sql.SET("value_type_id = #{valueTypeId,jdbcType=BIGINT}");
+        }
+        
+        if (record.getField() != null) {
+            sql.SET("field = #{field,jdbcType=VARCHAR}");
         }
         
         if (record.getOperation() != null) {

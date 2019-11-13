@@ -113,6 +113,16 @@
                 <version>3.1.0</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>1.21</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.28</version>
+            </dependency>
         </dependencies>
 
 
@@ -132,13 +142,14 @@
     </distributionManagement>
 
     <modules>
-        <module>xplat-data-permissions-start</module>
-        <module>xplat-data-permissions-transfer</module>
+        <module>xplat-data-permissions-pojo</module>
         <module>xplat-data-permissions-service</module>
         <module>xplat-data-permissions-sql</module>
         <module>xplat-data-permissions-rule</module>
         <module>xplat-data-permissions-repository</module>
-        <module>xplat-data-permissions-pojo</module>
+        <module>xplat-data-permissions-api</module>
+        <module>xplat-data-permissions-transfer</module>
+        <module>xplat-data-permissions-start</module>
     </modules>
 
     <properties>

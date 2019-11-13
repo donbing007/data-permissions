@@ -64,11 +64,11 @@ public class ScopeSelectRepositoryTest {
 
         ScopeSelectRepository repository = session.getMapper(ScopeSelectRepository.class);
 
-        SelectFieldScopeExample selectFieldScopeExample = new SelectFieldScopeExample();
-        selectFieldScopeExample.setRoleId("r1");
-        selectFieldScopeExample.setTenantId("t1");
-        selectFieldScopeExample.setEntity("t1");
-        List<FieldScope> fieldScopes = repository.selectFieldScopeByExample(selectFieldScopeExample);
+        SelectScopeExample selectScopeExample = new SelectScopeExample();
+        selectScopeExample.setRoleId("r1");
+        selectScopeExample.setTenantId("t1");
+        selectScopeExample.setEntity("t1");
+        List<FieldScope> fieldScopes = repository.selectFieldScopeByExample(selectScopeExample);
 
 
         FieldScopeRepository columnScopeRepository = session.getMapper(FieldScopeRepository.class);
@@ -85,7 +85,7 @@ public class ScopeSelectRepositoryTest {
     @Test
     public void testSelectDataScope() throws Exception {
         ScopeSelectRepository repository = session.getMapper(ScopeSelectRepository.class);
-        SelectDataScopeExample selectDataScopeExample = new SelectDataScopeExample();
+        SelectScopeExample selectDataScopeExample = new SelectScopeExample();
         selectDataScopeExample.setRoleId("r1");
         selectDataScopeExample.setTenantId("t1");
         selectDataScopeExample.setEntity("t1");
@@ -118,7 +118,6 @@ public class ScopeSelectRepositoryTest {
 
         Assert.assertEquals(conditions.toString(), expected.size(), conditions.size());
         Assert.assertEquals(expected.toString(), conditions.toString());
-
     }
 
     private EmbeddedDatabase buildDataSource() throws Exception {

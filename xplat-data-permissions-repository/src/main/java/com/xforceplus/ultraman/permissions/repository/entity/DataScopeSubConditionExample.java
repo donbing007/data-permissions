@@ -374,6 +374,76 @@ public class DataScopeSubConditionExample {
             return (Criteria) this;
         }
 
+        public Criteria andFieldIsNull() {
+            addCriterion("field is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldIsNotNull() {
+            addCriterion("field is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldEqualTo(String value) {
+            addCriterion("field =", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldNotEqualTo(String value) {
+            addCriterion("field <>", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldGreaterThan(String value) {
+            addCriterion("field >", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldGreaterThanOrEqualTo(String value) {
+            addCriterion("field >=", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldLessThan(String value) {
+            addCriterion("field <", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldLessThanOrEqualTo(String value) {
+            addCriterion("field <=", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldLike(String value) {
+            addCriterion("field like", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldNotLike(String value) {
+            addCriterion("field not like", value, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldIn(List<String> values) {
+            addCriterion("field in", values, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldNotIn(List<String> values) {
+            addCriterion("field not in", values, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldBetween(String value1, String value2) {
+            addCriterion("field between", value1, value2, "field");
+            return (Criteria) this;
+        }
+
+        public Criteria andFieldNotBetween(String value1, String value2) {
+            addCriterion("field not between", value1, value2, "field");
+            return (Criteria) this;
+        }
+
         public Criteria andOperationIsNull() {
             addCriterion("`operation` is null");
             return (Criteria) this;

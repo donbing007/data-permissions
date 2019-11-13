@@ -1,13 +1,21 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
+import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.And;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Or;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Relationship;
 import com.xforceplus.ultraman.permissions.sql.define.values.DoubleValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.StringValue;
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
+import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import net.sf.jsqlparser.expression.AnyType;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -38,6 +46,25 @@ public class JSqlParserConditionAbilityTest {
     }
 
     @Test
+    public void testMultipleAdd() throws Exception {
+        Statement statement = CCJSqlParserUtil.parse("select * from t1");
+        JSqlParserConditionAbility c = new JSqlParserConditionAbility(statement);
+        c.add(
+            new Condition(new Field("c1"), ConditionOperator.EQUALS, new LongValue(1)),
+            Conditional.AND,
+            false
+        );
+
+        c.add(
+            new Condition(new Field("c2"), ConditionOperator.EQUALS, new LongValue(1)),
+            Conditional.AND,
+            false
+        );
+        Assert.assertEquals(
+            CCJSqlParserUtil.parse("select * from t1 where c1=1 and c2=1").toString(), statement.toString());
+    }
+
+    @Test
     public void testAddCondition() throws Exception {
 
         Map<String, AddConditionPack> data = buildAddCase();
@@ -50,7 +77,11 @@ public class JSqlParserConditionAbilityTest {
             handler = new JSqlParserConditionAbility(statement);
             cp = data.get(sql);
 
-            handler.add(cp.newCondition, cp.conditional, cp.isolation);
+            if (Condition.class.isInstance(cp.newCondition)) {
+                handler.add((Condition) cp.newCondition, cp.conditional, cp.isolation);
+            } else {
+                handler.add((Relationship) cp.newCondition, cp.conditional, cp.isolation);
+            }
 
             Assert.assertEquals(sql, cp.expected, statement.toString());
         }
@@ -71,7 +102,7 @@ public class JSqlParserConditionAbilityTest {
                 new Condition(new Field("t", "c1", null), ConditionOperator.BETWEEN, Arrays.asList(
                     new StringValue("v1"), new StringValue("v2"))),
                 Conditional.OR,
-                CCJSqlParserUtil.parse("select * from t1 t where (t.c1 = 10) or t.c1 between 'v1' and 'v2'").toString(),
+                CCJSqlParserUtil.parse("select * from t1 t where (t.c1 = 10) or (t.c1 between 'v1' and 'v2')").toString(),
                 true
             ));
 
@@ -95,16 +126,56 @@ public class JSqlParserConditionAbilityTest {
                 false
             ));
 
+        data.put("select * from t1 where (c1=2 or c2=3)",
+            new AddConditionPack(
+                new And(
+                    new Or(
+                        new Condition(new Field("c3"), ConditionOperator.EQUALS, new LongValue(10)),
+                        new Condition(
+                            new Field("c4"),
+                            ConditionOperator.BETWEEN,
+                            Arrays.asList(new LongValue(12), new LongValue(20))
+                        )
+                    ),
+                    new Condition(new Field("c5"), ConditionOperator.NOT_EQUALS, new LongValue(200))
+                ),
+                Conditional.AND,
+                CCJSqlParserUtil.parse(
+                    "select * from t1 where (c1=2 or c2=3) and (c3=10 or c4 between 12 and 20 and c5 != 200)").toString(),
+                true
+            )
+        );
+
+        data.put("select * from t1 where c1=2 or c2=3",
+            new AddConditionPack(
+                new And(
+                    new Or(
+                        new Condition(new Field("c3"), ConditionOperator.EQUALS, new LongValue(10)),
+                        new Condition(
+                            new Field("c4"),
+                            ConditionOperator.BETWEEN,
+                            Arrays.asList(new LongValue(12), new LongValue(20))
+                        )
+                    ),
+                    new Condition(new Field("c5"), ConditionOperator.NOT_EQUALS, new LongValue(200))
+                ),
+                Conditional.AND,
+                CCJSqlParserUtil.parse(
+                    "select * from t1 where (c1=2 or c2=3) and (c3=10 or c4 between 12 and 20 and c5 != 200)").toString(),
+                true
+            )
+        );
+
         return data;
     }
 
     private static class AddConditionPack {
-        public Condition newCondition;
+        public Item newCondition;
         public Conditional conditional;
         public String expected;
         public boolean isolation;
 
-        public AddConditionPack(Condition newCondition, Conditional conditional, String expected, boolean isolation) {
+        public AddConditionPack(Item newCondition, Conditional conditional, String expected, boolean isolation) {
             this.newCondition = newCondition;
             this.conditional = conditional;
             this.expected = expected;

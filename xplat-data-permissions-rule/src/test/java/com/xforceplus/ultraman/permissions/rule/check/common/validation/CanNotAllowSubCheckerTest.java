@@ -1,8 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
-import com.xforceplus.ultraman.permissions.rule.check.common.validation.CanNotAllowSubChecker;
-import com.xforceplus.ultraman.permissions.rule.context.DefaultCheckContext;
+import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
 import org.junit.Assert;
@@ -24,7 +23,7 @@ public class CanNotAllowSubCheckerTest {
         Map<String, Boolean> caseData = buildCase();
         caseData.keySet().stream().forEach(sql -> {
 
-            DefaultCheckContext context = new DefaultCheckContext(sqlParser.parser(sql), auth);
+            DefaultContext context = new DefaultContext(sqlParser.parser(sql), auth);
             checker.check(context);
 
             Assert.assertEquals(sql, caseData.get(sql), context.isRefused());

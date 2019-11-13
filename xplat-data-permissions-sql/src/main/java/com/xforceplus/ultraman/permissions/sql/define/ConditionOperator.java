@@ -10,6 +10,7 @@ public enum ConditionOperator {
     IN("IN"),
     NOT_IN("NOT IN"),
     LIKE("LIKE"),
+    NOT_LIKE("NOT LIKE"),
     EQUALS("="),
     NOT_EQUALS("!="),
     GREATER_THAN(">"),

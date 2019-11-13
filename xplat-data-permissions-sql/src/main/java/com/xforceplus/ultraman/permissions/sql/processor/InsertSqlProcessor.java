@@ -12,11 +12,6 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertValueAbil
  */
 public interface InsertSqlProcessor extends SqlProcessor {
 
-    /**
-     * 得到来源表操作实例.
-     * @return 实例.
-     */
-    FromAbility buildFromAbility();
 
     /**
      * 得到当胶插入语句的值的操作实现.

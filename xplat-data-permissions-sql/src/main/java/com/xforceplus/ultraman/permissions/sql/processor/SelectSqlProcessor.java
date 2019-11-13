@@ -19,12 +19,6 @@ public interface SelectSqlProcessor extends SqlProcessor {
     ConditionAbility buildConditionAbility();
 
     /**
-     * 得到来源表操作实例.
-     * @return 实例.
-     */
-    FromAbility buildFromAbility();
-
-    /**
      * 得到查询字段列表操作实例.
      * @return 实例.
      */

@@ -1,13 +1,10 @@
 package com.xforceplus.ultraman.permissions.rule.check.select;
 
 import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
-import com.xforceplus.ultraman.permissions.rule.check.Checker;
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
+import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.define.Condition;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.From;
-import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
@@ -24,11 +21,19 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public class SelectFieldChecker implements Checker {
+public class SelectFieldChecker extends AbstractTypeSafeChecker {
+
+    public SelectFieldChecker() {
+        super(SqlType.SELECT);
+    }
 
     @Override
-    public void check(CheckContext context) {
+    protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
+
+        if (SqlType.SELECT != sql.type()) {
+            return;
+        }
 
         sql.visit(new SqlProcessorVisitorAdapter() {
             @Override
@@ -42,10 +47,9 @@ public class SelectFieldChecker implements Checker {
                 }
             }
         });
-
     }
 
-    private void checkSelectItem(SelectSqlProcessor selectSqlProcessor, CheckContext context) {
+    private void checkSelectItem(SelectSqlProcessor selectSqlProcessor, Context context) {
 
         SelectItemAbility selectItemAbility = selectSqlProcessor.buildSelectItemAbility();
 
@@ -69,7 +73,7 @@ public class SelectFieldChecker implements Checker {
     }
 
     //任何一个字段没有权限都将拒绝执行.
-    private void checkCondition(SelectSqlProcessor processor, CheckContext context) {
+    private void checkCondition(SelectSqlProcessor processor, Context context) {
         ConditionAbility conditionAbility = processor.buildConditionAbility();
         List<Condition> conditions = conditionAbility.list();
 
@@ -91,7 +95,7 @@ public class SelectFieldChecker implements Checker {
     /**
      * 判断是否需要隐藏的字段.  true 需要隐藏,false 不需要.
      */
-    private boolean needHide(SelectSqlProcessor selectSqlProcessor, Item item, CheckContext context) {
+    private boolean needHide(SelectSqlProcessor selectSqlProcessor, Item item, Context context) {
         FieldFromAbility fieldFromAbility = selectSqlProcessor.buildFieldFromAbility();
         List<AbstractMap.SimpleEntry<Field, From>> froms = fieldFromAbility.searchRealTableName(item);
 

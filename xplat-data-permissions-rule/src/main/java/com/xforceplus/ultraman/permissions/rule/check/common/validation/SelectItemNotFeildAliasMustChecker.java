@@ -1,14 +1,16 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.xforceplus.ultraman.permissions.rule.check.Checker;
-import com.xforceplus.ultraman.permissions.rule.context.CheckContext;
+import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
+import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 如果是非简单 Field,那么必须设置别名.
@@ -16,30 +18,34 @@ import java.util.List;
  * @auth dongbin
  * @since 1.8
  */
-public class SelectItemNotFeildAliasMustChecker implements Checker {
+public class SelectItemNotFeildAliasMustChecker extends AbstractTypeSafeChecker {
+
+    public SelectItemNotFeildAliasMustChecker() {
+        super(SqlType.SELECT);
+    }
 
     @Override
-    public void check(CheckContext context) {
-        Sql sql = context.sql();
+    protected void checkTypeSafe(Context context) {
 
-        sql.visit(new SqlProcessorVisitorAdapter() {
-            @Override
-            public void visit(SelectSqlProcessor processor) {
-                if (!doCheck(processor)) {
-                    context.refused("All return entries must be aliased.");
-                    return;
-                }
+        Queue<Sql> queue = new ArrayDeque<>();
+        queue.add(context.sql());
 
-                List<Sql> subSqls = processor.buildSubSqlAbility().list();
-                for (Sql subSql : subSqls) {
-                    if (!doCheck((SelectSqlProcessor) subSql.buildProcessor())) {
-                        context.refused("All return entries must be aliased.");
-                        return;
-                    }
-                }
+        SelectSqlProcessor processor;
+        Sql sql;
+        while(!queue.isEmpty()) {
+            sql = queue.poll();
+            processor = (SelectSqlProcessor) sql.buildProcessor();
+
+            if (!doCheck(processor)) {
+                context.refused("All return entries must be aliased.");
+                break;
+            } else {
+
+                queue.addAll(processor.buildSubSqlAbility().list());
+
             }
-        });
 
+        }
     }
 
     private boolean doCheck(SelectSqlProcessor processor) {

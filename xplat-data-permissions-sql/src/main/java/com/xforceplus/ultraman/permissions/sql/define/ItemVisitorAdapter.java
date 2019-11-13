@@ -1,6 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.And;
+import com.xforceplus.ultraman.permissions.sql.define.relationship.Or;
 import com.xforceplus.ultraman.permissions.sql.define.values.*;
 
 /**
@@ -73,6 +75,16 @@ public class ItemVisitorAdapter implements ItemVisitor {
 
     @Override
     public void visit(Arithmeitc item) {
+
+    }
+
+    @Override
+    public void visit(And and) {
+
+    }
+
+    @Override
+    public void visit(Or or) {
 
     }
 }

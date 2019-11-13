@@ -12,7 +12,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Item;
  * @auth dongbin
  * @since 1.8
  */
-public interface CheckContext {
+public interface Context {
 
     /**
      * 当前被检查的 sql.
@@ -26,6 +26,12 @@ public interface CheckContext {
      * @return 旧的 sql.
      */
     Sql updateSql(Sql sql);
+
+    /**
+     * 是否更新过 sql.
+     * @return true 更新过,false 没有.
+     */
+    boolean isUpdatedSql();
 
     /**
      * 当前的授权信息.
@@ -55,6 +61,12 @@ public interface CheckContext {
      * 拒绝执行 sql.无理由.
      */
     void refused();
+
+    /**
+     * 拒绝的理由.
+     * @return 理由
+     */
+    String cause();
 
     /**
      * 屏蔽的字段,这些字段不会出现在最终执行的 SQL 上了.

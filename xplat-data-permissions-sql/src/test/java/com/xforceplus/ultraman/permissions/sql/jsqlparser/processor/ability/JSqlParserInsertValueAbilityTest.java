@@ -2,6 +2,8 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.junit.Assert;
@@ -43,10 +45,10 @@ public class JSqlParserInsertValueAbilityTest {
                 ListPack pack = caseData.get(sql);
                 List<Item> items = h.list(pack.point);
 
-                Assert.assertEquals(pack.items.size(), items.size());
+                Assert.assertEquals(sql,pack.items.size(), items.size());
 
                 for (int i = 0; i < pack.items.size(); i++) {
-                    Assert.assertEquals(pack.items.get(i), items.get(i));
+                    Assert.assertEquals(sql,pack.items.get(i), items.get(i));
                 }
 
             } catch (Exception ex) {
@@ -81,6 +83,15 @@ public class JSqlParserInsertValueAbilityTest {
                 Arrays.asList(
                     new LongValue(2),
                     new Func("current_time")
+                )
+            ));
+
+        data.put("insert t1 (c1,c2) values(1,1+2)",
+            new ListPack(
+                0,
+                Arrays.asList(
+                    new LongValue(1),
+                    new Arithmeitc(new LongValue(1), new LongValue(2), ArithmeticSymbol.ADDITION)
                 )
             ));
 
