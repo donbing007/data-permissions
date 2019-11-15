@@ -1,7 +1,5 @@
 package com.xforceplus.ultraman.permissions;
 
-import com.xforceplus.ultraman.permissions.grpc.ForStatmentGrpc;
-import com.xforceplus.ultraman.permissions.grpc.StatmentCheckServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

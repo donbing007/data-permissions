@@ -5,24 +5,23 @@ import java.util.Objects;
 
 /**
  * service result 返回值.
+ *
  * @version 0.1 2019/11/13 15:15
  * @auth dongbin
  * @since 1.8
  */
-public abstract class Result<V> implements Serializable {
+public abstract class Result implements Serializable {
 
     private int code;
     private String message;
-    private V value;
 
     public Result(int code) {
         this.code = code;
     }
 
-    public Result(int code, String message, V value) {
+    public Result(int code, String message) {
         this.code = code;
         this.message = message;
-        this.value = value;
     }
 
     public int getCode() {
@@ -31,14 +30,6 @@ public abstract class Result<V> implements Serializable {
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public V getValue() {
-        return value;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
     }
 
     public String getMessage() {
@@ -52,17 +43,20 @@ public abstract class Result<V> implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Result)) return false;
-        Result<?> result = (Result<?>) o;
+        if (this == o)  {
+            return true;
+        }
+        if (!(o instanceof Result)) {
+            return false;
+        }
+        Result result = (Result) o;
         return getCode() == result.getCode() &&
-            Objects.equals(getMessage(), result.getMessage()) &&
-            Objects.equals(getValue(), result.getValue());
+            Objects.equals(getMessage(), result.getMessage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCode(), getMessage(), getValue());
+        return Objects.hash(getCode(), getMessage());
     }
 
     @Override
@@ -70,7 +64,6 @@ public abstract class Result<V> implements Serializable {
         return "Result{" +
             "code=" + code +
             ", message='" + message + '\'' +
-            ", value=" + value +
             '}';
     }
 }

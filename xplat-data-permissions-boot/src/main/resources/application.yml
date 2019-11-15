@@ -1,0 +1,44 @@
+server:
+  port: 8080
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+    shutdown:
+      enabled: true
+    info:
+      enabled: true
+grpc:
+  enabled: true
+  port: 8206
+  maxInboundMetadataSize: 1048576
+  maxInboundMessageSize: 1048576
+executor:
+  maxTaskSize: 1000
+  # maxWorkerSize: cpu core
+
+spring:
+  cache:
+    type: CAFFEINE
+    cache-names: rule
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.14.194:3306/xplat_data_permissions
+    username: root
+    password: root
+
+logging:
+  level:
+    root: DEBUG
+    io:
+      opencensus: INFO

@@ -4,6 +4,7 @@ import com.xforceplus.ultraman.permissions.rule.check.Checker;
 import com.xforceplus.ultraman.permissions.rule.check.insert.InsertFieldChecker;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;

@@ -6,7 +6,6 @@ import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 
 import java.util.ArrayDeque;
 import java.util.List;

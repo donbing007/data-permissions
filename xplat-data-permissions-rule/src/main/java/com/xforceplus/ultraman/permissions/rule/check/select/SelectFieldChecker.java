@@ -31,22 +31,13 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
     protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
 
-        if (SqlType.SELECT != sql.type()) {
-            return;
+        SelectSqlProcessor processor = (SelectSqlProcessor) sql.buildProcessor();
+
+        checkSelectItem(processor, context);
+
+        if (!context.isRefused()) {
+            checkCondition(processor, context);
         }
-
-        sql.visit(new SqlProcessorVisitorAdapter() {
-            @Override
-            public void visit(SelectSqlProcessor processor) {
-
-
-                checkSelectItem(processor, context);
-
-                if (!context.isRefused()) {
-                    checkCondition(processor, context);
-                }
-            }
-        });
     }
 
     private void checkSelectItem(SelectSqlProcessor selectSqlProcessor, Context context) {

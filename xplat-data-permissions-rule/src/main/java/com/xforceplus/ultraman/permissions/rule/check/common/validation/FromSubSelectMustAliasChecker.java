@@ -1,13 +1,11 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 
 import java.util.ArrayDeque;
 import java.util.List;

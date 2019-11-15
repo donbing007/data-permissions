@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.CanNotAllowSubChecker;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;

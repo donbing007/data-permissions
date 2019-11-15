@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.perissions.pojo.rule;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +21,7 @@ public class DataRule implements Serializable {
     }
 
     public DataRule(String entity, String field) {
-        this(entity,field, Collections.emptyList());
+        this(entity,field, null);
     }
 
     public DataRule(String entity, String field, List<DataRuleCondition> conditions) {
@@ -46,11 +47,19 @@ public class DataRule implements Serializable {
     }
 
     public List<DataRuleCondition> getConditions() {
-        return conditions;
+        if (conditions == null) {
+            return Collections.emptyList();
+        } else {
+            return conditions;
+        }
     }
 
-    public void setConditions(List<DataRuleCondition> conditions) {
-        this.conditions = conditions;
+    public void addDataRuleCondition(DataRuleCondition dataRuleCondition) {
+        if (conditions == null) {
+            conditions = new ArrayList();
+        }
+
+        conditions.add(dataRuleCondition);
     }
 
     @Override

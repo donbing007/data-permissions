@@ -64,18 +64,20 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
                 break;
             }
             case DELETE:  {
-                // delete 不允许子句.
+                // delete 不允许子句.这里忽略子句.
 
                 doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(),context);
                 break;
             }
             case UPDATE: {
-                // update 不允许子句.
+                // update 不允许子句.这里忽略子句.
 
                 doCheckUpdate((UpdateSqlProcessor) sql.buildProcessor(), context);
                 break;
             }
         }
+
+        context.updateSql(sql);
     }
 
     private void doCheckDelete(DeleteSqlProcessor processor, Context context) {

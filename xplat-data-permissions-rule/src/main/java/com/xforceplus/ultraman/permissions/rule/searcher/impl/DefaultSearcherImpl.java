@@ -26,14 +26,14 @@ public class DefaultSearcherImpl implements Searcher {
     @Resource
     private ScopeSelectRepository scopeSelectRepository;
 
-    @Cacheable(key= "#auth.tenant + '.' + #auth.role + '.' + entity" )
+    @Cacheable(key= "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity" )
     @Override
     public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
 
         return loadFieldRuleFromDb(auth, entity);
     }
 
-    @Cacheable(key= "#auth.tenant + '.' + #auth.role + '.' + entity" )
+    @Cacheable(key= "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity" )
     @Override
     public List<DataRule> searchDataRule(Authorization auth, String entity) {
         return loadDataRuleFromDb(auth, entity);
@@ -73,11 +73,11 @@ public class DefaultSearcherImpl implements Searcher {
 
             DataRule rule = buffer.get(c.getField());
             if (rule == null) {
-                rule = new DataRule(entity, c.getField(), Arrays.asList());
+                rule = new DataRule(entity, c.getField());
                 buffer.put(c.getField(), rule);
             }
 
-            rule.getConditions().add(ruleCondition);
+            rule.addDataRuleCondition(ruleCondition);
 
         });
 
