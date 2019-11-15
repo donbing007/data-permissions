@@ -3,9 +3,10 @@ package com.xforceplus.ultraman.permissions.sql.define;
 import java.util.Objects;
 
 /**
- * 有别名.
+ * 元素是否有别名的.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/7 11:16
- * @auth dongbin
  * @since 1.8
  */
 public abstract class Aliasable {

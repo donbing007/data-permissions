@@ -6,7 +6,7 @@ import java.util.Objects;
 
 /**
  * @version 0.1 2019/10/29 15:26
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class DoubleValue implements Value<Double> {

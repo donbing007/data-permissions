@@ -42,7 +42,8 @@ public class JSqlParserUpdateFieldFromAbilityTest {
                 List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.field);
 
                 Assert.assertEquals(sql, pack.expectedFroms.size(), froms.size());
-                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]), froms.toArray(new AbstractMap.SimpleEntry[0]));
+                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]),
+                    froms.toArray(new AbstractMap.SimpleEntry[0]));
 
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
@@ -63,15 +64,15 @@ public class JSqlParserUpdateFieldFromAbilityTest {
 
         data.put("update t set t.c1=10",
             new SearchPack(
-            new Field("t","c1",null),
-            Arrays.asList(
-                new AbstractMap.SimpleEntry(new Field("t", "c1"), new From("t"))
-            ))
+                new Field("t", "c1", null),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(new Field("t", "c1"), new From("t"))
+                ))
         );
 
         data.put("update t inner join t2 on t2.id=t.id set t.c1=t2.c2",
             new SearchPack(
-                new Field("t2","c2",null),
+                new Field("t2", "c2", null),
                 Arrays.asList(
                     new AbstractMap.SimpleEntry(new Field("t2", "c2"), new From("t2"))
                 ))

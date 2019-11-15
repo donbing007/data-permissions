@@ -45,14 +45,14 @@ public class JSqlParserInsertValueAbilityTest {
                 ListPack pack = caseData.get(sql);
                 List<Item> items = h.list(pack.point);
 
-                Assert.assertEquals(sql,pack.items.size(), items.size());
+                Assert.assertEquals(sql, pack.items.size(), items.size());
 
                 for (int i = 0; i < pack.items.size(); i++) {
-                    Assert.assertEquals(sql,pack.items.get(i), items.get(i));
+                    Assert.assertEquals(sql, pack.items.get(i), items.get(i));
                 }
 
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(),ex);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         });
     }
@@ -123,7 +123,7 @@ public class JSqlParserInsertValueAbilityTest {
                 Assert.assertEquals(caseData.get(sql).intValue(), h.size());
 
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(),ex);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         });
 
@@ -133,7 +133,7 @@ public class JSqlParserInsertValueAbilityTest {
         Map<String, Integer> data = new LinkedHashMap<>();
 
         data.put("insert t1 (c1) value(1)", 1);
-        data.put("insert t1 (c1,c2) values(1,2),(3,4)",2);
+        data.put("insert t1 (c1,c2) values(1,2),(3,4)", 2);
 
         return data;
     }

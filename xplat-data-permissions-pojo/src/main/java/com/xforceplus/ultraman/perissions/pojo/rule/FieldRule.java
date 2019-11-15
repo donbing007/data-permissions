@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * 表示一个角色对于某个 entity 的某个字段.
  * @version 0.1 2019/11/6 15:42
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class FieldRule implements Serializable {

@@ -8,8 +8,9 @@ import java.util.Objects;
 
 /**
  * 表示一个函数.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/29 14:55
- * @auth dongbin
  * @since 1.8
  */
 public class Func extends Aliasable implements Item {
@@ -21,11 +22,11 @@ public class Func extends Aliasable implements Item {
     }
 
     public Func(String name, Alias alias) {
-        this(name,null, alias);
+        this(name, null, alias);
     }
 
     public Func(String name, List<Item> parameters) {
-        this(name,parameters, null);
+        this(name, parameters, null);
     }
 
     public Func(String name, List<Item> parameters, Alias alias) {

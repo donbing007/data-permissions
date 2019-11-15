@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/6 15:45
- * @auth dongbin
  * @since 1.8
  */
 public class DataRule implements Serializable {
@@ -21,7 +21,7 @@ public class DataRule implements Serializable {
     }
 
     public DataRule(String entity, String field) {
-        this(entity,field, null);
+        this(entity, field, null);
     }
 
     public DataRule(String entity, String field, List<DataRuleCondition> conditions) {

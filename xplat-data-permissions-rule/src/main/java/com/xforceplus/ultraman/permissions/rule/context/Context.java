@@ -9,7 +9,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Item;
 /**
  * 规则检查上下文.
  * @version 0.1 2019/11/1 11:33
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface Context {

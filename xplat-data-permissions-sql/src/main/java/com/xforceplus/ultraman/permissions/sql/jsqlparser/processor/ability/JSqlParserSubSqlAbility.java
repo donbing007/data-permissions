@@ -18,8 +18,8 @@ import java.util.List;
 /**
  * 处理所有子查询,包含 union 和 union all.
  *
+ * @author dongbin
  * @version 0.1 2019/10/31 13:56
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implements SubSqlAbility {

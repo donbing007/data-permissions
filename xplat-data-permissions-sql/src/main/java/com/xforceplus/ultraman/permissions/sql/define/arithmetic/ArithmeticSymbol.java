@@ -3,7 +3,7 @@ package com.xforceplus.ultraman.permissions.sql.define.arithmetic;
 /**
  * 运行符号.
  * @version 0.1 2019/10/29 19:08
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public enum ArithmeticSymbol {

@@ -66,9 +66,9 @@ public class JSqlParserDeleteFieldFromAbilityTest {
 
         data.put("delete from t1 t where t.id=2 or t.id=3",
             new SearchPack(
-                new Field("t","id"),
+                new Field("t", "id"),
                 Arrays.asList(
-                    new AbstractMap.SimpleEntry(new Field("t","id"), new From("t1",new Alias("t")))
+                    new AbstractMap.SimpleEntry(new Field("t", "id"), new From("t1", new Alias("t")))
                 )
             )
         );

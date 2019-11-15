@@ -14,8 +14,8 @@ import java.util.Queue;
 /**
  * 查询语句不可以使用"*"返回检查器.
  *
+ * @author dongbin
  * @version 0.1 2019/11/8 14:15
- * @auth dongbin
  * @since 1.8
  */
 public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
@@ -33,7 +33,7 @@ public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
 
         SelectSqlProcessor processor;
         Sql sql;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             sql = queue.poll();
             processor = (SelectSqlProcessor) sql.buildProcessor();
 

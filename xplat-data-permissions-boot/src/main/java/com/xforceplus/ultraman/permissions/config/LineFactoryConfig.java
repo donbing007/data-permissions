@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @version 0.1 2019/11/14 11:30
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Configuration

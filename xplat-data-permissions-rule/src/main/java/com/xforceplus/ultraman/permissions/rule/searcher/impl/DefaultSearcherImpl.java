@@ -16,29 +16,29 @@ import java.util.stream.Collectors;
 
 /**
  * 默认规则搜索器实现.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/6 16:22
- * @auth dongbin
  * @since 1.8
  */
-@CacheConfig(cacheNames= "rule")
+@CacheConfig(cacheNames = "rule")
 public class DefaultSearcherImpl implements Searcher {
 
     @Resource
     private ScopeSelectRepository scopeSelectRepository;
 
-    @Cacheable(key= "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity" )
+    @Cacheable(key = "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
 
         return loadFieldRuleFromDb(auth, entity);
     }
 
-    @Cacheable(key= "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity" )
+    @Cacheable(key = "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<DataRule> searchDataRule(Authorization auth, String entity) {
         return loadDataRuleFromDb(auth, entity);
     }
-
 
 
     // 查询没有需要返回空列表.

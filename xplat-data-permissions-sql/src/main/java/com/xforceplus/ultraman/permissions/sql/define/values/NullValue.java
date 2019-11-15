@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.sql.define.ItemVisitor;
 /**
  * null 值.
  * @version 0.1 2019/10/29 15:49
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class NullValue implements Value {

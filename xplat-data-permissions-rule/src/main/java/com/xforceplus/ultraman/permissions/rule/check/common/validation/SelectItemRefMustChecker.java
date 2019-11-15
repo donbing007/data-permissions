@@ -16,8 +16,9 @@ import java.util.Queue;
  * select c1 from t1 错误.
  * select t1.c1 from t1 正确
  * select t.c1 from t1 t 正确.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/8 14:40
- * @auth dongbin
  * @since 1.8
  */
 public class SelectItemRefMustChecker extends AbstractTypeSafeChecker {
@@ -33,7 +34,7 @@ public class SelectItemRefMustChecker extends AbstractTypeSafeChecker {
 
         SelectSqlProcessor processor;
         Sql sql;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             sql = queue.poll();
             processor = (SelectSqlProcessor) sql.buildProcessor();
 

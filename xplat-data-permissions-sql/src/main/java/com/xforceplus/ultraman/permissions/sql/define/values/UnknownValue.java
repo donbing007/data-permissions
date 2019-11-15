@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 表示一个无法识别的值类型.
  * @version 0.1 2019/10/29 15:54
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class UnknownValue implements Value {

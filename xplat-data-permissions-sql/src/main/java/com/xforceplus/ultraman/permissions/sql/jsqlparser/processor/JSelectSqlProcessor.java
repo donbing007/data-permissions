@@ -9,7 +9,7 @@ import net.sf.jsqlparser.statement.select.Select;
 /**
  * select
  * @version 0.1 2019/10/25 18:50
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JSelectSqlProcessor extends JSqlProcessor implements SelectSqlProcessor {

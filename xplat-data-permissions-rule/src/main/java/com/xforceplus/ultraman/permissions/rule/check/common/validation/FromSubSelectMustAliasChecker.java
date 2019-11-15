@@ -13,8 +13,9 @@ import java.util.Queue;
 
 /**
  * 校验From子查询必须有别名.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/8 11:39
- * @auth dongbin
  * @since 1.8
  */
 public class FromSubSelectMustAliasChecker extends AbstractTypeSafeChecker {
@@ -32,7 +33,7 @@ public class FromSubSelectMustAliasChecker extends AbstractTypeSafeChecker {
 
         SelectSqlProcessor processor;
         Sql sql;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             sql = queue.poll();
             processor = (SelectSqlProcessor) sql.buildProcessor();
 

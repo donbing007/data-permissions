@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 /**
  * JSqlParser 字段操作.
  *
+ * @author dongbin
  * @version 0.1 2019/10/28 17:23
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler implements SelectItemAbility {

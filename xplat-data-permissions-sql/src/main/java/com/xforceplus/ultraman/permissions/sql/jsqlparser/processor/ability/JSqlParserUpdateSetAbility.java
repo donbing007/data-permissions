@@ -19,8 +19,9 @@ import java.util.List;
 
 /**
  * update set handler.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/30 10:13
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserUpdateSetAbility extends AbstractJSqlParserHandler implements UpdateSetAbility {
@@ -52,7 +53,7 @@ public class JSqlParserUpdateSetAbility extends AbstractJSqlParserHandler implem
 
                 updateSets.add(new UpdateSet(field, ConversionHelper.convertValue(expr)));
 
-            } else if (Function.class.isInstance(expr)){
+            } else if (Function.class.isInstance(expr)) {
 
 
                 updateSets.add(new UpdateSet(field, ConversionHelper.convert((Function) expr)));

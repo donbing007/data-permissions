@@ -47,7 +47,7 @@ public class JSqlParserUpdateUpdateSetAbilityTest {
 
                 List<UpdateSet> expectedList = caseData.get(sql);
                 Assert.assertEquals(expectedList.size(), current.size());
-                for (int i=0; i < expectedList.size(); i++) {
+                for (int i = 0; i < expectedList.size(); i++) {
 
                     Assert.assertEquals(expectedList.get(i).toSqlString(), current.get(i).toSqlString());
                 }

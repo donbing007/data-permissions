@@ -8,7 +8,7 @@ import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 
 /**
  * @version 0.1 2019/11/12 11:11
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class Relationship implements Item {

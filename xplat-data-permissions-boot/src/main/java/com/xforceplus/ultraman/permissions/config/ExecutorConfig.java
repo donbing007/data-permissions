@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @version 0.1 2019/11/14 13:59
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Configuration

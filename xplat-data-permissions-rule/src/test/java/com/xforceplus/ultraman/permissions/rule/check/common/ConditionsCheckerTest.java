@@ -16,6 +16,9 @@ import java.util.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * checker test.
+ */
 public class ConditionsCheckerTest {
 
     private Authorization auth = new Authorization("r1", "t1");
@@ -42,9 +45,9 @@ public class ConditionsCheckerTest {
 
             try {
 
-                Assert.assertEquals(s,CCJSqlParserUtil.parse(pack.expectation).toString(), sql.toSqlString());
+                Assert.assertEquals(s, CCJSqlParserUtil.parse(pack.expectation).toString(), sql.toSqlString());
 
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
 
@@ -52,8 +55,8 @@ public class ConditionsCheckerTest {
 
     }
 
-    private Map<String, ConditionPack> buildCase() throws Exception{
-        Map<String,ConditionPack> data = new LinkedHashMap<>();
+    private Map<String, ConditionPack> buildCase() throws Exception {
+        Map<String, ConditionPack> data = new LinkedHashMap<>();
 
         data.put(
             "select * from t1",
@@ -225,7 +228,7 @@ public class ConditionsCheckerTest {
         private String expectation;
         private Map<String, List<DataRule>> ruleMap;
 
-        public ConditionPack(Map<String, List<DataRule>> ruleMap,String expectedSql) {
+        public ConditionPack(Map<String, List<DataRule>> ruleMap, String expectedSql) {
             this.expectation = expectedSql;
             this.ruleMap = ruleMap;
         }

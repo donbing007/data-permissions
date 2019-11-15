@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * 搜索字段范围搜索.
  * @version 0.1 2019/11/5 16:59
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class SelectScopeExample {

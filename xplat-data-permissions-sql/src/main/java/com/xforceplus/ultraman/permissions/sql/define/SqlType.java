@@ -2,8 +2,9 @@ package com.xforceplus.ultraman.permissions.sql.define;
 
 /**
  * SQL 语句类型.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/25 16:21
- * @auth dongbin
  * @since 1.8
  */
 public enum SqlType {

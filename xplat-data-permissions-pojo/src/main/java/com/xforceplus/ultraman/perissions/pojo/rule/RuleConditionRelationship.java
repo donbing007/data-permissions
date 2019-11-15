@@ -3,7 +3,7 @@ package com.xforceplus.ultraman.perissions.pojo.rule;
 /**
  * 条件之间的联系.
  * @version 0.1 2019/11/6 16:13
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public enum RuleConditionRelationship {

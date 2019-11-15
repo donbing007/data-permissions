@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * 表示授权信息.
  * @version 0.1 2019/11/6 15:30
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class Authorization implements Serializable {

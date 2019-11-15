@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * checker test.
+ */
 public class AllFieldCannotUseCheckerTest {
 
     private Authorization auth = new Authorization("r1", "t1");
@@ -25,7 +28,6 @@ public class AllFieldCannotUseCheckerTest {
 
             DefaultContext context = new DefaultContext(sqlParser.parser(sql), auth);
             checker.check(context);
-
             Assert.assertEquals(sql, caseData.get(sql), context.isRefused());
         });
 

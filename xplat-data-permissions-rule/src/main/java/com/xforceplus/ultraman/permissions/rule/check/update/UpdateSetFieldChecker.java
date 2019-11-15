@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * 检查 update set 字段是否有权限.
  * @version 0.1 2019/11/12 16:52
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class UpdateSetFieldChecker extends AbstractTypeSafeChecker {

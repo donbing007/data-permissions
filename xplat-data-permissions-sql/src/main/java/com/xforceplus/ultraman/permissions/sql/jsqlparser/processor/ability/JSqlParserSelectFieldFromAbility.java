@@ -17,8 +17,9 @@ import java.util.*;
 
 /**
  * 查找指定字段的属于的 From .
+ *
+ * @author dongbin
  * @version 0.1 2019/11/1 15:26
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler implements FieldFromAbility {
@@ -193,7 +194,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         queue.add(item);
 
         Item currentItem;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             currentItem = queue.poll();
             currentItem.visit(new ItemVisitorAdapter() {
                 @Override

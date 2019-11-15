@@ -10,7 +10,7 @@ import net.sf.jsqlparser.statement.update.Update;
 /**
  * 所有 handler 的基础抽像实现.
  * @version 0.1 2019/10/30 10:30
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class AbstractJSqlParserHandler {

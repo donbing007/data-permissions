@@ -2,8 +2,9 @@ package com.xforceplus.ultraman.permissions.sql.define;
 
 /**
  * 条件连接符号.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/25 16:19
- * @auth dongbin
  * @since 1.8
  */
 public enum Conditional {

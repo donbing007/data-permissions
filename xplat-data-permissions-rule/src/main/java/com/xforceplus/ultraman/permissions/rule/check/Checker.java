@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.rule.context.Context;
 /**
  * 规则校验策略.
  * @version 0.1 2019/11/1 11:32
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface Checker {

@@ -14,7 +14,7 @@ import net.sf.jsqlparser.statement.Statement;
 /**
  * delete
  * @version 0.1 2019/10/25 18:56
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JDeleteSqlProcessor extends JSqlProcessor implements DeleteSqlProcessor {

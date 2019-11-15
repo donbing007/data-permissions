@@ -12,7 +12,7 @@ import net.sf.jsqlparser.statement.Statement;
 /**
  * insert
  * @version 0.1 2019/10/25 18:55
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JInsertSqlProcessor extends JSqlProcessor implements InsertSqlProcessor {

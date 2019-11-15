@@ -7,7 +7,7 @@ import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 /**
  * sql type safe abstract checker.
  * @version 0.1 2019/11/12 19:15
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class AbstractTypeSafeChecker implements Checker{

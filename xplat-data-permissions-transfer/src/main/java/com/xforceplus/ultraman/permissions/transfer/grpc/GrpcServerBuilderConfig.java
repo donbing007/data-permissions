@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 
 /**
  * @version 0.1 2019/11/14 19:02
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Component

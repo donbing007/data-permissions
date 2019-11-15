@@ -11,4 +11,8 @@
 
     <artifactId>xplat-data-permissions-pojo</artifactId>
 
+    <properties>
+        <checkstyle.skip>false</checkstyle.skip>
+    </properties>
+
 </project>

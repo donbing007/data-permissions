@@ -3,8 +3,9 @@ package com.xforceplus.ultraman.permissions.sql.define;
 import java.util.Objects;
 
 /**
+ * 表示一个别名.
+ * @author dongbin
  * @version 0.1 2019/10/31 17:45
- * @auth dongbin
  * @since 1.8
  */
 public class Alias implements Item {
@@ -13,7 +14,7 @@ public class Alias implements Item {
     private boolean useAs;
 
     public Alias(String name) {
-        this(name,false);
+        this(name, false);
     }
 
     public Alias(String name, boolean useAs) {

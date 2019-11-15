@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * checker test.
+ */
 public class SelectItemNotFeildAliasMustCheckerTest {
 
     private Authorization auth = new Authorization("r1", "t1");

@@ -8,11 +8,11 @@ import java.util.Objects;
 /**
  * 表示一个条件.
  *
+ * @author dongbin
  * @version 0.1 2019/10/25 16:36
- * @auth dongbin
  * @since 1.8
  */
-public class Condition implements Item{
+public class Condition implements Item {
 
     private Item column;
     private ConditionOperator operator;

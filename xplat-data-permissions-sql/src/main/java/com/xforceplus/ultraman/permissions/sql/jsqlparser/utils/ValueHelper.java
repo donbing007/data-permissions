@@ -6,7 +6,7 @@ import net.sf.jsqlparser.expression.Parenthesis;
 /**
  * JSqlParser 值类型的转换工厂.
  * @version 0.1 2019/10/29 15:42
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public final class ValueHelper {

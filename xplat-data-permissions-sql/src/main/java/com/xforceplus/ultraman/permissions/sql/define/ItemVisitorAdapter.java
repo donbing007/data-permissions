@@ -7,8 +7,9 @@ import com.xforceplus.ultraman.permissions.sql.define.values.*;
 
 /**
  * 方便实现.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/6 18:58
- * @auth dongbin
  * @since 1.8
  */
 public class ItemVisitorAdapter implements ItemVisitor {

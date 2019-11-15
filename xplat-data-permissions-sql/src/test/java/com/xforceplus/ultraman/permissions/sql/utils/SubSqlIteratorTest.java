@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * SubSqlIterator test.
+ */
 public class SubSqlIteratorTest {
 
     @Test
@@ -51,12 +54,12 @@ public class SubSqlIteratorTest {
                             expected.remove(iter.next().toSqlString());
                         }
 
-                        Assert.assertEquals(sql,0, expected.size());
+                        Assert.assertEquals(sql, 0, expected.size());
 
                     }
                 });
 
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
         });

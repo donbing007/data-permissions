@@ -6,8 +6,8 @@ import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/11 17:13
- * @auth dongbin
  * @since 1.8
  */
 public class IntegerConditionValueConverting extends ConditionValueConverting {

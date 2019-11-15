@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @version 0.1 2019/11/13 13:57
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class UpdateLine extends AbstractLine {

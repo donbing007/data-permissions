@@ -22,8 +22,8 @@ import java.util.List;
  * 处理 delete 语句的字段来源查找.
  * 只会处理 where 子句.
  *
+ * @author dongbin
  * @version 0.1 2019/11/4 17:05
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserDeleteFieldFromAbility extends AbstractJSqlParserHandler implements FieldFromAbility {
@@ -54,16 +54,16 @@ public class JSqlParserDeleteFieldFromAbility extends AbstractJSqlParserHandler 
     private boolean exists(Field field, Expression expr) {
         if (BinaryExpression.class.isInstance(expr)) {
 
-            boolean result = exists(field, ((BinaryExpression)expr).getLeftExpression());
+            boolean result = exists(field, ((BinaryExpression) expr).getLeftExpression());
             if (!result) {
-                result = exists(field, ((BinaryExpression)expr).getRightExpression());
+                result = exists(field, ((BinaryExpression) expr).getRightExpression());
             }
 
             return result;
 
         } else if (ComparisonOperator.class.isInstance(expr)) {
 
-            return exists(field, ((ComparisonOperator)expr).getLeftExpression());
+            return exists(field, ((ComparisonOperator) expr).getLeftExpression());
 
         } else if (Column.class.isInstance(expr)) {
 

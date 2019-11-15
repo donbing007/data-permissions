@@ -29,4 +29,8 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <checkstyle.skip>false</checkstyle.skip>
+    </properties>
+
 </project>

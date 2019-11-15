@@ -21,8 +21,9 @@ import java.util.List;
 
 /**
  * update 语句的字段来源查询.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/4 14:47
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler implements FieldFromAbility {
@@ -38,10 +39,11 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
 
     /**
      * 处理
-     *     update t inner join t2 on t.id=t2.id set t.c1 = t2.c1 where t.c1=100
-     *     update t set t.c1=value where t.c1=value
-     *  这样的语句.
+     * update t inner join t2 on t.id=t2.id set t.c1 = t2.c1 where t.c1=100
+     * update t set t.c1=value where t.c1=value
+     * 这样的语句.
      * 查询的字段必须是语句中出现的, 比如 t.id
+     *
      * @param field 查询的字段.
      * @return 结果.
      */

@@ -51,10 +51,12 @@ public class ValueHelperTest {
     private Map<Expression, Value> buildCase() throws Exception{
         Map<Expression, Value> data = new HashMap<>();
 
-        data.put(CCJSqlParserUtil.parseExpression("10"), new com.xforceplus.ultraman.permissions.sql.define.values.LongValue(10));
+        data.put(CCJSqlParserUtil.parseExpression("10"),
+            new com.xforceplus.ultraman.permissions.sql.define.values.LongValue(10));
         data.put(CCJSqlParserUtil.parseExpression("2.3"), new DoubleValue(2.3));
         data.put(CCJSqlParserUtil.parseExpression("'test'"), new StringValue("test"));
-        data.put(CCJSqlParserUtil.parseExpression("NULL"), com.xforceplus.ultraman.permissions.sql.define.values.NullValue.getInstance());
+        data.put(CCJSqlParserUtil.parseExpression("NULL"),
+            com.xforceplus.ultraman.permissions.sql.define.values.NullValue.getInstance());
         data.put(new HexValue("0x32"), UnknownValue.getInstance("0x32"));
 
 

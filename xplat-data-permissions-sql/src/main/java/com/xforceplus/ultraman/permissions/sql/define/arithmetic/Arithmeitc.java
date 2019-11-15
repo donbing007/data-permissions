@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * 表示一个左值和右值的算术.
  * @version 0.1 2019/11/7 09:52
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class Arithmeitc extends Aliasable implements Item {

@@ -5,11 +5,11 @@ import java.util.Objects;
 /**
  * 表示查询字段.
  *
+ * @author dongbin
  * @version 0.1 2019/10/28 18:12
- * @auth dongbin
  * @since 1.8
  */
-public class Field extends Aliasable implements Item  {
+public class Field extends Aliasable implements Item {
 
     private static final Field ALL_ITEM = new Field("*");
 

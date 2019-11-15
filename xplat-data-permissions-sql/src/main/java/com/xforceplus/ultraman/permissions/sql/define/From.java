@@ -4,8 +4,9 @@ import java.util.Objects;
 
 /**
  * 当前 sql 语句操作的目标表来源.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/25 17:35
- * @auth dongbin
  * @since 1.8
  */
 public class From extends Aliasable implements Item {

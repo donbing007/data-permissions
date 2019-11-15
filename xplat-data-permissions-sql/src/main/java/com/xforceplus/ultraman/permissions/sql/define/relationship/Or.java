@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.sql.define.ItemVisitor;
 
 /**
  * @version 0.1 2019/11/12 11:07
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class Or extends Relationship {

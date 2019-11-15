@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * SQL解析结果表示.
  * @version 0.1 2019/10/25 16:03
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface Sql {

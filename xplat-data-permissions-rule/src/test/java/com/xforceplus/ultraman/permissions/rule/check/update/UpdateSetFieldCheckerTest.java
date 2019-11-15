@@ -55,7 +55,7 @@ public class UpdateSetFieldCheckerTest {
             DefaultContext context = new DefaultContext(sqlParser.parser(s), auth, searcher);
             checker.check(context);
 
-            Assert.assertEquals(s,pack.expectation, context.isRefused());
+            Assert.assertEquals(s, pack.expectation, context.isRefused());
 
         });
 

@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/11 17:05
- * @auth dongbin
  * @since 1.8
  */
 public abstract class ConditionValueConverting implements Converting<List<Item>, DataRuleCondition> {
@@ -42,9 +42,11 @@ public abstract class ConditionValueConverting implements Converting<List<Item>,
     }
 
     private boolean isMultiple(DataRuleCondition rule) {
-        switch(rule.getOperation()) {
-            case LIST: return true;
-            default: return false;
+        switch (rule.getOperation()) {
+            case LIST:
+                return true;
+            default:
+                return false;
         }
     }
 

@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 /**
  * sql 解析接口.
  * @version 0.1 2019/10/25 16:02
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface SqlParser {

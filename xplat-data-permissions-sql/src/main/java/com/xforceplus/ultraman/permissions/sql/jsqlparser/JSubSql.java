@@ -15,7 +15,7 @@ import java.util.Objects;
  * 表示一个子查询,嵌套查询和 union 除第一条语句之外.
  *
  * @version 0.1 2019/10/31 15:34
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JSubSql implements Sql {

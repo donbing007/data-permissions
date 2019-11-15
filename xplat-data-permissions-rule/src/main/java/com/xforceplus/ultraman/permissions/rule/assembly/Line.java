@@ -7,7 +7,7 @@ import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 /**
  * 流水线
  * @version 0.1 2019/11/13 11:48
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface Line {

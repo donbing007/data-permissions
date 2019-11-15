@@ -6,8 +6,8 @@ import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.values.StringValue;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/11 18:32
- * @auth dongbin
  * @since 1.8
  */
 public class StringConditionValueConverting extends ConditionValueConverting {
@@ -21,8 +21,8 @@ public class StringConditionValueConverting extends ConditionValueConverting {
 
         StringBuilder buff = new StringBuilder(calculateBufferLen(value));
 
-        switch(rule.getOperation()) {
-            case CONTAINS:  {
+        switch (rule.getOperation()) {
+            case CONTAINS: {
                 buff.append('%').append(value).append('%');
                 break;
             }
@@ -36,7 +36,8 @@ public class StringConditionValueConverting extends ConditionValueConverting {
                 buff.append(value).append('%');
                 break;
             }
-            default: buff.append(value);
+            default:
+                buff.append(value);
         }
 
         return new StringValue(buff.toString());

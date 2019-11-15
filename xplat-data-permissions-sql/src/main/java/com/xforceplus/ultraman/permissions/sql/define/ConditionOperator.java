@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.sql.define;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/10/25 16:53
- * @auth dongbin
  * @since 1.8
  */
 public enum ConditionOperator {

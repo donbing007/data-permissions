@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * string condition value test.
+ */
 public class StringConditionValueConvertingTest {
 
     @Test

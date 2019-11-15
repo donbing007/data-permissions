@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
 
 /**
  * insert column 子句.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/30 15:58
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserInsertItemAbility extends AbstractJSqlParserHandler implements InsertItemAbility {

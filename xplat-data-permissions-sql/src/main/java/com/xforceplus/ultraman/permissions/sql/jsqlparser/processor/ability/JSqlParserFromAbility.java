@@ -19,8 +19,9 @@ import java.util.List;
 
 /**
  * JSqlParser from 子句操作.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/28 15:43
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserFromAbility extends AbstractJSqlParserHandler implements FromAbility {

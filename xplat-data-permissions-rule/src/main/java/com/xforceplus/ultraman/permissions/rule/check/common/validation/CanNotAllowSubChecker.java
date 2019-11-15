@@ -11,14 +11,15 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;
 
 /**
  * 不允许子查询.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/8 15:28
- * @auth dongbin
  * @since 1.8
  */
 public class CanNotAllowSubChecker extends AbstractTypeSafeChecker {
 
     public CanNotAllowSubChecker() {
-        super(new SqlType[] {
+        super(new SqlType[]{
             SqlType.UPDATE,
             SqlType.DELETE
         });
@@ -26,7 +27,7 @@ public class CanNotAllowSubChecker extends AbstractTypeSafeChecker {
 
     @Override
     protected void checkTypeSafe(Context context) {
-        Sql sql  = context.sql();
+        Sql sql = context.sql();
 
         sql.visit(new SqlProcessorVisitorAdapter() {
             @Override

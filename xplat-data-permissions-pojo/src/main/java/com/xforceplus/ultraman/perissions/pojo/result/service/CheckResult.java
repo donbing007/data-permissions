@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 检查返回结果.
  * @version 0.1 2019/11/13 15:18
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class CheckResult extends Result {

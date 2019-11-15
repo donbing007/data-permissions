@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  * where 子句.
  * 只支持 select update 和 delete 语句.
  *
+ * @author dongbin
  * @version 0.1 2019/10/25 18:57
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implements ConditionAbility {
@@ -159,7 +159,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                             c,
                             Arrays.asList(
                                 new com.xforceplus.ultraman.permissions.sql.define.values.StringValue(
-                                    ((SubSelect)expr.getRightItemsList()).getSelectBody().toString())),
+                                    ((SubSelect) expr.getRightItemsList()).getSelectBody().toString())),
                             expr.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN));
                 } else {
 

@@ -4,8 +4,9 @@ import java.util.Objects;
 
 /**
  * 表示一个括号.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/7 14:30
- * @auth dongbin
  * @since 1.8
  */
 public class Parentheses extends Aliasable implements Item {

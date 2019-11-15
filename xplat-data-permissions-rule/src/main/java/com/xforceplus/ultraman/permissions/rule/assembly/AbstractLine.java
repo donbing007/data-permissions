@@ -11,7 +11,7 @@ import java.util.List;
  * 定义了流水线执行的方式和异常处理.
  *
  * @version 0.1 2019/11/13 12:12
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class AbstractLine implements Line {

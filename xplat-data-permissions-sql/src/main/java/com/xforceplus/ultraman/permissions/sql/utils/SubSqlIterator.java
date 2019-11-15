@@ -9,8 +9,9 @@ import java.util.*;
 
 /**
  * 子查询迭代器.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/8 16:12
- * @auth dongbin
  * @since 1.8
  */
 public class SubSqlIterator implements Iterator<Sql> {

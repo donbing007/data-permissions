@@ -7,7 +7,7 @@ import java.util.Objects;
  * service result 返回值.
  *
  * @version 0.1 2019/11/13 15:15
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class Result implements Serializable {

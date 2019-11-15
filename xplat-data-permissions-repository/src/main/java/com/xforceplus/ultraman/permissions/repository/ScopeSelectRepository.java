@@ -13,7 +13,7 @@ import java.util.List;
  * 字段数据范围查询.
  *
  * @version 0.1 2019/11/5 16:53
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Mapper

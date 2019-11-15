@@ -8,7 +8,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 /**
  * 了查询处理.
  * @version 0.1 2019/10/31 15:36
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JSubSelectSqlProcessor implements SubSelectSqlProcessor {

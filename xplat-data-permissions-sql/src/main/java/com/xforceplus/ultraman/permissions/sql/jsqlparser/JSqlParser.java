@@ -13,7 +13,7 @@ import net.sf.jsqlparser.statement.Statement;
  * https://github.com/JSQLParser/JSqlParser
  *
  * @version 0.1 2019/10/24 10:50
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class JSqlParser implements SqlParser {

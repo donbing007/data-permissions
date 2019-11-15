@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/10/25 18:30
- * @auth dongbin
  * @since 1.8
  */
 public class JSql implements Sql {
@@ -49,7 +49,7 @@ public class JSql implements Sql {
 
     @Override
     public SqlProcessor buildProcessor() {
-        switch(type) {
+        switch (type) {
             case SELECT: {
                 if (selectSqlProcessor == null) {
                     selectSqlProcessor = new JSelectSqlProcessor(statement);
@@ -64,14 +64,14 @@ public class JSql implements Sql {
 
                 return updateSqlProcessor;
             }
-            case INSERT:{
+            case INSERT: {
                 if (insertSqlProcessor == null) {
                     insertSqlProcessor = new JInsertSqlProcessor(statement);
                 }
 
                 return insertSqlProcessor;
             }
-            case DELETE:{
+            case DELETE: {
                 if (deleteSqlProcessor == null) {
                     deleteSqlProcessor = new JDeleteSqlProcessor(statement);
                 }
@@ -86,18 +86,18 @@ public class JSql implements Sql {
     @Override
     public void visit(SqlProcessorVisitor visitor) {
         SqlProcessor processor = buildProcessor();
-        switch(type) {
+        switch (type) {
             case SELECT:
-                visitor.visit((JSelectSqlProcessor)processor);
+                visitor.visit((JSelectSqlProcessor) processor);
                 break;
             case UPDATE:
-                visitor.visit((JUpdateSqlProcessor)processor);
+                visitor.visit((JUpdateSqlProcessor) processor);
                 break;
             case INSERT:
-                visitor.visit((JInsertSqlProcessor)processor);
+                visitor.visit((JInsertSqlProcessor) processor);
                 break;
             case DELETE:
-                visitor.visit((JDeleteSqlProcessor)processor);
+                visitor.visit((JDeleteSqlProcessor) processor);
                 break;
             default:
                 visitor.visit(UnableOperateSqlProcessor.getInstance());

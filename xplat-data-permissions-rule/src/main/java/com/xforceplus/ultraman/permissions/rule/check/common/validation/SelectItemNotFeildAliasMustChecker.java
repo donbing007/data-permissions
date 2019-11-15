@@ -13,8 +13,9 @@ import java.util.Queue;
 
 /**
  * 如果是非简单 Field,那么必须设置别名.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/8 17:27
- * @auth dongbin
  * @since 1.8
  */
 public class SelectItemNotFeildAliasMustChecker extends AbstractTypeSafeChecker {
@@ -31,7 +32,7 @@ public class SelectItemNotFeildAliasMustChecker extends AbstractTypeSafeChecker 
 
         SelectSqlProcessor processor;
         Sql sql;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             sql = queue.poll();
             processor = (SelectSqlProcessor) sql.buildProcessor();
 

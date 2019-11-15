@@ -73,7 +73,8 @@ public class JSqlParserSubSqlAbilityTest {
                     });
                 }
 
-                current.remove(0);// 删除首条.
+                // 删除首条.
+                current.remove(0);
 
 
                 List<String> expectedSqls = caseData.get(sql);

@@ -161,7 +161,8 @@ public class JSqlParserConditionAbilityTest {
                 ),
                 Conditional.AND,
                 CCJSqlParserUtil.parse(
-                    "select * from t1 where (c1=2 or c2=3) and (c3=10 or c4 between 12 and 20 and c5 != 200)").toString(),
+                    "select * from t1 where (c1=2 or c2=3) and (c3=10 or c4 between 12 and 20 and c5 != 200)")
+                    .toString(),
                 true
             )
         );
@@ -255,35 +256,50 @@ public class JSqlParserConditionAbilityTest {
             ));
 
         data.put("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
-                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
-                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
-                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(" +
+                "to_date(year_of_month || " +
+                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when " +
+                "end_date between to_date(year_" +
+                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month ||" +
+                " '-01', 'yyyy-mm-dd'), 1) - 1 " +
                 "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when " +
+                "c.company_type = 'cs' " +
                 "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
                 "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
                 "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
                 "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
                 "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
-                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name," +
+                "a.tax_num,c.company_type,case " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then " +
+                "'供应商' when c.company_type = " +
                 "'cs' then '中心客户&供应商' end,year_of_month) m " +
                 "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
             new RemoveConditionPack(
-                new Condition(new Field("m", "group_code", null), ConditionOperator.EQUALS, new StringValue("test")),
-                CCJSqlParserUtil.parse("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
-                    "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
-                    "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
-                    "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+                new Condition(new Field("m", "group_code", null),
+                    ConditionOperator.EQUALS, new StringValue("test")),
+                CCJSqlParserUtil.parse("select group_code,group_name,company_type,company_type_desc," +
+                    "year_of_month,count(distinct case when " +
+                    "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(" +
+                    "year_of_month || " +
+                    "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date " +
+                    "between to_date(year_" +
+                    "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', " +
+                    "'yyyy-mm-dd'), 1) - 1 " +
                     "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
-                    "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
+                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when " +
+                    "c.company_type = 'cs' " +
+                    "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) " +
+                    "start_date,max(end_date) " +
                     "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
                     "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
                     "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
                     "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
-                    "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+                    "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num," +
+                    "c.company_type,case " +
+                    "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when " +
+                    "c.company_type = " +
                     "'cs' then '中心客户&供应商' end,year_of_month) m " +
                     "group by group_code,group_name,year_of_month,company_type,company_type_desc").toString()
             )
@@ -328,40 +344,79 @@ public class JSqlParserConditionAbilityTest {
         Map<String, List<Condition>> data = new LinkedHashMap<>();
 
         data.put("select * from t1", Collections.emptyList());
-        data.put("select * from t1 where c1 = 10 and c2 != 'test' and c3 like 'test%' and c4 in ('1','2','3') and c5 between 20 and 50",
+        data.put("select * from t1 where c1 = 10 and c2 != 'test' and c3 like 'test%' " +
+                "and c4 in ('1','2','3') and c5 between 20 and 50",
             Arrays.asList(
-                new Condition(new Field("c1"), ConditionOperator.EQUALS, new LongValue(10)),
-                new Condition(new Field("c2"), ConditionOperator.NOT_EQUALS, new StringValue("test")),
-                new Condition(new Field("c3"), ConditionOperator.LIKE, new StringValue("test%")),
-                new Condition(new Field("c4"), ConditionOperator.IN, Arrays.asList(new StringValue("1"), new StringValue("2"), new StringValue("3"))),
-                new Condition(new Field("c5"), ConditionOperator.BETWEEN, Arrays.asList(new LongValue(20), new LongValue(50)))
+                new Condition(
+                    new Field("c1"), ConditionOperator.EQUALS, new LongValue(10)),
+                new Condition(
+                    new Field("c2"), ConditionOperator.NOT_EQUALS, new StringValue("test")),
+                new Condition(
+                    new Field("c3"), ConditionOperator.LIKE, new StringValue("test%")),
+                new Condition(
+                    new Field("c4"),
+                    ConditionOperator.IN,
+                    Arrays.asList(new StringValue("1"),
+                        new StringValue("2"),
+                        new StringValue("3"))),
+                new Condition(
+                    new Field("c5"),
+                    ConditionOperator.BETWEEN,
+                    Arrays.asList(new LongValue(20),
+                        new LongValue(50)))
             ));
 
         data.put("select * from t1 t where t.c1 = 10 and t.c2 != 'test' and t.c3 like 'test%' and t.c4 in ('1','2','3') and t.c5 between 20 and 50",
             Arrays.asList(
                 new Condition(new Field("t", "c1", null), ConditionOperator.EQUALS, new LongValue(10)),
-                new Condition(new Field("t", "c2", null), ConditionOperator.NOT_EQUALS, new StringValue("test")),
-                new Condition(new Field("t", "c3", null), ConditionOperator.LIKE, new StringValue("test%")),
-                new Condition(new Field("t", "c4", null), ConditionOperator.IN, Arrays.asList(new StringValue("1"), new StringValue("2"), new StringValue("3"))),
-                new Condition(new Field("t", "c5", null), ConditionOperator.BETWEEN, Arrays.asList(new LongValue(20), new LongValue(50)))
+                new Condition(
+                    new Field("t", "c2", null), ConditionOperator.NOT_EQUALS, new StringValue("test")),
+                new Condition(
+                    new Field("t", "c3", null),
+                    ConditionOperator.LIKE, new StringValue("test%")),
+                new Condition(
+                    new Field("t", "c4", null),
+                    ConditionOperator.IN,
+                    Arrays.asList(new StringValue("1"),
+                        new StringValue("2"),
+                        new StringValue("3"))),
+                new Condition(
+                    new Field("t", "c5", null),
+                    ConditionOperator.BETWEEN,
+                    Arrays.asList(new LongValue(20),
+                        new LongValue(50)))
             ));
 
-        data.put("update t1 set c1=200 where  c1 = 10 and c2 != 'test' and c3 like 'test%' and c4 in ('1','2','3') and c5 between 20 and 50",
+        data.put("update t1 set c1=200 where  c1 = 10 and c2 != 'test' and c3 like 'test%' " +
+                "and c4 in ('1','2','3') and c5 between 20 and 50",
             Arrays.asList(
                 new Condition(new Field("c1"), ConditionOperator.EQUALS, new LongValue(10)),
                 new Condition(new Field("c2"), ConditionOperator.NOT_EQUALS, new StringValue("test")),
                 new Condition(new Field("c3"), ConditionOperator.LIKE, new StringValue("test%")),
-                new Condition(new Field("c4"), ConditionOperator.IN, Arrays.asList(new StringValue("1"), new StringValue("2"), new StringValue("3"))),
-                new Condition(new Field("c5"), ConditionOperator.BETWEEN, Arrays.asList(new LongValue(20), new LongValue(50)))
+                new Condition(
+                    new Field("c4"),
+                    ConditionOperator.IN,
+                    Arrays.asList(new StringValue("1"),
+                        new StringValue("2"),
+                        new StringValue("3"))),
+                new Condition(
+                    new Field("c5"),
+                    ConditionOperator.BETWEEN,
+                    Arrays.asList(
+                        new LongValue(20),
+                        new LongValue(50)))
             ));
 
-        data.put("delete from t1 where  c1 = 10 and c2 != 'test' and c3 like 'test%' and c4 in ('1','2','3') and c5 between 20 and 50",
+        data.put("delete from t1 where  c1 = 10 and c2 != 'test' and c3 like 'test%' " +
+                "and c4 in ('1','2','3') and c5 between 20 and 50",
             Arrays.asList(
                 new Condition(new Field("c1"), ConditionOperator.EQUALS, new LongValue(10)),
                 new Condition(new Field("c2"), ConditionOperator.NOT_EQUALS, new StringValue("test")),
                 new Condition(new Field("c3"), ConditionOperator.LIKE, new StringValue("test%")),
-                new Condition(new Field("c4"), ConditionOperator.IN, Arrays.asList(new StringValue("1"), new StringValue("2"), new StringValue("3"))),
-                new Condition(new Field("c5"), ConditionOperator.BETWEEN, Arrays.asList(new LongValue(20), new LongValue(50)))
+                new Condition(new Field("c4"), ConditionOperator.IN,
+                    Arrays.asList(new StringValue("1"), new StringValue("2"), new StringValue("3"))),
+                new Condition(new Field("c5"), ConditionOperator.BETWEEN,
+                    Arrays.asList(new LongValue(20), new LongValue(50)))
             ));
 
         data.put("select * from t1 where a=a+1",
@@ -454,22 +509,30 @@ public class JSqlParserConditionAbilityTest {
         );
 
         data.put("select group_code,group_name,company_type,company_type_desc,year_of_month,count(distinct case when " +
-                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || " +
-                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date between to_date(year_" +
-                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', 'yyyy-mm-dd'), 1) - 1 " +
+                "start_date between to_date(year_of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(" +
+                "year_of_month || " +
+                "'-01', 'yyyy-mm-dd'), 1) - 1 then tax_num end) bqzj,count(distinct case when end_date " +
+                "between to_date(year_" +
+                "of_month || '-01', 'yyyy-mm-dd') and add_months(to_date(year_of_month || '-01', " +
+                "'yyyy-mm-dd'), 1) - 1 " +
                 "then tax_num end) bqjs from (select a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = 'cs' " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when " +
+                "c.company_type = 'cs' " +
                 "then '中心客户&供应商' end company_type_desc,year_of_month,min(start_date) start_date,max(end_date) " +
                 "end_date from dim_company_business_info a left join (select year_of_month from dim_date where " +
                 "year_of_month between '2018-02' and '2018-08' group by year_of_month) " +
                 "b on 1 = 1 inner join dim_company_operation_info c on a.tax_num = " +
                 "c.tax_num where start_date <= to_date(year_of_month || '-01', 'yyyy-mm-dd') and a.group_code = " +
-                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num,c.company_type,case " +
-                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when c.company_type = " +
+                "'TAFUJI84255' and c.company_type = 's' group by a.group_code,a.group_name,a.tax_num," +
+                "c.company_type,case " +
+                "when c.company_type = 'c' then '中心客户' when c.company_type = 's' then '供应商' when " +
+                "c.company_type = " +
                 "'cs' then '中心客户&供应商' end,year_of_month) m " +
                 "where m.group_code='test' group by group_code,group_name,year_of_month,company_type,company_type_desc",
             Arrays.asList(
-                new Condition(new Field("m", "group_code", null), ConditionOperator.EQUALS, new StringValue("test"))
+                new Condition(
+                    new Field("m", "group_code", null),
+                    ConditionOperator.EQUALS, new StringValue("test"))
             )
         );
 

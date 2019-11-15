@@ -24,7 +24,7 @@ import java.util.List;
  * sql 权限校验服务实现.
  *
  * @version 0.1 2019/11/13 15:20
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Service

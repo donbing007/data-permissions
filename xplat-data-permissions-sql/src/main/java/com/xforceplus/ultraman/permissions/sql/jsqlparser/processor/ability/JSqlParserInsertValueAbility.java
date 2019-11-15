@@ -17,8 +17,9 @@ import java.util.List;
 
 /**
  * insert values value 子句.
+ *
+ * @author dongbin
  * @version 0.1 2019/10/30 17:24
- * @auth dongbin
  * @since 1.8
  */
 public class JSqlParserInsertValueAbility extends AbstractJSqlParserHandler implements InsertValueAbility {

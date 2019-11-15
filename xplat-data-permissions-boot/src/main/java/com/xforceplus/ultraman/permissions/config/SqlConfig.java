@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @version 0.1 2019/11/14 12:16
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @Configuration

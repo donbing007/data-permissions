@@ -18,6 +18,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+import com.xforceplus.ultraman.permissions.sql.utils.SubSqlIterator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ import java.util.stream.Collectors;
 /**
  * 语句的条件检查,会修改原始SQL.
  *
+ * @author dongbin
  * @version 0.1 2019/11/8 17:12
- * @auth dongbin
  * @since 1.8
  */
 public class ConditionsChecker extends AbstractTypeSafeChecker {
 
     public ConditionsChecker() {
-        super(new SqlType[] {
+        super(new SqlType[]{
             SqlType.UPDATE,
             SqlType.DELETE,
             SqlType.SELECT,
@@ -52,7 +53,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
                 queue.add(sql);
                 Sql currentSql;
                 SelectSqlProcessor processor;
-                while(!queue.isEmpty()) {
+                while (!queue.isEmpty()) {
                     currentSql = queue.poll();
 
                     processor = (SelectSqlProcessor) currentSql.buildProcessor();
@@ -63,10 +64,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
                 }
                 break;
             }
-            case DELETE:  {
+            case DELETE: {
                 // delete 不允许子句.这里忽略子句.
 
-                doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(),context);
+                doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(), context);
                 break;
             }
             case UPDATE: {
@@ -140,7 +141,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             DataRuleCondition left = conditions.get(0);
             DataRuleCondition right = conditions.get(1);
             Relationship relationship = buildRelationship(
-                buildCondition(field,left), buildCondition(field, right), right.getLink());
+                buildCondition(field, left), buildCondition(field, right), right.getLink());
 
             DataRuleCondition dataRuleCondition;
             for (int i = 2; i < conditions.size(); i++) {

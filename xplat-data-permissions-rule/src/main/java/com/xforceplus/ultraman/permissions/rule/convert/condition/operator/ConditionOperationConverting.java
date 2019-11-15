@@ -5,8 +5,8 @@ import com.xforceplus.ultraman.permissions.rule.convert.Converting;
 import com.xforceplus.ultraman.permissions.sql.define.ConditionOperator;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/11 18:43
- * @auth dongbin
  * @since 1.8
  */
 public abstract class ConditionOperationConverting implements Converting<ConditionOperator, RuleConditionOperation> {

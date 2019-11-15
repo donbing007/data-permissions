@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 
 /**
  * insert 语句的字段权限检查.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/12 19:12
- * @auth dongbin
  * @since 1.8
  */
 public class InsertFieldChecker extends AbstractTypeSafeChecker {
@@ -41,10 +42,10 @@ public class InsertFieldChecker extends AbstractTypeSafeChecker {
         InsertItemAbility insertItemAbility = processor.buildInsertItemAbility();
 
         // 只需要 key value 的值无关紧要.
-        Map<String,Object> ruleTable =
+        Map<String, Object> ruleTable =
             context.getSercher().searchFieldRule(
                 context.authorization(), from.getTable()).stream().collect(
-                    Collectors.toMap(FieldRule::getField, FieldRule::getEntity));
+                Collectors.toMap(FieldRule::getField, FieldRule::getEntity));
 
         List<Field> fields = insertItemAbility.list();
 

@@ -6,7 +6,7 @@ import net.sf.jsqlparser.statement.Statement;
 /**
  * jsqlparser 的 processor 超类.
  * @version 0.1 2019/10/25 18:49
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public abstract class JSqlProcessor implements SqlProcessor {

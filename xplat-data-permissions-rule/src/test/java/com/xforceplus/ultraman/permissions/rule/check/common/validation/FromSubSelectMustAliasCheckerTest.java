@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * checer test.
+ */
 public class FromSubSelectMustAliasCheckerTest {
 
     private Authorization auth = new Authorization("r1", "t1");
@@ -25,7 +28,7 @@ public class FromSubSelectMustAliasCheckerTest {
             DefaultContext context = new DefaultContext(sqlParser.parser(sql), auth);
             checker.check(context);
 
-            Assert.assertEquals(sql,caseData.get(sql), context.isRefused());
+            Assert.assertEquals(sql, caseData.get(sql), context.isRefused());
 
         });
     }

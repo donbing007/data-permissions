@@ -3,7 +3,7 @@ package com.xforceplus.ultraman.permissions.service.define;
 /**
  * 检查后的状态.
  * @version 0.1 2019/11/13 15:22
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public enum CheckStatus {

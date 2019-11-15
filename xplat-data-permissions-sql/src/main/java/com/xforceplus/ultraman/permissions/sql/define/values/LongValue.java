@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 整形.
  * @version 0.1 2019/10/29 15:17
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class LongValue implements Value<Long> {

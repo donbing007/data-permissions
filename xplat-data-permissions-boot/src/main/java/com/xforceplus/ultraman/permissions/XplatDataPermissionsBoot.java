@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 /**
  * 启动主类.
  * @version 0.1 2019/11/14 10:19
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 @SpringBootApplication

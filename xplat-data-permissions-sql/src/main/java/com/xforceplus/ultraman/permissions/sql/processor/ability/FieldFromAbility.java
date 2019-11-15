@@ -11,8 +11,9 @@ import java.util.List;
 
 /**
  * 查找指定字段的实际来源表名称.
+ *
+ * @author dongbin
  * @version 0.1 2019/11/1 15:22
- * @auth dongbin
  * @since 1.8
  */
 public interface FieldFromAbility {

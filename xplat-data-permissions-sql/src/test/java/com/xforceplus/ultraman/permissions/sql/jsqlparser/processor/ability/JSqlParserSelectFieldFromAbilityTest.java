@@ -43,7 +43,8 @@ public class JSqlParserSelectFieldFromAbilityTest {
                 List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.item);
 
                 Assert.assertEquals(sql, pack.expectedFroms.size(), froms.size());
-                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]), froms.toArray(new AbstractMap.SimpleEntry[0]));
+                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]),
+                    froms.toArray(new AbstractMap.SimpleEntry[0]));
 
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);

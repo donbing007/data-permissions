@@ -20,6 +20,9 @@ import java.util.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * checker test.
+ */
 public class SelectFieldCheckerTest {
 
     private Authorization auth = new Authorization("r1", "t1");
@@ -106,7 +109,7 @@ public class SelectFieldCheckerTest {
         Map<SearchRequest, List<RuleCheckPack>> data = new LinkedHashMap<>();
 
         data.put(new SearchRequest(
-            "select t.c1, t.c2 from t1 t",
+                "select t.c1, t.c2 from t1 t",
                 false,
                 Collections.emptyList()),
             Arrays.asList(
@@ -121,7 +124,7 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-            "select t.c1, t.c3 from t1 t",
+                "select t.c1, t.c3 from t1 t",
                 false,
                 Arrays.asList(
                     new Field("t", "c1")
