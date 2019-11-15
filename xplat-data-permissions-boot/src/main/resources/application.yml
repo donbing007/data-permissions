@@ -1,11 +1,14 @@
 server:
   port: 8080
+# grpc 配置.
 grpc:
   enabled: true
   port: 8206
   maxInboundMetadataSize: 1048576
   maxInboundMessageSize: 1048576
+# 线程池.
 executor:
+  enabled: true
   maxTaskSize: 1000
   # maxWorkerSize: cpu core
 management:
@@ -24,6 +27,7 @@ management:
       enabled: true
     info:
       enabled: true
+# 缓存,可选 redis.
 spring:
   cache:
     type: CAFFEINE

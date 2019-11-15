@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.transfer.grpc;
 
 import io.grpc.internal.GrpcUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @ConfigurationProperties(prefix = "grpc")
 @Component
+@ConditionalOnProperty(prefix = "grpc", name = "enabled", havingValue = "true")
 public class GrpcConfig {
 
     private int maxInboundMetadataSize = GrpcUtil.DEFAULT_MAX_HEADER_LIST_SIZE;
