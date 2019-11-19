@@ -6,8 +6,9 @@ import java.util.Objects;
 
 /**
  * 整形.
- * @version 0.1 2019/10/29 15:17
+ *
  * @author dongbin
+ * @version 0.1 2019/10/29 15:17
  * @since 1.8
  */
 public class LongValue implements Value<Long> {
@@ -40,8 +41,12 @@ public class LongValue implements Value<Long> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LongValue)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LongValue)) {
+            return false;
+        }
         LongValue longValue = (LongValue) o;
         return getValue() == longValue.getValue();
     }

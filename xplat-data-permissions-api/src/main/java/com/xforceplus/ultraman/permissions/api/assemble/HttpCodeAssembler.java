@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.api.assemble;
 
-import com.xforceplus.ultraman.permissions.service.define.CheckStatus;
+import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
 import org.springframework.http.HttpStatus;
 
 /**

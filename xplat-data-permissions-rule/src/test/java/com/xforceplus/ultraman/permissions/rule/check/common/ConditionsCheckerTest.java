@@ -43,6 +43,7 @@ public class ConditionsCheckerTest {
 
             checker.check(context);
 
+            Assert.assertTrue(context.isUpdatedSql());
             try {
 
                 Assert.assertEquals(s, CCJSqlParserUtil.parse(pack.expectation).toString(), sql.toSqlString());
@@ -50,7 +51,6 @@ public class ConditionsCheckerTest {
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
-
         });
 
     }

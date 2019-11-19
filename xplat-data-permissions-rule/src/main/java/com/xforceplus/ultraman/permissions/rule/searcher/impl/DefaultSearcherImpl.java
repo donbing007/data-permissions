@@ -27,14 +27,14 @@ public class DefaultSearcherImpl implements Searcher {
     @Resource
     private ScopeSelectRepository scopeSelectRepository;
 
-    @Cacheable(key = "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
+    // @Cacheable(key = "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
 
         return loadFieldRuleFromDb(auth, entity);
     }
 
-    @Cacheable(key = "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
+    // @Cacheable(key = "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<DataRule> searchDataRule(Authorization auth, String entity) {
         return loadDataRuleFromDb(auth, entity);

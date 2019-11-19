@@ -7,10 +7,7 @@ import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbo
 import com.xforceplus.ultraman.permissions.sql.define.relationship.And;
 import com.xforceplus.ultraman.permissions.sql.define.relationship.Or;
 import com.xforceplus.ultraman.permissions.sql.define.relationship.Relationship;
-import com.xforceplus.ultraman.permissions.sql.define.values.DoubleValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.NullValue;
-import com.xforceplus.ultraman.permissions.sql.define.values.StringValue;
+import com.xforceplus.ultraman.permissions.sql.define.values.*;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
@@ -505,6 +502,19 @@ public class JSqlParserConditionAbilityTest {
                         )
                     )
                 )
+            )
+        );
+
+        data.put("select * from t1 where c1=? and c2 in (?,?) and c3 between ? and ?",
+            Arrays.asList(
+                new Condition(new Field("c1"), ConditionOperator.EQUALS,
+                    Arrays.asList(JdbcParameterValue.geInstance())),
+
+                new Condition(new Field("c2"), ConditionOperator.IN,
+                    Arrays.asList(JdbcParameterValue.geInstance(), JdbcParameterValue.geInstance())),
+
+                new Condition(new Field("c3"), ConditionOperator.BETWEEN,
+                    Arrays.asList(JdbcParameterValue.geInstance(), JdbcParameterValue.geInstance()))
             )
         );
 

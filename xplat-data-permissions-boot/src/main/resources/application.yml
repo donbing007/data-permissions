@@ -4,12 +4,13 @@ server:
 grpc:
   enabled: true
   port: 8206
-  maxInboundMetadataSize: 1048576
-  maxInboundMessageSize: 1048576
+  maxInboundMetadataBytes: 1048576  # 允许的请求头大小(字节)
+  maxInboundMessageBytes: 1048576  # 允许的请求消息大小(字节).
+  heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
+  heartbeatTimeoutSeconds: 30 # 心跳超时秒.
 # 线程池.
 executor:
-  enabled: true
-  maxTaskSize: 1000
+  maxTaskSize: 100
   # maxWorkerSize: cpu core
 management:
   health:
@@ -36,7 +37,7 @@ spring:
       spec: maximumSize=500,expireAfterAccess=600s
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.14.194:3306/xplat_data_permissions
+    url: jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions
     username: root
     password: root
 

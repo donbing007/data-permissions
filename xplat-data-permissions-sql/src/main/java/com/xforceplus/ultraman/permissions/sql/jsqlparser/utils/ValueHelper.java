@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.jsqlparser.utils;
 
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.expression.Parenthesis;
 
 /**
@@ -29,6 +30,12 @@ public final class ValueHelper {
      * @return true 是值表示达式,false 不是.
      */
     public static final boolean isValueExpr(Expression expr) {
+
+        // jdbc 占位符特殊,这里也算做一个值.
+        if (JdbcParameter.class.isInstance(expr)) {
+            return true;
+        }
+
         Class clazz = expr.getClass();
         return isPointPackage(clazz, VALUE_PACKGE) && clazz.getSimpleName().endsWith("Value");
     }

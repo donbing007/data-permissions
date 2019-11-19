@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.sql.jsqlparser.utils;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
+import com.xforceplus.ultraman.permissions.sql.define.values.JdbcParameterValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.UnknownValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.Value;
 import net.sf.jsqlparser.expression.*;
@@ -125,6 +126,8 @@ public class ConversionHelper {
 
                 return com.xforceplus.ultraman.permissions.sql.define.values.NullValue.getInstance();
 
+            } else if (JdbcParameter.class.isInstance(expr)) {
+                return JdbcParameterValue.geInstance();
             }
         }
 

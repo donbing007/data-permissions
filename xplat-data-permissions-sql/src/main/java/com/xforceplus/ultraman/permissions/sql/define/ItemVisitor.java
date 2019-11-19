@@ -14,6 +14,8 @@ import com.xforceplus.ultraman.permissions.sql.define.values.*;
  */
 public interface ItemVisitor {
 
+    void visit(JdbcParameterValue item);
+
     void visit(DoubleValue item);
 
     void visit(LongValue item);

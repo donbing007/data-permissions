@@ -106,6 +106,29 @@
 
     </dependencies>
 
+    <build>
+        <finalName>xplat-data-permissions</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>com.xforceplus.ultraman.permissions.XplatDataPermissionsBoot</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <properties>
         <checkstyle.skip>false</checkstyle.skip>
     </properties>

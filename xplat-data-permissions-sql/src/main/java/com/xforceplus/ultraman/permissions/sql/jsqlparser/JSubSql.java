@@ -5,6 +5,8 @@ import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.JSubSelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitor;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SetOperationList;
@@ -80,5 +82,11 @@ public class JSubSql implements Sql {
     @Override
     public String toSqlString() {
         return subSelect.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
+        String sql = "select * from t1 where c1=? and c2=?";
+        Statement statement = CCJSqlParserUtil.parse(sql);
+        System.out.println(statement);
     }
 }

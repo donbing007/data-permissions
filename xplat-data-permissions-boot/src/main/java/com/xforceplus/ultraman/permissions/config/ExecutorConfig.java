@@ -15,12 +15,19 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Configuration
 @ConfigurationProperties(prefix = "executor")
-@ConditionalOnProperty(prefix = "executor", name = "enabled", havingValue = "true")
 public class ExecutorConfig {
 
     private String workerName = "executor";
     private int maxWorkerSize = Runtime.getRuntime().availableProcessors();
     private int maxTaskSize = 1000;
+
+    public void setMaxWorkerSize(int maxWorkerSize) {
+        this.maxWorkerSize = maxWorkerSize;
+    }
+
+    public void setMaxTaskSize(int maxTaskSize) {
+        this.maxTaskSize = maxTaskSize;
+    }
 
     @Bean
     public Executor executor() {

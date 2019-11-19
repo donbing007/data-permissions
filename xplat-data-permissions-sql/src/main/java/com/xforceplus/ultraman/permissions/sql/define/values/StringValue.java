@@ -41,8 +41,12 @@ public class StringValue implements Value<String> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StringValue)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StringValue)) {
+            return false;
+        }
         StringValue that = (StringValue) o;
         return Objects.equals(getValue(), that.getValue());
     }

@@ -1,10 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.define.relationship;
 
-import com.xforceplus.ultraman.permissions.sql.define.Condition;
-import com.xforceplus.ultraman.permissions.sql.define.ConditionOperator;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
-import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 
 /**
  * @version 0.1 2019/11/12 11:11

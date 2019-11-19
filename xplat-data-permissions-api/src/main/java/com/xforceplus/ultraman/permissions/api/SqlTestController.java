@@ -1,10 +1,10 @@
 package com.xforceplus.ultraman.permissions.api;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.api.assemble.HttpCodeAssembler;
 import com.xforceplus.ultraman.permissions.service.RuleCheckService;
-import com.xforceplus.ultraman.permissions.service.define.CheckStatus;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

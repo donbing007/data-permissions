@@ -230,8 +230,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                 conditions.add(
                     buildCondition(
                         expr.getLeftExpression(),
-                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
-                        operator));
+                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())), operator));
 
             }
 

@@ -1,6 +1,5 @@
 package com.xforceplus.ultraman.permissions.sql.utils;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.processor.*;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;

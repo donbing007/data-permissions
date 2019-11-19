@@ -15,6 +15,11 @@ import com.xforceplus.ultraman.permissions.sql.define.values.*;
 public class ItemVisitorAdapter implements ItemVisitor {
 
     @Override
+    public void visit(JdbcParameterValue item) {
+
+    }
+
+    @Override
     public void visit(DoubleValue item) {
 
     }

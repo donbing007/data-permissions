@@ -4,6 +4,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
+import com.xforceplus.ultraman.permissions.sql.define.values.JdbcParameterValue;
 import com.xforceplus.ultraman.permissions.sql.define.values.LongValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.junit.Assert;
@@ -92,6 +93,15 @@ public class JSqlParserInsertValueAbilityTest {
                 Arrays.asList(
                     new LongValue(1),
                     new Arithmeitc(new LongValue(1), new LongValue(2), ArithmeticSymbol.ADDITION)
+                )
+            ));
+
+        data.put("insert t1 (c1,c2) values(?,?)",
+            new ListPack(
+                0,
+                Arrays.asList(
+                    JdbcParameterValue.geInstance(),
+                    JdbcParameterValue.geInstance()
                 )
             ));
 

@@ -47,6 +47,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
     protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
 
+        boolean change = false;
         switch (sql.type()) {
             case SELECT: {
                 Queue<Sql> queue = new ArrayDeque<>();
@@ -60,40 +61,44 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
                     queue.addAll(processor.buildSubSqlAbility().list());
 
-                    doCheckSelect(processor, context);
+                    change = doCheckSelect(processor, context);
                 }
                 break;
             }
             case DELETE: {
                 // delete 不允许子句.这里忽略子句.
 
-                doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(), context);
+                change = doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(), context);
+
                 break;
             }
             case UPDATE: {
                 // update 不允许子句.这里忽略子句.
 
-                doCheckUpdate((UpdateSqlProcessor) sql.buildProcessor(), context);
+                change = doCheckUpdate((UpdateSqlProcessor) sql.buildProcessor(), context);
                 break;
             }
         }
 
-        context.updateSql(sql);
+        if (change) {
+            context.updateSql(sql);
+        }
     }
 
-    private void doCheckDelete(DeleteSqlProcessor processor, Context context) {
-        doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+    private boolean  doCheckDelete(DeleteSqlProcessor processor, Context context) {
+        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
     }
 
-    private void doCheckUpdate(UpdateSqlProcessor processor, Context context) {
-        doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+    private boolean doCheckUpdate(UpdateSqlProcessor processor, Context context) {
+        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
     }
 
-    private void doCheckSelect(SelectSqlProcessor processor, Context context) {
-        doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+    private boolean doCheckSelect(SelectSqlProcessor processor, Context context) {
+        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
     }
 
-    private void doCheck(FromAbility fromAbility, ConditionAbility conditionAbility, Context context) {
+    // true 有改变, false 没有改变.
+    private boolean doCheck(FromAbility fromAbility, ConditionAbility conditionAbility, Context context) {
         List<From> froms = fromAbility.list();
         //只保留非子 from.
         froms = froms.stream().filter(f -> !f.isSub()).collect(Collectors.toList());
@@ -104,6 +109,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             rules.addAll(searcher.searchDataRule(context.authorization(), from.getTable()));
         }
 
+        boolean change = false;
         Item newConditions;
         for (DataRule rule : rules) {
             newConditions = buildConditions(froms, rule);
@@ -112,7 +118,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             } else {
                 conditionAbility.add((Relationship) newConditions, Conditional.AND, true);
             }
+            change = true;
         }
+
+        return change;
     }
 
     private Item buildConditions(List<From> froms, DataRule rule) {

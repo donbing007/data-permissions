@@ -1,13 +1,13 @@
 package com.xforceplus.ultraman.permissions.service.impl;
 
 import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.rule.assembly.Line;
 import com.xforceplus.ultraman.permissions.rule.assembly.LineFactory;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.service.RuleCheckService;
-import com.xforceplus.ultraman.permissions.service.define.CheckStatus;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.define.*;
@@ -68,7 +68,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
         } catch (Throwable ex) {
             logger.error(ex.getMessage(),ex);
 
-            return new CheckResult(CheckStatus.ERROR.getValue());
+            return new CheckResult(CheckStatus.ERROR.getValue(), ex.getMessage());
         }
 
         if (context.isRefused()) {
