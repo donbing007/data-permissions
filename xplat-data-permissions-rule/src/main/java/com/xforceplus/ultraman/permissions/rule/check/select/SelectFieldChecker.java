@@ -114,13 +114,22 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
 
     // true 在规则中,false 不在.
     private boolean checkRule(List<FieldRule> rules, Field field) {
-        for (FieldRule rule : rules) {
-            if (rule.getField().equals(field.getName())) {
-                return true;
+        // 唯一的规则
+        final int onlyOne = 1;
+        if (rules.size() == onlyOne
+            && rules.get(0).getField().equals("*")) {
+            return true;
+        } else {
+            for (FieldRule rule : rules) {
+                if (!rule.getField().equals("*")) {
+                    if (rule.getField().equals(field.getName())) {
+                        return true;
+                    }
+                }
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 
 }

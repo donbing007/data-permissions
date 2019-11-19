@@ -204,6 +204,36 @@ public class SelectFieldCheckerTest {
             )
         );
 
+        data.put(new SearchRequest(
+                "select t1.c2 from t1 where t1.c1=10",
+                false,
+                Arrays.asList(
+                )),
+            Arrays.asList(
+                new RuleCheckPack(auth, "t1",
+                    Arrays.asList(
+                        new FieldRule("t1", "*")
+                    )
+                )
+            )
+        );
+
+        data.put(new SearchRequest(
+                "select t1.c2 from t1 where t1.c1=10",
+                true,
+                Arrays.asList(
+                    new Field("t1", "c2")
+                )),
+            Arrays.asList(
+                new RuleCheckPack(auth, "t1",
+                    Arrays.asList(
+                        new FieldRule("t1", "*"),
+                        new FieldRule("t1", "c3")
+                    )
+                )
+            )
+        );
+
         return data;
     }
 }
