@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.perissions.pojo.rule;
+package com.xforceplus.ultraman.permissions.pojo.rule;
 
 /**
  * 条件之间的联系.

@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.sql.processor.ability;
 
 import com.xforceplus.ultraman.permissions.sql.define.Condition;
 import com.xforceplus.ultraman.permissions.sql.define.Conditional;
+import com.xforceplus.ultraman.permissions.sql.define.Parentheses;
 import com.xforceplus.ultraman.permissions.sql.define.relationship.Relationship;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 

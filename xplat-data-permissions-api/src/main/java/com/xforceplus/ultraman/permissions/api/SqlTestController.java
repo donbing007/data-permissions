@@ -1,9 +1,9 @@
 package com.xforceplus.ultraman.permissions.api;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
-import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
-import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
+import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.api.assemble.HttpCodeAssembler;
 import com.xforceplus.ultraman.permissions.service.RuleCheckService;
 import io.swagger.annotations.*;

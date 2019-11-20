@@ -1,8 +1,8 @@
 package com.xforceplus.ultraman.permissions.rule.check.select;
 
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;

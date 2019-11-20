@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.searcher.impl;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.*;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.repository.ScopeSelectRepository;
 import com.xforceplus.ultraman.permissions.repository.entity.DataScopeSubCondition;
 import com.xforceplus.ultraman.permissions.repository.entity.FieldScope;

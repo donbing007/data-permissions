@@ -1,14 +1,13 @@
 package com.xforceplus.ultraman.permissions.rule.check.select;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.utils.FieldCheckHelper;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbility;

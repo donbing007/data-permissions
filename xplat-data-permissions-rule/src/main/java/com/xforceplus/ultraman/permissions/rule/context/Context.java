@@ -1,7 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.context;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.Item;

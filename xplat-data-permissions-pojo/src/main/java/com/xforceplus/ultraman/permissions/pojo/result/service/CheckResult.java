@@ -1,6 +1,6 @@
-package com.xforceplus.ultraman.perissions.pojo.result.service;
+package com.xforceplus.ultraman.permissions.pojo.result.service;
 
-import com.xforceplus.ultraman.perissions.pojo.result.Result;
+import com.xforceplus.ultraman.permissions.pojo.result.Result;
 
 import java.util.List;
 

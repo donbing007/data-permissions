@@ -1,6 +1,4 @@
-package com.xforceplus.ultraman.perissions.pojo.result;
-
-import org.omg.CORBA.UNKNOWN;
+package com.xforceplus.ultraman.permissions.pojo.result;
 
 /**
  * 检查后的状态.

@@ -242,7 +242,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
 
     private void doAdd(boolean and, Expression oldWhere, Expression newCondition, boolean isolation) {
         if (oldWhere == null) {
-            setWhere(isolation ? new Parenthesis(newCondition) : newCondition);
+            setWhere(newCondition);
             return;
         }
 

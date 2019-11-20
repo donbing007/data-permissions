@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;

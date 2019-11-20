@@ -17,6 +17,19 @@ executor:
 
 # 使用 j2cache
 spring:
+  redis:
+    host: "redis-master.dongbinls.svc.cluster.local"
+    port: 6379
+    database: 0
+    password: "820613"
+    timeout: 2000
+    lettuce:
+      pool:
+        max-active: 8
+        min-idle: 1
+        max-idle: 8
+        max-wait: 20000
+      shutdown-timeout: 100
   cache:
     type: GENERIC
     cache-names: rule
@@ -29,10 +42,12 @@ j2cache:
   config-location: /j2cache/j2cache-${spring.profiles.active}.properties
   open-spring-cache: true
   cache-clean-mode: active
+  l2-cache-open: true
+  redis-client: lettuce
 
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     io:
       opencensus: INFO

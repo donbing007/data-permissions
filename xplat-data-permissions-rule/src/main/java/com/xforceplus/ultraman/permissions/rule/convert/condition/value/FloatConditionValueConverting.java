@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.convert.condition.value;
 
-import com.xforceplus.ultraman.perissions.pojo.rule.DataRuleCondition;
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionValueType;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleCondition;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionValueType;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.values.DoubleValue;
 

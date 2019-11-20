@@ -1,9 +1,9 @@
 package com.xforceplus.ultraman.permissions.rule.check.common;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.DataRule;
-import com.xforceplus.ultraman.perissions.pojo.rule.DataRuleCondition;
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionRelationship;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleCondition;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionRelationship;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.convert.condition.operator.ConditionOperationConvertingFactory;
@@ -19,6 +19,8 @@ import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
  * @since 1.8
  */
 public class ConditionsChecker extends AbstractTypeSafeChecker {
+
+    final Logger logger = LoggerFactory.getLogger(ConditionsChecker.class);
 
     public ConditionsChecker() {
         super(new SqlType[]{
@@ -61,21 +65,22 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
                     queue.addAll(processor.buildSubSqlAbility().list());
 
-                    change = doCheckSelect(processor, context);
+                    change = doCheck(processor.buildConditionAbility(), processor.buildFromAbility(), context);
                 }
                 break;
             }
             case DELETE: {
                 // delete 不允许子句.这里忽略子句.
 
-                change = doCheckDelete((DeleteSqlProcessor) sql.buildProcessor(), context);
+                DeleteSqlProcessor processor = (DeleteSqlProcessor) sql.buildProcessor();
+                change = doCheck(processor.buildConditionAbility(), processor.buildFromAbility(), context);
 
                 break;
             }
             case UPDATE: {
                 // update 不允许子句.这里忽略子句.
-
-                change = doCheckUpdate((UpdateSqlProcessor) sql.buildProcessor(), context);
+                UpdateSqlProcessor processor = (UpdateSqlProcessor) sql.buildProcessor();
+                change = doCheck(processor.buildConditionAbility(), processor.buildFromAbility(), context);
                 break;
             }
         }
@@ -85,66 +90,65 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
         }
     }
 
+    private boolean doCheck(ConditionAbility conditionAbility, FromAbility fromAbility, Context context) {
 
-    private boolean doCheckDelete(DeleteSqlProcessor processor, Context context) {
+        Item allConditions = null; //所有条件.
+        Item authConditions = null; // 某个角色的条件.
         boolean change = false;
         for (Authorization authorization : context.authorization().getAuthorizations()) {
-            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
-                change = true;
+
+            authConditions = buildFieldConditionsByOneAuth(fromAbility, context.getSercher(), authorization);
+
+            if (allConditions == null) {
+                allConditions = authConditions;
+            } else {
+                allConditions = buildRelationship(
+                    new Parentheses(allConditions), new Parentheses(authConditions), RuleConditionRelationship.OR);
             }
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Add new conditions {}", allConditions.toSqlString());
+        }
+
+        if (allConditions != null) {
+            if (Condition.class.isInstance(allConditions)) {
+                conditionAbility.add((Condition) allConditions, Conditional.AND, true);
+            } else {
+                conditionAbility.add((Relationship) allConditions, Conditional.AND, true);
+            }
+
+            change = true;
         }
 
         return change;
     }
 
-    private boolean doCheckUpdate(UpdateSqlProcessor processor, Context context) {
-        boolean change = false;
-        for (Authorization authorization : context.authorization().getAuthorizations()) {
-            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
-                change = true;
-            }
-        }
-
-        return change;
-    }
-
-    private boolean doCheckSelect(SelectSqlProcessor processor, Context context) {
-        boolean change = false;
-        for (Authorization authorization : context.authorization().getAuthorizations()) {
-            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
-                change = true;
-            }
-        }
-
-        return change;
-    }
-
-    // true 有改变, false 没有改变.
-    private boolean doCheck(
-        FromAbility fromAbility, ConditionAbility conditionAbility, Context context, Authorization authorization) {
+    // 构造某个角色下的所有条件.
+    private Item buildFieldConditionsByOneAuth(
+        FromAbility fromAbility, Searcher searcher, Authorization authorization) {
         List<From> froms = fromAbility.list();
         //只保留非子 from.
         froms = froms.stream().filter(f -> !f.isSub()).collect(Collectors.toList());
 
         List<DataRule> rules = new ArrayList();
-        Searcher searcher = context.getSercher();
         for (From from : froms) {
             rules.addAll(searcher.searchDataRule(authorization, from.getTable()));
         }
 
-        boolean change = false;
-        Item newConditions;
+        Item allFieldConditiions = null;
+        Item newFieldConditions;
         for (DataRule rule : rules) {
-            newConditions = buildConditions(froms, rule);
-            if (Condition.class.isInstance(newConditions)) {
-                conditionAbility.add((Condition) newConditions, Conditional.AND, true);
+            newFieldConditions = buildConditions(froms, rule);
+
+            if (allFieldConditiions == null) {
+                allFieldConditiions = newFieldConditions;
             } else {
-                conditionAbility.add((Relationship) newConditions, Conditional.AND, true);
+                allFieldConditiions = buildRelationship(allFieldConditiions, newFieldConditions, RuleConditionRelationship.AND);
             }
-            change = true;
         }
 
-        return change;
+        return allFieldConditiions;
     }
 
     private Item buildConditions(List<From> froms, DataRule rule) {

@@ -1,7 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.convert.condition.operator;
 
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionOperation;
-import com.xforceplus.ultraman.permissions.rule.convert.Converting;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionOperation;
 
 import java.util.HashMap;
 import java.util.Map;

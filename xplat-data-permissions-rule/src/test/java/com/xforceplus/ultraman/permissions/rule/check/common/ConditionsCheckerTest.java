@@ -1,7 +1,8 @@
 package com.xforceplus.ultraman.permissions.rule.check.common;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.*;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.sql.Sql;
@@ -21,7 +22,6 @@ import static org.mockito.Mockito.when;
  */
 public class ConditionsCheckerTest {
 
-    private Authorization auth = new Authorization("r1", "t1");
     private SqlParser sqlParser = JSqlParser.getInstance();
 
     @Test
@@ -35,11 +35,15 @@ public class ConditionsCheckerTest {
             Searcher searcher = mock(Searcher.class);
 
             ConditionPack pack = caseData.get(s);
-            pack.ruleMap.keySet().stream().forEach(e -> {
-                when(searcher.searchDataRule(auth, e)).thenReturn(pack.ruleMap.get(e));
+            pack.ruleMap.keySet().stream().forEach(auth -> {
+                Map<String, List<DataRule>> tableRules = pack.ruleMap.get(auth);
+                tableRules.keySet().stream().forEach(t -> {
+                    when(searcher.searchDataRule(auth, t)).thenReturn(tableRules.get(t));
+                });
             });
 
-            DefaultContext context = new DefaultContext(sql, auth, searcher);
+            DefaultContext context = new DefaultContext(sql,
+                new Authorizations(new ArrayList(pack.ruleMap.keySet())), searcher);
 
             checker.check(context);
 
@@ -59,165 +63,131 @@ public class ConditionsCheckerTest {
         Map<String, ConditionPack> data = new LinkedHashMap<>();
 
         data.put(
-            "select * from t1",
+            "select t1.c1 from t1",
             new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100")
-                        ))
-                    ));
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
+                        }}
+                    );
                 }},
-                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100)").toString()
+                CCJSqlParserUtil.parse("select t1.c1 from t1 where t1.c1=100").toString()
             )
         );
 
         data.put(
             "select * from t1",
             new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100")
-                        ))
-                    ));
-                    put("t2", Arrays.asList(
-                        new DataRule("t2", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100")
-                        ))
-                    ));
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
+                        }}
+                    );
 
+                    put(new Authorization("r2", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.NOT_EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "3000")
+                                ))
+                            ));
+                        }}
+                    );
                 }},
-                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100) and (t2.c1=100)").toString()
+                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100) or (t1.c1 != 3000)").toString()
             )
         );
 
         data.put(
-            "select * from t1",
+            "select * from t1 where t1.c1=5000",
             new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100"),
-                            new DataRuleCondition(
-                                RuleConditionOperation.LIST,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.OR,
-                                "100,200")
-                        ))
-                    ));
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
+                        }}
+                    );
+
+                    put(new Authorization("r2", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.NOT_EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "3000")
+                                ))
+                            ));
+                        }}
+                    );
                 }},
-                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100 or t1.c1 in (100,200))").toString()
+                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=5000) and ((t1.c1=100) or (t1.c1 != 3000))").toString()
             )
         );
 
-        data.put(
-            "select * from (select * from t1)",
-            new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100"),
-                            new DataRuleCondition(
-                                RuleConditionOperation.LIST,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.OR,
-                                "100,200")
-                        ))
-                    ));
-                }},
-                CCJSqlParserUtil.parse("select * from (select * from t1 where (t1.c1=100 or t1.c1 in (100,200)))").toString()
-            )
-        );
 
         data.put(
-            "select * from (select * from t1 where t1.c1=300)",
+            "select t1.* from t1 inner join t2 on t1.c1=t2.c1",
             new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100"),
-                            new DataRuleCondition(
-                                RuleConditionOperation.LIST,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.OR,
-                                "100,200")
-                        ))
-                    ));
-                }},
-                CCJSqlParserUtil.parse("select * from (select * from t1 where (t1.c1=300) and (t1.c1=100 or t1.c1 in (100,200)))").toString()
-            )
-        );
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
 
-        data.put(
-            "update t1 set t1.c1=200",
-            new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100"),
-                            new DataRuleCondition(
-                                RuleConditionOperation.LIST,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.OR,
-                                "100,200")
-                        ))
-                    ));
-                }},
-                CCJSqlParserUtil.parse("update t1 set t1.c1=200 where (t1.c1=100 or t1.c1 in (100,200))").toString()
-            )
-        );
+                            put("t2", Arrays.asList(
+                                new DataRule("t2", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
 
-        data.put(
-            "update t1 set t1.c1=200",
-            new ConditionPack(
-                new HashMap<String, List<DataRule>>() {{
-                    put("t1", Arrays.asList(
-                        new DataRule("t1", "c1", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.EQUAL,
-                                RuleConditionValueType.INTEGER,
-                                RuleConditionRelationship.AND,
-                                "100")
-                        )),
-                        new DataRule("t1", "c2", Arrays.asList(
-                            new DataRuleCondition(
-                                RuleConditionOperation.AFTER,
-                                RuleConditionValueType.STRING,
-                                RuleConditionRelationship.AND,
-                                "test")
-                        ))
-                    ));
+                        }}
+                    );
+
                 }},
-                CCJSqlParserUtil.parse("update t1 set t1.c1=200 where (t1.c1=100) and (t1.c2 like '%test')").toString()
+                CCJSqlParserUtil.parse("select t1.* from t1 inner join t2 on t1.c1=t2.c1 where t1.c1=100 and t2.c1=100").toString()
             )
         );
 
@@ -226,9 +196,10 @@ public class ConditionsCheckerTest {
 
     private static class ConditionPack {
         private String expectation;
-        private Map<String, List<DataRule>> ruleMap;
+        // 一个授权下有多个表的多个权限.
+        private Map<Authorization, Map<String, List<DataRule>>> ruleMap;
 
-        public ConditionPack(Map<String, List<DataRule>> ruleMap, String expectedSql) {
+        public ConditionPack(Map<Authorization, Map<String, List<DataRule>>> ruleMap, String expectedSql) {
             this.expectation = expectedSql;
             this.ruleMap = ruleMap;
         }

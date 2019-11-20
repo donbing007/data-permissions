@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.client;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.GrpcStatmentCheckClient;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc;
 

@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.perissions.pojo.result;
+package com.xforceplus.ultraman.permissions.pojo.result;
 
 import java.io.Serializable;
 import java.util.Objects;

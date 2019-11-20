@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.utils;
 
-import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 
 import java.util.List;

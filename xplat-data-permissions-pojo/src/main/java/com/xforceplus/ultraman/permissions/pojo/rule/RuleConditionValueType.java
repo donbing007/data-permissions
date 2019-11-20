@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.perissions.pojo.rule;
+package com.xforceplus.ultraman.permissions.pojo.rule;
 
 /**
  * 规则条件中的值类型.

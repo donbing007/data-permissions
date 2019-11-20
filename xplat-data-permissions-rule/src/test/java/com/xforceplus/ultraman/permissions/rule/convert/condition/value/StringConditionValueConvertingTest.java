@@ -1,9 +1,9 @@
 package com.xforceplus.ultraman.permissions.rule.convert.condition.value;
 
-import com.xforceplus.ultraman.perissions.pojo.rule.DataRuleCondition;
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionOperation;
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionRelationship;
-import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionValueType;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleCondition;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionOperation;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionRelationship;
+import com.xforceplus.ultraman.permissions.pojo.rule.RuleConditionValueType;
 import org.junit.Assert;
 import org.junit.Test;
 

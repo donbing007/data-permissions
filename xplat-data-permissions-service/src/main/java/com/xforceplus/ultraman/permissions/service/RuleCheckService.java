@@ -1,8 +1,7 @@
 package com.xforceplus.ultraman.permissions.service;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
-import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 
 /**
  * 规则检查服务.

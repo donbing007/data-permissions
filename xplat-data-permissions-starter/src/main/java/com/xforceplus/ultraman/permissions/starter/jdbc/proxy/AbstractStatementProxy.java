@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
 
 /**

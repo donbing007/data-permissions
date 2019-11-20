@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
  * @since 1.8
  */
 public class PassResultSetProxy implements InvocationHandler {
+
 
     private List<String> blackList;
     private ResultSet target;

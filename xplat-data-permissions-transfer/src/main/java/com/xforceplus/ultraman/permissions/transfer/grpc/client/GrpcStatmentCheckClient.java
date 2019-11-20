@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.transfer.grpc.client;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.StatmentCheckServiceGrpc;
 import io.grpc.ManagedChannel;

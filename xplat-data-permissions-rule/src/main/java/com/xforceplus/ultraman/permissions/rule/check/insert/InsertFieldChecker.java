@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.rule.check.insert;
 
-import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.utils.FieldCheckHelper;
@@ -14,9 +14,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertItemAbility;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * insert 语句的字段权限检查.
