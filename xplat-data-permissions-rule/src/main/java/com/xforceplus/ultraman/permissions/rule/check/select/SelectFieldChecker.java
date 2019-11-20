@@ -1,8 +1,10 @@
 package com.xforceplus.ultraman.permissions.rule.check.select;
 
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
+import com.xforceplus.ultraman.permissions.rule.utils.FieldCheckHelper;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
@@ -13,6 +15,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbili
 
 import java.util.AbstractMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * select 语句字段检查.
@@ -45,16 +48,19 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
         SelectItemAbility selectItemAbility = selectSqlProcessor.buildSelectItemAbility();
 
         List<Item> items = selectItemAbility.list();
-        items.stream().filter(i -> {
-            if (Field.class.isInstance(i) && Field.getAllField().equals(i)) {
+        items = items.stream().filter(item -> {
+            // 过滤掉 * 号字段.
+            if (Field.class.isInstance(item) && Field.getAllField().equals(item)) {
                 return false;
             } else {
                 return true;
             }
-        }).forEach(i -> {
+        }).collect(Collectors.toList());
 
-            if (needHide(selectSqlProcessor, i, context)) {
-                context.black(i);
+        items.stream().forEach(item -> {
+
+            if (needHide(selectSqlProcessor, item, context)) {
+                context.black(item);
             }
         });
 
@@ -102,27 +108,9 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
                 field = entry.getKey();
                 from = entry.getValue();
 
-                rules = context.getSercher().searchFieldRule(context.authorization(), from.getTable());
-                if (!checkRule(rules, field)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    // true 在规则中,false 不在.
-    private boolean checkRule(List<FieldRule> rules, Field field) {
-        // 唯一的规则
-        final int onlyOne = 1;
-        if (rules.size() == onlyOne
-            && rules.get(0).getField().equals("*")) {
-            return true;
-        } else {
-            for (FieldRule rule : rules) {
-                if (!rule.getField().equals("*")) {
-                    if (rule.getField().equals(field.getName())) {
+                for (Authorization authorization : context.authorization().getAuthorizations()) {
+                    rules = context.getSercher().searchFieldRule(authorization, from.getTable());
+                    if (!FieldCheckHelper.checkRule(rules, field)) {
                         return true;
                     }
                 }

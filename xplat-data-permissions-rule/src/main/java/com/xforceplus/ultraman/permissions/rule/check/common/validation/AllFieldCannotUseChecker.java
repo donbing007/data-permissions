@@ -6,8 +6,11 @@ import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.utils.SubSqlIterator;
 
 import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
@@ -18,7 +21,7 @@ import java.util.Queue;
  * @version 0.1 2019/11/8 14:15
  * @since 1.8
  */
-public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
+public class AllFieldCannotUseChecker extends AbstractValidationChecker {
 
 
     public AllFieldCannotUseChecker() {
@@ -26,31 +29,8 @@ public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
     }
 
     @Override
-    protected void checkTypeSafe(Context context) {
-
-        Queue<Sql> queue = new ArrayDeque<>();
-        queue.add(context.sql());
-
-        SelectSqlProcessor processor;
-        Sql sql;
-        while (!queue.isEmpty()) {
-            sql = queue.poll();
-            processor = (SelectSqlProcessor) sql.buildProcessor();
-
-            if (!doCheck(processor)) {
-                context.refused("Select return values with '*' are not allowed.");
-                break;
-            } else {
-
-                queue.addAll(processor.buildSubSqlAbility().list());
-
-            }
-
-        }
-    }
-
-    private boolean doCheck(SelectSqlProcessor processor) {
-        List<Item> selectItems = processor.buildSelectItemAbility().list();
+    protected boolean doCheck(SqlProcessor processor) {
+        List<Item> selectItems = ((SelectSqlProcessor) processor).buildSelectItemAbility().list();
 
         AllFieldItemVisitor visitor = new AllFieldItemVisitor();
 
@@ -63,6 +43,11 @@ public class AllFieldCannotUseChecker extends AbstractTypeSafeChecker {
         }
 
         return true;
+    }
+
+    @Override
+    protected String refusedCause() {
+        return "Select return values with '*' are not allowed.";
     }
 
     private static class AllFieldItemVisitor extends ItemVisitorAdapter {

@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.starter.authorization;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 
 /**
  * 授权信息搜索定义.

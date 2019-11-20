@@ -1,8 +1,10 @@
 package com.xforceplus.ultraman.permissions.rule.check.insert;
 
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
+import com.xforceplus.ultraman.permissions.rule.utils.FieldCheckHelper;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.From;
@@ -13,6 +15,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertItemAbili
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,18 +44,20 @@ public class InsertFieldChecker extends AbstractTypeSafeChecker {
 
         InsertItemAbility insertItemAbility = processor.buildInsertItemAbility();
 
-        // 只需要 key value 的值无关紧要.
-        Map<String, Object> ruleTable =
-            context.getSercher().searchFieldRule(
-                context.authorization(), from.getTable()).stream().collect(
-                Collectors.toMap(FieldRule::getField, FieldRule::getEntity));
+        Set<Authorization> authorizations = context.authorization().getAuthorizations();
 
+        // 当前字段列表
         List<Field> fields = insertItemAbility.list();
+        List<FieldRule> rules;
+        // 多个授权信息
+        for (Authorization authorization : authorizations) {
 
-        for (Field field : fields) {
-            if (!ruleTable.containsKey(field.getName())) {
-                context.refused("No field \"" + field.toSqlString() + "\" permission.");
-                return;
+            rules = context.getSercher().searchFieldRule(authorization, from.getTable());
+            for (Field currentField : fields) {
+                if (!FieldCheckHelper.checkRule(rules, currentField)) {
+                    context.refused("No field \"" + currentField.toSqlString() + "\" permission.");
+                    return;
+                }
             }
         }
 

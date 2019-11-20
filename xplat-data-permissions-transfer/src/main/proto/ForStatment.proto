@@ -14,7 +14,7 @@ service StatmentCheckService {
 
 message Statment {
     string sql = 1; // 当前需要运行的 sql.
-    Role role = 2; // 当前用户.
+    repeated Authorization authorization = 2; // 当前授权信息.
 }
 
 message StatmentResult {

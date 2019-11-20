@@ -38,28 +38,47 @@ public final class ForStatmentGrpc {
 
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    boolean hasRole();
+    java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> 
+        getAuthorizationList();
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getRole();
+    com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getAuthorization(int index);
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder getRoleOrBuilder();
+    int getAuthorizationCount();
+    /**
+     * <pre>
+     * 当前授权信息.
+     * </pre>
+     *
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+     */
+    java.util.List<? extends com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder> 
+        getAuthorizationOrBuilderList();
+    /**
+     * <pre>
+     * 当前授权信息.
+     * </pre>
+     *
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+     */
+    com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder getAuthorizationOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code com.xforceplus.ultraman.permissions.Statment}
@@ -75,6 +94,7 @@ public final class ForStatmentGrpc {
     }
     private Statment() {
       sql_ = "";
+      authorization_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -115,16 +135,12 @@ public final class ForStatmentGrpc {
               break;
             }
             case 18: {
-              com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder subBuilder = null;
-              if (role_ != null) {
-                subBuilder = role_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                authorization_ = new java.util.ArrayList<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization>();
+                mutable_bitField0_ |= 0x00000002;
               }
-              role_ = input.readMessage(com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(role_);
-                role_ = subBuilder.buildPartial();
-              }
-
+              authorization_.add(
+                  input.readMessage(com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.parser(), extensionRegistry));
               break;
             }
           }
@@ -135,6 +151,9 @@ public final class ForStatmentGrpc {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          authorization_ = java.util.Collections.unmodifiableList(authorization_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -151,6 +170,7 @@ public final class ForStatmentGrpc {
               com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment.class, com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment.Builder.class);
     }
 
+    private int bitField0_;
     public static final int SQL_FIELD_NUMBER = 1;
     private volatile java.lang.Object sql_;
     /**
@@ -193,37 +213,59 @@ public final class ForStatmentGrpc {
       }
     }
 
-    public static final int ROLE_FIELD_NUMBER = 2;
-    private com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role role_;
+    public static final int AUTHORIZATION_FIELD_NUMBER = 2;
+    private java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> authorization_;
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    public boolean hasRole() {
-      return role_ != null;
+    public java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> getAuthorizationList() {
+      return authorization_;
     }
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getRole() {
-      return role_ == null ? com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.getDefaultInstance() : role_;
+    public java.util.List<? extends com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder> 
+        getAuthorizationOrBuilderList() {
+      return authorization_;
     }
     /**
      * <pre>
-     * 当前用户.
+     * 当前授权信息.
      * </pre>
      *
-     * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
      */
-    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder getRoleOrBuilder() {
-      return getRole();
+    public int getAuthorizationCount() {
+      return authorization_.size();
+    }
+    /**
+     * <pre>
+     * 当前授权信息.
+     * </pre>
+     *
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+     */
+    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getAuthorization(int index) {
+      return authorization_.get(index);
+    }
+    /**
+     * <pre>
+     * 当前授权信息.
+     * </pre>
+     *
+     * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+     */
+    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder getAuthorizationOrBuilder(
+        int index) {
+      return authorization_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -241,8 +283,8 @@ public final class ForStatmentGrpc {
       if (!getSqlBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sql_);
       }
-      if (role_ != null) {
-        output.writeMessage(2, getRole());
+      for (int i = 0; i < authorization_.size(); i++) {
+        output.writeMessage(2, authorization_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -255,9 +297,9 @@ public final class ForStatmentGrpc {
       if (!getSqlBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sql_);
       }
-      if (role_ != null) {
+      for (int i = 0; i < authorization_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getRole());
+          .computeMessageSize(2, authorization_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -277,11 +319,8 @@ public final class ForStatmentGrpc {
       boolean result = true;
       result = result && getSql()
           .equals(other.getSql());
-      result = result && (hasRole() == other.hasRole());
-      if (hasRole()) {
-        result = result && getRole()
-            .equals(other.getRole());
-      }
+      result = result && getAuthorizationList()
+          .equals(other.getAuthorizationList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -295,9 +334,9 @@ public final class ForStatmentGrpc {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + SQL_FIELD_NUMBER;
       hash = (53 * hash) + getSql().hashCode();
-      if (hasRole()) {
-        hash = (37 * hash) + ROLE_FIELD_NUMBER;
-        hash = (53 * hash) + getRole().hashCode();
+      if (getAuthorizationCount() > 0) {
+        hash = (37 * hash) + AUTHORIZATION_FIELD_NUMBER;
+        hash = (53 * hash) + getAuthorizationList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -424,17 +463,18 @@ public final class ForStatmentGrpc {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getAuthorizationFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         sql_ = "";
 
-        if (roleBuilder_ == null) {
-          role_ = null;
+        if (authorizationBuilder_ == null) {
+          authorization_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
-          role_ = null;
-          roleBuilder_ = null;
+          authorizationBuilder_.clear();
         }
         return this;
       }
@@ -458,12 +498,19 @@ public final class ForStatmentGrpc {
 
       public com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment buildPartial() {
         com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment result = new com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.sql_ = sql_;
-        if (roleBuilder_ == null) {
-          result.role_ = role_;
+        if (authorizationBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            authorization_ = java.util.Collections.unmodifiableList(authorization_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.authorization_ = authorization_;
         } else {
-          result.role_ = roleBuilder_.build();
+          result.authorization_ = authorizationBuilder_.build();
         }
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -509,8 +556,31 @@ public final class ForStatmentGrpc {
           sql_ = other.sql_;
           onChanged();
         }
-        if (other.hasRole()) {
-          mergeRole(other.getRole());
+        if (authorizationBuilder_ == null) {
+          if (!other.authorization_.isEmpty()) {
+            if (authorization_.isEmpty()) {
+              authorization_ = other.authorization_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAuthorizationIsMutable();
+              authorization_.addAll(other.authorization_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.authorization_.isEmpty()) {
+            if (authorizationBuilder_.isEmpty()) {
+              authorizationBuilder_.dispose();
+              authorizationBuilder_ = null;
+              authorization_ = other.authorization_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              authorizationBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getAuthorizationFieldBuilder() : null;
+            } else {
+              authorizationBuilder_.addAllMessages(other.authorization_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -538,6 +608,7 @@ public final class ForStatmentGrpc {
         }
         return this;
       }
+      private int bitField0_;
 
       private java.lang.Object sql_ = "";
       /**
@@ -628,157 +699,316 @@ public final class ForStatmentGrpc {
         return this;
       }
 
-      private com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role role_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder> roleBuilder_;
-      /**
-       * <pre>
-       * 当前用户.
-       * </pre>
-       *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
-       */
-      public boolean hasRole() {
-        return roleBuilder_ != null || role_ != null;
+      private java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> authorization_ =
+        java.util.Collections.emptyList();
+      private void ensureAuthorizationIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          authorization_ = new java.util.ArrayList<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization>(authorization_);
+          bitField0_ |= 0x00000002;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder> authorizationBuilder_;
+
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getRole() {
-        if (roleBuilder_ == null) {
-          return role_ == null ? com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.getDefaultInstance() : role_;
+      public java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> getAuthorizationList() {
+        if (authorizationBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(authorization_);
         } else {
-          return roleBuilder_.getMessage();
+          return authorizationBuilder_.getMessageList();
         }
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public Builder setRole(com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role value) {
-        if (roleBuilder_ == null) {
+      public int getAuthorizationCount() {
+        if (authorizationBuilder_ == null) {
+          return authorization_.size();
+        } else {
+          return authorizationBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getAuthorization(int index) {
+        if (authorizationBuilder_ == null) {
+          return authorization_.get(index);
+        } else {
+          return authorizationBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public Builder setAuthorization(
+          int index, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization value) {
+        if (authorizationBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          role_ = value;
+          ensureAuthorizationIsMutable();
+          authorization_.set(index, value);
           onChanged();
         } else {
-          roleBuilder_.setMessage(value);
+          authorizationBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public Builder setRole(
-          com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder builderForValue) {
-        if (roleBuilder_ == null) {
-          role_ = builderForValue.build();
+      public Builder setAuthorization(
+          int index, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder builderForValue) {
+        if (authorizationBuilder_ == null) {
+          ensureAuthorizationIsMutable();
+          authorization_.set(index, builderForValue.build());
           onChanged();
         } else {
-          roleBuilder_.setMessage(builderForValue.build());
+          authorizationBuilder_.setMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public Builder mergeRole(com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role value) {
-        if (roleBuilder_ == null) {
-          if (role_ != null) {
-            role_ =
-              com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.newBuilder(role_).mergeFrom(value).buildPartial();
-          } else {
-            role_ = value;
+      public Builder addAuthorization(com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization value) {
+        if (authorizationBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
+          ensureAuthorizationIsMutable();
+          authorization_.add(value);
           onChanged();
         } else {
-          roleBuilder_.mergeFrom(value);
+          authorizationBuilder_.addMessage(value);
         }
-
         return this;
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public Builder clearRole() {
-        if (roleBuilder_ == null) {
-          role_ = null;
+      public Builder addAuthorization(
+          int index, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization value) {
+        if (authorizationBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAuthorizationIsMutable();
+          authorization_.add(index, value);
           onChanged();
         } else {
-          role_ = null;
-          roleBuilder_ = null;
+          authorizationBuilder_.addMessage(index, value);
         }
-
         return this;
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder getRoleBuilder() {
-        
-        onChanged();
-        return getRoleFieldBuilder().getBuilder();
+      public Builder addAuthorization(
+          com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder builderForValue) {
+        if (authorizationBuilder_ == null) {
+          ensureAuthorizationIsMutable();
+          authorization_.add(builderForValue.build());
+          onChanged();
+        } else {
+          authorizationBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder getRoleOrBuilder() {
-        if (roleBuilder_ != null) {
-          return roleBuilder_.getMessageOrBuilder();
+      public Builder addAuthorization(
+          int index, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder builderForValue) {
+        if (authorizationBuilder_ == null) {
+          ensureAuthorizationIsMutable();
+          authorization_.add(index, builderForValue.build());
+          onChanged();
         } else {
-          return role_ == null ?
-              com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.getDefaultInstance() : role_;
+          authorizationBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public Builder addAllAuthorization(
+          java.lang.Iterable<? extends com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> values) {
+        if (authorizationBuilder_ == null) {
+          ensureAuthorizationIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, authorization_);
+          onChanged();
+        } else {
+          authorizationBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public Builder clearAuthorization() {
+        if (authorizationBuilder_ == null) {
+          authorization_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          authorizationBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public Builder removeAuthorization(int index) {
+        if (authorizationBuilder_ == null) {
+          ensureAuthorizationIsMutable();
+          authorization_.remove(index);
+          onChanged();
+        } else {
+          authorizationBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder getAuthorizationBuilder(
+          int index) {
+        return getAuthorizationFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder getAuthorizationOrBuilder(
+          int index) {
+        if (authorizationBuilder_ == null) {
+          return authorization_.get(index);  } else {
+          return authorizationBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
        * <pre>
-       * 当前用户.
+       * 当前授权信息.
        * </pre>
        *
-       * <code>.com.xforceplus.ultraman.permissions.Role role = 2;</code>
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder> 
-          getRoleFieldBuilder() {
-        if (roleBuilder_ == null) {
-          roleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder>(
-                  getRole(),
+      public java.util.List<? extends com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder> 
+           getAuthorizationOrBuilderList() {
+        if (authorizationBuilder_ != null) {
+          return authorizationBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(authorization_);
+        }
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder addAuthorizationBuilder() {
+        return getAuthorizationFieldBuilder().addBuilder(
+            com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder addAuthorizationBuilder(
+          int index) {
+        return getAuthorizationFieldBuilder().addBuilder(
+            index, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 当前授权信息.
+       * </pre>
+       *
+       * <code>repeated .com.xforceplus.ultraman.permissions.Authorization authorization = 2;</code>
+       */
+      public java.util.List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder> 
+           getAuthorizationBuilderList() {
+        return getAuthorizationFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder> 
+          getAuthorizationFieldBuilder() {
+        if (authorizationBuilder_ == null) {
+          authorizationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder>(
+                  authorization_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
                   isClean());
-          role_ = null;
+          authorization_ = null;
         }
-        return roleBuilder_;
+        return authorizationBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1987,17 +2217,17 @@ public final class ForStatmentGrpc {
   static {
     java.lang.String[] descriptorData = {
       "\n\021ForStatment.proto\022#com.xforceplus.ultr" +
-      "aman.permissions\032\nBase.proto\"P\n\010Statment" +
-      "\022\013\n\003sql\030\001 \001(\t\0227\n\004role\030\002 \001(\0132).com.xforce" +
-      "plus.ultraman.permissions.Role\"B\n\016Statme" +
-      "ntResult\022\016\n\006status\030\001 \001(\005\022\016\n\006newSql\030\002 \001(\t" +
-      "\022\020\n\010backList\030\003 \003(\t2\203\001\n\024StatmentCheckServ" +
-      "ice\022k\n\005check\022-.com.xforceplus.ultraman.p" +
-      "ermissions.Statment\0323.com.xforceplus.ult" +
-      "raman.permissions.StatmentResultBR\n:com." +
-      "xforceplus.ultraman.permissions.transfer" +
-      ".grpc.generateB\017ForStatmentGrpcH\001\210\001\001b\006pr" +
-      "oto3"
+      "aman.permissions\032\nBase.proto\"b\n\010Statment" +
+      "\022\013\n\003sql\030\001 \001(\t\022I\n\rauthorization\030\002 \003(\01322.c" +
+      "om.xforceplus.ultraman.permissions.Autho" +
+      "rization\"B\n\016StatmentResult\022\016\n\006status\030\001 \001" +
+      "(\005\022\016\n\006newSql\030\002 \001(\t\022\020\n\010backList\030\003 \003(\t2\203\001\n" +
+      "\024StatmentCheckService\022k\n\005check\022-.com.xfo" +
+      "rceplus.ultraman.permissions.Statment\0323." +
+      "com.xforceplus.ultraman.permissions.Stat" +
+      "mentResultBR\n:com.xforceplus.ultraman.pe" +
+      "rmissions.transfer.grpc.generateB\017ForSta" +
+      "tmentGrpcH\001\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2010,21 +2240,21 @@ public final class ForStatmentGrpc {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.getDescriptor(),
+          com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.getDescriptor(),
         }, assigner);
     internal_static_com_xforceplus_ultraman_permissions_Statment_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_com_xforceplus_ultraman_permissions_Statment_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_xforceplus_ultraman_permissions_Statment_descriptor,
-        new java.lang.String[] { "Sql", "Role", });
+        new java.lang.String[] { "Sql", "Authorization", });
     internal_static_com_xforceplus_ultraman_permissions_StatmentResult_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_xforceplus_ultraman_permissions_StatmentResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_xforceplus_ultraman_permissions_StatmentResult_descriptor,
         new java.lang.String[] { "Status", "NewSql", "BackList", });
-    com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.getDescriptor();
+    com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

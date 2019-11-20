@@ -1,0 +1,38 @@
+# 测试环境
+server:
+  port: 8080
+# grpc 配置.
+grpc:
+  enabled: true
+  port: 8206
+  maxInboundMetadataBytes: 1048576  # 允许的请求头大小(字节)
+  maxInboundMessageBytes: 1048576  # 允许的请求消息大小(字节).
+  heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
+  heartbeatTimeoutSeconds: 30 # 心跳超时秒.
+# 线程池.
+executor:
+  maxTaskSize: 100
+  # 默认为当前 CPU 核数
+  # maxWorkerSize:
+
+# 使用 j2cache
+spring:
+  cache:
+    type: GENERIC
+    cache-names: rule
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=3000&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: root
+j2cache:
+  config-location: /j2cache/j2cache-${spring.profiles.active}.properties
+  open-spring-cache: true
+  cache-clean-mode: active
+
+
+logging:
+  level:
+    root: DEBUG
+    io:
+      opencensus: INFO

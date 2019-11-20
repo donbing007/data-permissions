@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.searcher.impl;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.repository.ScopeSelectRepository;
 import com.xforceplus.ultraman.permissions.repository.entity.DataScopeSubCondition;
@@ -27,14 +27,14 @@ public class DefaultSearcherImpl implements Searcher {
     @Resource
     private ScopeSelectRepository scopeSelectRepository;
 
-    // @Cacheable(key = "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
+    @Cacheable(key = "'rule-field-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
 
         return loadFieldRuleFromDb(auth, entity);
     }
 
-    // @Cacheable(key = "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
+    @Cacheable(key = "'rule-data-' + #p0.tenant + '-' + #p0.role + '-' + #entity")
     @Override
     public List<DataRule> searchDataRule(Authorization auth, String entity) {
         return loadDataRuleFromDb(auth, entity);

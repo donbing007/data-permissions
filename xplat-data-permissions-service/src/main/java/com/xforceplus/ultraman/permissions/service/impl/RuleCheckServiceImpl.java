@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.service.impl;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.rule.assembly.Line;
@@ -42,7 +43,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
     private Searcher searcher;
 
     @Override
-    public CheckResult check(String sqlStr, Authorization authorization) {
+    public CheckResult check(String sqlStr, Authorizations authorizations) {
         Sql sql;
         try {
             sql = sqlParser.parser(sqlStr);
@@ -54,7 +55,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
 
         Line line = lineFactory.getLine(sql);
 
-        DefaultContext context = new DefaultContext(sql, authorization, searcher);
+        DefaultContext context = new DefaultContext(sql, authorizations, searcher);
 
         /**
          * 执行流水线.有以下分支.

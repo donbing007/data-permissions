@@ -1,25 +1,19 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.perissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.DenialResultSet;
 import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.net.URL;
 import java.sql.*;
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

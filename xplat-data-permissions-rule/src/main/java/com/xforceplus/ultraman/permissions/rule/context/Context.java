@@ -1,9 +1,9 @@
 package com.xforceplus.ultraman.permissions.rule.context;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.sql.Sql;
-import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 
 /**
@@ -37,7 +37,7 @@ public interface Context {
      * 当前的授权信息.
      * @return 授权信息.
      */
-    Authorization authorization();
+    Authorizations authorization();
 
     /**
      * 是否未授权.

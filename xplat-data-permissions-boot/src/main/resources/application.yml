@@ -1,17 +1,6 @@
-server:
-  port: 8080
-# grpc 配置.
-grpc:
-  enabled: true
-  port: 8206
-  maxInboundMetadataBytes: 1048576  # 允许的请求头大小(字节)
-  maxInboundMessageBytes: 1048576  # 允许的请求消息大小(字节).
-  heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
-  heartbeatTimeoutSeconds: 30 # 心跳超时秒.
-# 线程池.
-executor:
-  maxTaskSize: 100
-  # maxWorkerSize: cpu core
+spring:
+  profiles:
+    active: fat
 management:
   health:
     redis:
@@ -28,21 +17,3 @@ management:
       enabled: true
     info:
       enabled: true
-# 缓存,可选 redis.
-spring:
-  cache:
-    type: CAFFEINE
-    cache-names: rule
-    caffeine:
-      spec: maximumSize=500,expireAfterAccess=600s
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions
-    username: root
-    password: root
-
-logging:
-  level:
-    root: DEBUG
-    io:
-      opencensus: INFO

@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.rule.check.common;
 
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.perissions.pojo.rule.DataRule;
 import com.xforceplus.ultraman.perissions.pojo.rule.DataRuleCondition;
 import com.xforceplus.ultraman.perissions.pojo.rule.RuleConditionRelationship;
@@ -18,7 +19,6 @@ import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
-import com.xforceplus.ultraman.permissions.sql.utils.SubSqlIterator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -85,20 +85,43 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
         }
     }
 
-    private boolean  doCheckDelete(DeleteSqlProcessor processor, Context context) {
-        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+
+    private boolean doCheckDelete(DeleteSqlProcessor processor, Context context) {
+        boolean change = false;
+        for (Authorization authorization : context.authorization().getAuthorizations()) {
+            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
+                change = true;
+            }
+        }
+
+        return change;
     }
 
     private boolean doCheckUpdate(UpdateSqlProcessor processor, Context context) {
-        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+        boolean change = false;
+        for (Authorization authorization : context.authorization().getAuthorizations()) {
+            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
+                change = true;
+            }
+        }
+
+        return change;
     }
 
     private boolean doCheckSelect(SelectSqlProcessor processor, Context context) {
-        return doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context);
+        boolean change = false;
+        for (Authorization authorization : context.authorization().getAuthorizations()) {
+            if (doCheck(processor.buildFromAbility(), processor.buildConditionAbility(), context, authorization)) {
+                change = true;
+            }
+        }
+
+        return change;
     }
 
     // true 有改变, false 没有改变.
-    private boolean doCheck(FromAbility fromAbility, ConditionAbility conditionAbility, Context context) {
+    private boolean doCheck(
+        FromAbility fromAbility, ConditionAbility conditionAbility, Context context, Authorization authorization) {
         List<From> froms = fromAbility.list();
         //只保留非子 from.
         froms = froms.stream().filter(f -> !f.isSub()).collect(Collectors.toList());
@@ -106,7 +129,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
         List<DataRule> rules = new ArrayList();
         Searcher searcher = context.getSercher();
         for (From from : froms) {
-            rules.addAll(searcher.searchDataRule(context.authorization(), from.getTable()));
+            rules.addAll(searcher.searchDataRule(authorization, from.getTable()));
         }
 
         boolean change = false;

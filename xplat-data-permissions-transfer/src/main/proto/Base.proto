@@ -3,11 +3,10 @@ syntax = "proto3";
 package com.xforceplus.ultraman.permissions;
 
 option java_package = "com.xforceplus.ultraman.permissions.transfer.grpc.generate";
-option java_outer_classname = "UserGrpc";
+option java_outer_classname = "AuthorizationGrpc";
 option optimize_for = SPEED;
 
-message Role {
+message  Authorization{
     string tenant = 1; // 租房标识
-    string id = 2; // 角色 id.
-    string name = 3; // 角色名称.
+    string role = 2; // 角色标识.
 }

@@ -3,8 +3,8 @@
 
 package com.xforceplus.ultraman.permissions.transfer.grpc.generate;
 
-public final class UserGrpc {
-  private UserGrpc() {}
+public final class AuthorizationGrpc {
+  private AuthorizationGrpc() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -14,8 +14,8 @@ public final class UserGrpc {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface RoleOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.xforceplus.ultraman.permissions.Role)
+  public interface AuthorizationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.xforceplus.ultraman.permissions.Authorization)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -38,56 +38,37 @@ public final class UserGrpc {
 
     /**
      * <pre>
-     * 角色 id.
+     * 角色标识.
      * </pre>
      *
-     * <code>string id = 2;</code>
+     * <code>string role = 2;</code>
      */
-    java.lang.String getId();
+    java.lang.String getRole();
     /**
      * <pre>
-     * 角色 id.
+     * 角色标识.
      * </pre>
      *
-     * <code>string id = 2;</code>
+     * <code>string role = 2;</code>
      */
     com.google.protobuf.ByteString
-        getIdBytes();
-
-    /**
-     * <pre>
-     * 角色名称.
-     * </pre>
-     *
-     * <code>string name = 3;</code>
-     */
-    java.lang.String getName();
-    /**
-     * <pre>
-     * 角色名称.
-     * </pre>
-     *
-     * <code>string name = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getNameBytes();
+        getRoleBytes();
   }
   /**
-   * Protobuf type {@code com.xforceplus.ultraman.permissions.Role}
+   * Protobuf type {@code com.xforceplus.ultraman.permissions.Authorization}
    */
-  public  static final class Role extends
+  public  static final class Authorization extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.xforceplus.ultraman.permissions.Role)
-      RoleOrBuilder {
+      // @@protoc_insertion_point(message_implements:com.xforceplus.ultraman.permissions.Authorization)
+      AuthorizationOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Role.newBuilder() to construct.
-    private Role(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use Authorization.newBuilder() to construct.
+    private Authorization(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Role() {
+    private Authorization() {
       tenant_ = "";
-      id_ = "";
-      name_ = "";
+      role_ = "";
     }
 
     @java.lang.Override
@@ -95,7 +76,7 @@ public final class UserGrpc {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Role(
+    private Authorization(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -130,13 +111,7 @@ public final class UserGrpc {
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              name_ = s;
+              role_ = s;
               break;
             }
           }
@@ -153,14 +128,14 @@ public final class UserGrpc {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.internal_static_com_xforceplus_ultraman_permissions_Role_descriptor;
+      return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.internal_static_com_xforceplus_ultraman_permissions_Role_fieldAccessorTable
+      return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.internal_static_com_xforceplus_ultraman_permissions_Authorization_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.class, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder.class);
+              com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.class, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder.class);
     }
 
     public static final int TENANT_FIELD_NUMBER = 1;
@@ -205,84 +180,42 @@ public final class UserGrpc {
       }
     }
 
-    public static final int ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object id_;
+    public static final int ROLE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object role_;
     /**
      * <pre>
-     * 角色 id.
+     * 角色标识.
      * </pre>
      *
-     * <code>string id = 2;</code>
+     * <code>string role = 2;</code>
      */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
+    public java.lang.String getRole() {
+      java.lang.Object ref = role_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        id_ = s;
+        role_ = s;
         return s;
       }
     }
     /**
      * <pre>
-     * 角色 id.
+     * 角色标识.
      * </pre>
      *
-     * <code>string id = 2;</code>
+     * <code>string role = 2;</code>
      */
     public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
+        getRoleBytes() {
+      java.lang.Object ref = role_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        id_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int NAME_FIELD_NUMBER = 3;
-    private volatile java.lang.Object name_;
-    /**
-     * <pre>
-     * 角色名称.
-     * </pre>
-     *
-     * <code>string name = 3;</code>
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 角色名称.
-     * </pre>
-     *
-     * <code>string name = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
+        role_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -304,11 +237,8 @@ public final class UserGrpc {
       if (!getTenantBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, tenant_);
       }
-      if (!getIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, id_);
-      }
-      if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
+      if (!getRoleBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, role_);
       }
       unknownFields.writeTo(output);
     }
@@ -321,11 +251,8 @@ public final class UserGrpc {
       if (!getTenantBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, tenant_);
       }
-      if (!getIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, id_);
-      }
-      if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+      if (!getRoleBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, role_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -337,18 +264,16 @@ public final class UserGrpc {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role)) {
+      if (!(obj instanceof com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization)) {
         return super.equals(obj);
       }
-      com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role other = (com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role) obj;
+      com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization other = (com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization) obj;
 
       boolean result = true;
       result = result && getTenant()
           .equals(other.getTenant());
-      result = result && getId()
-          .equals(other.getId());
-      result = result && getName()
-          .equals(other.getName());
+      result = result && getRole()
+          .equals(other.getRole());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -362,78 +287,76 @@ public final class UserGrpc {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TENANT_FIELD_NUMBER;
       hash = (53 * hash) + getTenant().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + ROLE_FIELD_NUMBER;
+      hash = (53 * hash) + getRole().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(byte[] data)
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(java.io.InputStream input)
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseDelimitedFrom(java.io.InputStream input)
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseDelimitedFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parseFrom(
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -445,7 +368,7 @@ public final class UserGrpc {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role prototype) {
+    public static Builder newBuilder(com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -460,25 +383,25 @@ public final class UserGrpc {
       return builder;
     }
     /**
-     * Protobuf type {@code com.xforceplus.ultraman.permissions.Role}
+     * Protobuf type {@code com.xforceplus.ultraman.permissions.Authorization}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.xforceplus.ultraman.permissions.Role)
-        com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.RoleOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.xforceplus.ultraman.permissions.Authorization)
+        com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.AuthorizationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.internal_static_com_xforceplus_ultraman_permissions_Role_descriptor;
+        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.internal_static_com_xforceplus_ultraman_permissions_Role_fieldAccessorTable
+        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.internal_static_com_xforceplus_ultraman_permissions_Authorization_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.class, com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.Builder.class);
+                com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.class, com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.Builder.class);
       }
 
-      // Construct using com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.newBuilder()
+      // Construct using com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -497,35 +420,32 @@ public final class UserGrpc {
         super.clear();
         tenant_ = "";
 
-        id_ = "";
-
-        name_ = "";
+        role_ = "";
 
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.internal_static_com_xforceplus_ultraman_permissions_Role_descriptor;
+        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor;
       }
 
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getDefaultInstanceForType() {
-        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.getDefaultInstance();
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getDefaultInstanceForType() {
+        return com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.getDefaultInstance();
       }
 
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role build() {
-        com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role result = buildPartial();
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization build() {
+        com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role buildPartial() {
-        com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role result = new com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role(this);
+      public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization buildPartial() {
+        com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization result = new com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization(this);
         result.tenant_ = tenant_;
-        result.id_ = id_;
-        result.name_ = name_;
+        result.role_ = role_;
         onBuilt();
         return result;
       }
@@ -557,26 +477,22 @@ public final class UserGrpc {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role) {
-          return mergeFrom((com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role)other);
+        if (other instanceof com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization) {
+          return mergeFrom((com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role other) {
-        if (other == com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization other) {
+        if (other == com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.getDefaultInstance()) return this;
         if (!other.getTenant().isEmpty()) {
           tenant_ = other.tenant_;
           onChanged();
         }
-        if (!other.getId().isEmpty()) {
-          id_ = other.id_;
-          onChanged();
-        }
-        if (!other.getName().isEmpty()) {
-          name_ = other.name_;
+        if (!other.getRole().isEmpty()) {
+          role_ = other.role_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -592,11 +508,11 @@ public final class UserGrpc {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role parsedMessage = null;
+        com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role) e.getUnfinishedMessage();
+          parsedMessage = (com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -695,21 +611,21 @@ public final class UserGrpc {
         return this;
       }
 
-      private java.lang.Object id_ = "";
+      private java.lang.Object role_ = "";
       /**
        * <pre>
-       * 角色 id.
+       * 角色标识.
        * </pre>
        *
-       * <code>string id = 2;</code>
+       * <code>string role = 2;</code>
        */
-      public java.lang.String getId() {
-        java.lang.Object ref = id_;
+      public java.lang.String getRole() {
+        java.lang.Object ref = role_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          id_ = s;
+          role_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -717,19 +633,19 @@ public final class UserGrpc {
       }
       /**
        * <pre>
-       * 角色 id.
+       * 角色标识.
        * </pre>
        *
-       * <code>string id = 2;</code>
+       * <code>string role = 2;</code>
        */
       public com.google.protobuf.ByteString
-          getIdBytes() {
-        java.lang.Object ref = id_;
+          getRoleBytes() {
+        java.lang.Object ref = role_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          id_ = b;
+          role_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -737,138 +653,49 @@ public final class UserGrpc {
       }
       /**
        * <pre>
-       * 角色 id.
+       * 角色标识.
        * </pre>
        *
-       * <code>string id = 2;</code>
+       * <code>string role = 2;</code>
        */
-      public Builder setId(
+      public Builder setRole(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        id_ = value;
+        role_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 角色 id.
+       * 角色标识.
        * </pre>
        *
-       * <code>string id = 2;</code>
+       * <code>string role = 2;</code>
        */
-      public Builder clearId() {
+      public Builder clearRole() {
         
-        id_ = getDefaultInstance().getId();
+        role_ = getDefaultInstance().getRole();
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 角色 id.
+       * 角色标识.
        * </pre>
        *
-       * <code>string id = 2;</code>
+       * <code>string role = 2;</code>
        */
-      public Builder setIdBytes(
+      public Builder setRoleBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        id_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object name_ = "";
-      /**
-       * <pre>
-       * 角色名称.
-       * </pre>
-       *
-       * <code>string name = 3;</code>
-       */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          name_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 角色名称.
-       * </pre>
-       *
-       * <code>string name = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 角色名称.
-       * </pre>
-       *
-       * <code>string name = 3;</code>
-       */
-      public Builder setName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色名称.
-       * </pre>
-       *
-       * <code>string name = 3;</code>
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色名称.
-       * </pre>
-       *
-       * <code>string name = 3;</code>
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        name_ = value;
+        role_ = value;
         onChanged();
         return this;
       }
@@ -883,49 +710,49 @@ public final class UserGrpc {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.xforceplus.ultraman.permissions.Role)
+      // @@protoc_insertion_point(builder_scope:com.xforceplus.ultraman.permissions.Authorization)
     }
 
-    // @@protoc_insertion_point(class_scope:com.xforceplus.ultraman.permissions.Role)
-    private static final com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.xforceplus.ultraman.permissions.Authorization)
+    private static final com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role();
+      DEFAULT_INSTANCE = new com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization();
     }
 
-    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getDefaultInstance() {
+    public static com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<Role>
-        PARSER = new com.google.protobuf.AbstractParser<Role>() {
-      public Role parsePartialFrom(
+    private static final com.google.protobuf.Parser<Authorization>
+        PARSER = new com.google.protobuf.AbstractParser<Authorization>() {
+      public Authorization parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Role(input, extensionRegistry);
+        return new Authorization(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Role> parser() {
+    public static com.google.protobuf.Parser<Authorization> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Role> getParserForType() {
+    public com.google.protobuf.Parser<Authorization> getParserForType() {
       return PARSER;
     }
 
-    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc.Role getDefaultInstanceForType() {
+    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_xforceplus_ultraman_permissions_Role_descriptor;
+    internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_xforceplus_ultraman_permissions_Role_fieldAccessorTable;
+      internal_static_com_xforceplus_ultraman_permissions_Authorization_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -936,10 +763,10 @@ public final class UserGrpc {
   static {
     java.lang.String[] descriptorData = {
       "\n\nBase.proto\022#com.xforceplus.ultraman.pe" +
-      "rmissions\"0\n\004Role\022\016\n\006tenant\030\001 \001(\t\022\n\n\002id\030" +
-      "\002 \001(\t\022\014\n\004name\030\003 \001(\tBH\n:com.xforceplus.ul" +
-      "traman.permissions.transfer.grpc.generat" +
-      "eB\010UserGrpcH\001b\006proto3"
+      "rmissions\"-\n\rAuthorization\022\016\n\006tenant\030\001 \001" +
+      "(\t\022\014\n\004role\030\002 \001(\tBQ\n:com.xforceplus.ultra" +
+      "man.permissions.transfer.grpc.generateB\021" +
+      "AuthorizationGrpcH\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -953,12 +780,12 @@ public final class UserGrpc {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_xforceplus_ultraman_permissions_Role_descriptor =
+    internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_xforceplus_ultraman_permissions_Role_fieldAccessorTable = new
+    internal_static_com_xforceplus_ultraman_permissions_Authorization_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_xforceplus_ultraman_permissions_Role_descriptor,
-        new java.lang.String[] { "Tenant", "Id", "Name", });
+        internal_static_com_xforceplus_ultraman_permissions_Authorization_descriptor,
+        new java.lang.String[] { "Tenant", "Role", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

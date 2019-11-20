@@ -6,6 +6,7 @@ import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
+import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.Queue;
  * @version 0.1 2019/11/8 14:40
  * @since 1.8
  */
-public class SelectItemRefMustChecker extends AbstractTypeSafeChecker {
+public class SelectItemRefMustChecker extends AbstractValidationChecker {
 
     public SelectItemRefMustChecker() {
         super(SqlType.SELECT);
@@ -51,8 +52,9 @@ public class SelectItemRefMustChecker extends AbstractTypeSafeChecker {
 
     }
 
-    private boolean doCheck(SelectSqlProcessor processor) {
-        List<Item> selectItems = processor.buildSelectItemAbility().list();
+    @Override
+    protected boolean doCheck(SqlProcessor processor) {
+        List<Item> selectItems = ((SelectSqlProcessor) processor).buildSelectItemAbility().list();
 
         RefFieldItemVisitor visitor = new RefFieldItemVisitor();
 
@@ -65,6 +67,11 @@ public class SelectItemRefMustChecker extends AbstractTypeSafeChecker {
         }
 
         return true;
+    }
+
+    @Override
+    protected String refusedCause() {
+        return "All return entries must be aliased.";
     }
 
     private static class RefFieldItemVisitor extends ItemVisitorAdapter {

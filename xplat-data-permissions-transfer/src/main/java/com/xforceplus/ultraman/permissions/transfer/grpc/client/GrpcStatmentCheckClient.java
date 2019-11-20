@@ -1,17 +1,13 @@
 package com.xforceplus.ultraman.permissions.transfer.grpc.client;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.StatmentCheckServiceGrpc;
-import com.xforceplus.ultraman.permissions.transfer.grpc.generate.UserGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,10 +50,9 @@ public class GrpcStatmentCheckClient {
     public ForStatmentGrpc.StatmentResult check(String sql, Authorization authorization) {
         ForStatmentGrpc.Statment request = ForStatmentGrpc.Statment.newBuilder()
             .setSql(sql)
-            .setRole(
-                UserGrpc.Role.newBuilder()
-                    .setId(authorization.getRole())
-                    .setTenant(authorization.getTenant())).build();
+            .addAuthorization(
+                com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.newBuilder()
+                .setRole(authorization.getRole()).setTenant(authorization.getTenant()).build()).build();
 
         return stub.check(request);
     }

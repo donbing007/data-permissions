@@ -1,9 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.authorization.impl;
 
-import com.xforceplus.ultraman.perissions.pojo.Authorization;
+import com.xforceplus.ultraman.perissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * @version 0.1 2019/11/18 13:52
