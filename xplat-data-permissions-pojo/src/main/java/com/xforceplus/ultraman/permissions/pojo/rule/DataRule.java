@@ -13,6 +13,9 @@ import java.util.Objects;
  */
 public class DataRule implements Serializable {
 
+    public static final byte TYPE = 1;
+
+    private Long id;
     private String entity;
     private String field;
     private List<DataRuleCondition> conditions;
@@ -21,13 +24,30 @@ public class DataRule implements Serializable {
     }
 
     public DataRule(String entity, String field) {
-        this(entity, field, null);
+        this(null, entity, field, null);
     }
 
     public DataRule(String entity, String field, List<DataRuleCondition> conditions) {
+        this(null, entity, field, conditions);
+    }
+
+    public DataRule(Long id, String entity, String field) {
+        this(id, entity, field, null);
+    }
+
+    public DataRule(Long id, String entity, String field, List<DataRuleCondition> conditions) {
+        this.id = id;
         this.entity = entity;
         this.field = field;
         this.conditions = conditions;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEntity() {
@@ -64,23 +84,29 @@ public class DataRule implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DataRule)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DataRule)) {
+            return false;
+        }
         DataRule dataRule = (DataRule) o;
-        return Objects.equals(getEntity(), dataRule.getEntity()) &&
+        return Objects.equals(getId(), dataRule.getId()) &&
+            Objects.equals(getEntity(), dataRule.getEntity()) &&
             Objects.equals(getField(), dataRule.getField()) &&
             Objects.equals(getConditions(), dataRule.getConditions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEntity(), getField(), getConditions());
+        return Objects.hash(getId(), getEntity(), getField(), getConditions());
     }
 
     @Override
     public String toString() {
         return "DataRule{" +
-            "entity='" + entity + '\'' +
+            "id=" + id +
+            ", entity='" + entity + '\'' +
             ", field='" + field + '\'' +
             ", conditions=" + conditions +
             '}';

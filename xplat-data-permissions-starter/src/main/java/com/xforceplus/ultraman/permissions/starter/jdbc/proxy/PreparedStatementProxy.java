@@ -52,17 +52,17 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
 
     private void check() throws SQLException {
         checkResult = getClient().check(sql, getAuthorization());
-        CheckStatus status = CheckStatus.getInstance(checkResult.getCode());
+        CheckStatus status = checkResult.getStatus();
         switch (status) {
             case PASS: {
                 sourcePreparedStatement = maker.make(sql);
                 break;
             }
             case UPDATE: {
-                if (checkResult.getNewSql() == null) {
+                if (checkResult.findFirst().getNewSql() == null) {
                     throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                 }
-                sourcePreparedStatement = maker.make(checkResult.getNewSql());
+                sourcePreparedStatement = maker.make(checkResult.findFirst().getNewSql());
                 break;
             }
             case DENIAL: {
@@ -100,7 +100,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                 Object value = method.invoke(sourcePreparedStatement, args);
                 if (method.getReturnType().equals(ResultSet.class)) {
                     return ProxyFactory.createInterfaceProxy(value,
-                        new PassResultSetProxy(checkResult.getBackList(), (ResultSet) value));
+                        new PassResultSetProxy(checkResult.findFirst().getBlackList(), (ResultSet) value));
                 } else {
 
                     return value;

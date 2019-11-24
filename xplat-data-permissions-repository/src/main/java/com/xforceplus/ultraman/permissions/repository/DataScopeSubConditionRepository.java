@@ -57,12 +57,14 @@ public interface DataScopeSubConditionRepository {
      * @mbg.generated
      */
     @Insert({
-        "insert into data_scope_sub_condition (conditions_id, value_type_id, ",
-        "field, `operation`, ",
-        "`index`, `value`, link)",
-        "values (#{conditionsId,jdbcType=BIGINT}, #{valueTypeId,jdbcType=BIGINT}, ",
-        "#{field,jdbcType=VARCHAR}, #{operation,jdbcType=VARCHAR}, ",
-        "#{index,jdbcType=SMALLINT}, #{value,jdbcType=VARCHAR}, #{link,jdbcType=TINYINT})"
+        "insert into data_scope_sub_condition (conditions_id, value_type, ",
+        "entity, field, `operation`, ",
+        "`index`, `value`, link, ",
+        "`role`, tenant)",
+        "values (#{conditionsId,jdbcType=BIGINT}, #{valueType,jdbcType=TINYINT}, ",
+        "#{entity,jdbcType=VARCHAR}, #{field,jdbcType=VARCHAR}, #{operation,jdbcType=VARCHAR}, ",
+        "#{index,jdbcType=SMALLINT}, #{value,jdbcType=VARCHAR}, #{link,jdbcType=TINYINT}, ",
+        "#{role,jdbcType=VARCHAR}, #{tenant,jdbcType=VARCHAR})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insert(DataScopeSubCondition record);
@@ -87,12 +89,15 @@ public interface DataScopeSubConditionRepository {
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="conditions_id", property="conditionsId", jdbcType=JdbcType.BIGINT),
-        @Result(column="value_type_id", property="valueTypeId", jdbcType=JdbcType.BIGINT),
+        @Result(column="value_type", property="valueType", jdbcType=JdbcType.TINYINT),
+        @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR),
         @Result(column="field", property="field", jdbcType=JdbcType.VARCHAR),
         @Result(column="operation", property="operation", jdbcType=JdbcType.VARCHAR),
         @Result(column="index", property="index", jdbcType=JdbcType.SMALLINT),
         @Result(column="value", property="value", jdbcType=JdbcType.VARCHAR),
-        @Result(column="link", property="link", jdbcType=JdbcType.TINYINT)
+        @Result(column="link", property="link", jdbcType=JdbcType.TINYINT),
+        @Result(column="role", property="role", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tenant", property="tenant", jdbcType=JdbcType.VARCHAR)
     })
     List<DataScopeSubCondition> selectByExample(DataScopeSubConditionExample example);
 
@@ -104,19 +109,23 @@ public interface DataScopeSubConditionRepository {
      */
     @Select({
         "select",
-        "id, conditions_id, value_type_id, field, `operation`, `index`, `value`, link",
+        "id, conditions_id, value_type, entity, field, `operation`, `index`, `value`, ",
+        "link, `role`, tenant",
         "from data_scope_sub_condition",
         "where id = #{id,jdbcType=BIGINT}"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
         @Result(column="conditions_id", property="conditionsId", jdbcType=JdbcType.BIGINT),
-        @Result(column="value_type_id", property="valueTypeId", jdbcType=JdbcType.BIGINT),
+        @Result(column="value_type", property="valueType", jdbcType=JdbcType.TINYINT),
+        @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR),
         @Result(column="field", property="field", jdbcType=JdbcType.VARCHAR),
         @Result(column="operation", property="operation", jdbcType=JdbcType.VARCHAR),
         @Result(column="index", property="index", jdbcType=JdbcType.SMALLINT),
         @Result(column="value", property="value", jdbcType=JdbcType.VARCHAR),
-        @Result(column="link", property="link", jdbcType=JdbcType.TINYINT)
+        @Result(column="link", property="link", jdbcType=JdbcType.TINYINT),
+        @Result(column="role", property="role", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tenant", property="tenant", jdbcType=JdbcType.VARCHAR)
     })
     DataScopeSubCondition selectByPrimaryKey(Long id);
 
@@ -156,12 +165,15 @@ public interface DataScopeSubConditionRepository {
     @Update({
         "update data_scope_sub_condition",
         "set conditions_id = #{conditionsId,jdbcType=BIGINT},",
-          "value_type_id = #{valueTypeId,jdbcType=BIGINT},",
+          "value_type = #{valueType,jdbcType=TINYINT},",
+          "entity = #{entity,jdbcType=VARCHAR},",
           "field = #{field,jdbcType=VARCHAR},",
           "`operation` = #{operation,jdbcType=VARCHAR},",
           "`index` = #{index,jdbcType=SMALLINT},",
           "`value` = #{value,jdbcType=VARCHAR},",
-          "link = #{link,jdbcType=TINYINT}",
+          "link = #{link,jdbcType=TINYINT},",
+          "`role` = #{role,jdbcType=VARCHAR},",
+          "tenant = #{tenant,jdbcType=VARCHAR}",
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(DataScopeSubCondition record);

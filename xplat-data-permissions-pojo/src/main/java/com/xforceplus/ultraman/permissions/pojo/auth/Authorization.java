@@ -10,15 +10,29 @@ import java.util.Objects;
  * @since 1.8
  */
 public class Authorization implements Serializable {
+    private Long id;
     private String role;
     private String tenant;
 
     public Authorization() {
     }
 
-    public Authorization(String role, String tenant) {
+    public Authorization(Long id, String role, String tenant) {
+        this.id = id;
         this.role = role;
         this.tenant = tenant;
+    }
+
+    public Authorization(String role, String tenant) {
+        this(null, role, tenant);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getRole() {

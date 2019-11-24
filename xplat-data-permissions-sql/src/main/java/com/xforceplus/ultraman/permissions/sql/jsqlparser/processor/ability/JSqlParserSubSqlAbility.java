@@ -47,9 +47,9 @@ public class JSqlParserSubSqlAbility extends AbstractJSqlParserHandler implement
 
             } else if (isUpdate()) {
 
-                getUpdate().getStartJoins().parallelStream().forEach(j -> {
+                getUpdate().getStartJoins().parallelStream().forEach(join -> {
 
-                    j.getRightItem().accept(new FromItemVisitorAdapter() {
+                    join.getRightItem().accept(new FromItemVisitorAdapter() {
                         @Override
                         public void visit(SubSelect subSelect) {
                             doSelect(subSelect.getSelectBody(), subSqlPool);

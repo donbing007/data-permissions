@@ -57,8 +57,10 @@ public interface FieldScopeRepository {
      * @mbg.generated
      */
     @Insert({
-        "insert into field_scope (entity, field)",
-        "values (#{entity,jdbcType=VARCHAR}, #{field,jdbcType=VARCHAR})"
+        "insert into field_scope (`role`, tenant, ",
+        "entity, field)",
+        "values (#{role,jdbcType=VARCHAR}, #{tenant,jdbcType=VARCHAR}, ",
+        "#{entity,jdbcType=VARCHAR}, #{field,jdbcType=VARCHAR})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insert(FieldScope record);
@@ -82,6 +84,8 @@ public interface FieldScopeRepository {
     @SelectProvider(type=FieldScopeSqlProvider.class, method="selectByExample")
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column="role", property="role", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tenant", property="tenant", jdbcType=JdbcType.VARCHAR),
         @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR),
         @Result(column="field", property="field", jdbcType=JdbcType.VARCHAR)
     })
@@ -95,12 +99,14 @@ public interface FieldScopeRepository {
      */
     @Select({
         "select",
-        "id, entity, field",
+        "id, `role`, tenant, entity, field",
         "from field_scope",
         "where id = #{id,jdbcType=BIGINT}"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column="role", property="role", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tenant", property="tenant", jdbcType=JdbcType.VARCHAR),
         @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR),
         @Result(column="field", property="field", jdbcType=JdbcType.VARCHAR)
     })
@@ -141,7 +147,9 @@ public interface FieldScopeRepository {
      */
     @Update({
         "update field_scope",
-        "set entity = #{entity,jdbcType=VARCHAR},",
+        "set `role` = #{role,jdbcType=VARCHAR},",
+          "tenant = #{tenant,jdbcType=VARCHAR},",
+          "entity = #{entity,jdbcType=VARCHAR},",
           "field = #{field,jdbcType=VARCHAR}",
         "where id = #{id,jdbcType=BIGINT}"
     })

@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
@@ -90,7 +91,7 @@ public class PreparedStatementProxyTest {
 
         data.put("select * from t1 where c1 = ?",
             new Pack(
-                new CheckResult(CheckStatus.DENIAL.getValue()),
+                new CheckResult(CheckStatus.DENIAL, new SqlChange()),
                 sql -> null,
                 PreparedStatement.class.getMethod("executeQuery", new Class[0]),
                 new Object[0],
@@ -101,7 +102,7 @@ public class PreparedStatementProxyTest {
 
         data.put("select * from t1 where c1=?",
             new Pack(
-                new CheckResult(CheckStatus.PASS.getValue()),
+                new CheckResult(CheckStatus.PASS, new SqlChange()),
                 sql -> {
                     return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class, (proxy, method, args) -> {
                         if (method.getReturnType().equals(ResultSet.class)) {

@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.service.impl;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.rule.assembly.Line;
@@ -49,7 +50,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
         } catch (Exception ex) {
             logger.error("Unable to parse {}, message is {}.", sqlStr, ex.getMessage());
 
-            return new CheckResult(CheckStatus.ERROR.getValue());
+            return new CheckResult(CheckStatus.ERROR);
         }
 
         Line line = lineFactory.getLine(sql);
@@ -68,23 +69,20 @@ public class RuleCheckServiceImpl implements RuleCheckService {
         } catch (Throwable ex) {
             logger.error(ex.getMessage(),ex);
 
-            return new CheckResult(CheckStatus.ERROR.getValue(), ex.getMessage());
+            return new CheckResult(CheckStatus.ERROR, ex.getMessage());
         }
 
         if (context.isRefused()) {
 
-            CheckResult result = new CheckResult(CheckStatus.DENIAL.getValue());
+            CheckResult result = new CheckResult(CheckStatus.DENIAL);
             result.setMessage(context.cause());
             return result;
 
         } else {
 
-            CheckResult result;
+            SqlChange change = null;
             if (context.isUpdatedSql()) {
-                result = new CheckResult(CheckStatus.UPDATE.getValue());
-                result.setNewSql(context.sql().toSqlString());
-            } else {
-                result = new CheckResult(CheckStatus.PASS.getValue());
+                change = new SqlChange(context.sql().toSqlString());
             }
 
             if (context.blackSize() > 0) {
@@ -96,10 +94,19 @@ public class RuleCheckServiceImpl implements RuleCheckService {
                     field.visit(visitor);
                 }
 
-                result.setBackList(blackList);
+                if (change == null) {
+                    change = new SqlChange(null,blackList);
+                }
             }
 
-            return result;
+            if (context.isUpdatedSql()) {
+
+                return new CheckResult(CheckStatus.UPDATE, change);
+
+            } else {
+
+                return new CheckResult(CheckStatus.PASS, change);
+            }
 
         }
 

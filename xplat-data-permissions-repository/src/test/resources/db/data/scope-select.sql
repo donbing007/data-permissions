@@ -1,6 +1,6 @@
 insert into role(id, role_external_id, tenant_id) values (1, 'r1', 't1');
 
--- 两个 column 权限
+-- 两个 field 权限
 insert into role_permissions(id, role_id, scope_id, scope_type) values (1, 1, 1, 0);
 insert into role_permissions(id, role_id, scope_id, scope_type) values (2, 1, 2, 0);
 insert into field_scope(id, entity, field) values (1, 't1', 'c1');

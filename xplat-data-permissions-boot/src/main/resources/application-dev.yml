@@ -21,9 +21,15 @@ spring:
     cache-names: rule
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=3000&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=6000&autoReconnect=true&failOverReadOnly=false
     username: root
     password: root
+    hikari:
+      connection-test-query: "select 1"
+      connection-timeout: 10000
+      validation-timeout: 3000
+      maximum-pool-size: 1
+
 j2cache:
   config-location: /j2cache/j2cache-${spring.profiles.active}.properties
   open-spring-cache: true

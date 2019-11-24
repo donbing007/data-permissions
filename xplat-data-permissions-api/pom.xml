@@ -14,6 +14,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>xplat-data-permissions-pojo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>xplat-data-permissions-service</artifactId>
             <version>${project.version}</version>
         </dependency>

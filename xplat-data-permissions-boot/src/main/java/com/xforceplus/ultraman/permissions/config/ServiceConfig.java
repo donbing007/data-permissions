@@ -16,11 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class ServiceConfig {
 
     @Bean
-    public RuleCheckService ruleCheckService() {
-        return new RuleCheckServiceImpl();
-    }
-
-    @Bean
     public Searcher searcher() {
         return new DefaultSearcherImpl();
     }

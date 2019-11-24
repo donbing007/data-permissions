@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  * @since 1.8
  */
 @Api(value = "SqlTestController")
-@RestController("test")
+@RestController
 public class SqlTestController {
 
     @Resource
@@ -33,17 +33,17 @@ public class SqlTestController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "得到规则验证后的结果.", response = CheckResult.class)}
     )
-    @GetMapping(value = "/{tenant}/{role}/v1/sql", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/{tenant}/xpermissions/v1/test", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity test(
         @ApiParam(name = "sql", value = "原始 sql", required = true) @RequestParam("sql") String sql,
         @ApiParam(name = "tenant", value = "发起 SQL 的当前租户.", required = true) @PathVariable("tenant") String tenant,
-        @ApiParam(name = "role", value = "发起 SQL 的当前租户角色.", required = true) @PathVariable("role") String role) {
+        @ApiParam(name = "role", value = "发起 SQL 的当前租户角色.", required = true) @RequestParam("role") String role) {
 
         CheckResult result = ruleCheckService.check(sql, new Authorizations(new Authorization(role, tenant)));
 
         return new ResponseEntity(
             result,
-            HttpCodeAssembler.assem(CheckStatus.getInstance(result.getCode()), HttpStatus.OK));
+            HttpCodeAssembler.assemCheckStatus(result.getStatus(), HttpStatus.OK));
 
     }
 }

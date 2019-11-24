@@ -9,8 +9,12 @@ import java.util.Objects;
  * @author dongbin
  * @since 1.8
  */
+
 public class FieldRule implements Serializable {
 
+    public static final byte TYPE = 0;
+
+    private Long id;
     private String entity;
     private String field;
 
@@ -20,6 +24,20 @@ public class FieldRule implements Serializable {
     public FieldRule(String entity, String field) {
         this.entity = entity;
         this.field = field;
+    }
+
+    public FieldRule(Long id, String entity, String field) {
+        this.id = id;
+        this.entity = entity;
+        this.field = field;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEntity() {
@@ -40,22 +58,28 @@ public class FieldRule implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FieldRule)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FieldRule)) {
+            return false;
+        }
         FieldRule fieldRule = (FieldRule) o;
-        return Objects.equals(getEntity(), fieldRule.getEntity()) &&
+        return Objects.equals(getId(), fieldRule.getId()) &&
+            Objects.equals(getEntity(), fieldRule.getEntity()) &&
             Objects.equals(getField(), fieldRule.getField());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEntity(), getField());
+        return Objects.hash(getId(), getEntity(), getField());
     }
 
     @Override
     public String toString() {
         return "FieldRule{" +
-            "entity='" + entity + '\'' +
+            "id=" + id +
+            ", entity='" + entity + '\'' +
             ", field='" + field + '\'' +
             '}';
     }

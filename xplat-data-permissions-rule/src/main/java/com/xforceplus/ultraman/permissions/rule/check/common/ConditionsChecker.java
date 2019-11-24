@@ -91,10 +91,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
     }
 
     private boolean doCheck(ConditionAbility conditionAbility, FromAbility fromAbility, Context context) {
-
-        Item allConditions = null; //所有条件.
-        Item authConditions = null; // 某个角色的条件.
-        boolean change = false;
+        //所有条件.
+        Item allConditions = null;
+        // 某个角色的条件.
+        Item authConditions = null;
         for (Authorization authorization : context.authorization().getAuthorizations()) {
 
             authConditions = buildFieldConditionsByOneAuth(fromAbility, context.getSercher(), authorization);
@@ -108,7 +108,11 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Add new conditions {}", allConditions.toSqlString());
+            if (allConditions != null) {
+                logger.debug("Add new conditions {}", allConditions.toSqlString());
+            } else {
+                logger.debug("No additional conditions.");
+            }
         }
 
         if (allConditions != null) {
@@ -118,10 +122,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
                 conditionAbility.add((Relationship) allConditions, Conditional.AND, true);
             }
 
-            change = true;
+            return true;
         }
 
-        return change;
+        return false;
     }
 
     // 构造某个角色下的所有条件.

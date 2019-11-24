@@ -50,8 +50,12 @@ public class DataScopeSubConditionSqlProvider {
             sql.VALUES("conditions_id", "#{conditionsId,jdbcType=BIGINT}");
         }
         
-        if (record.getValueTypeId() != null) {
-            sql.VALUES("value_type_id", "#{valueTypeId,jdbcType=BIGINT}");
+        if (record.getValueType() != null) {
+            sql.VALUES("value_type", "#{valueType,jdbcType=TINYINT}");
+        }
+        
+        if (record.getEntity() != null) {
+            sql.VALUES("entity", "#{entity,jdbcType=VARCHAR}");
         }
         
         if (record.getField() != null) {
@@ -74,6 +78,14 @@ public class DataScopeSubConditionSqlProvider {
             sql.VALUES("link", "#{link,jdbcType=TINYINT}");
         }
         
+        if (record.getRole() != null) {
+            sql.VALUES("`role`", "#{role,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTenant() != null) {
+            sql.VALUES("tenant", "#{tenant,jdbcType=VARCHAR}");
+        }
+        
         return sql.toString();
     }
 
@@ -91,12 +103,15 @@ public class DataScopeSubConditionSqlProvider {
             sql.SELECT("id");
         }
         sql.SELECT("conditions_id");
-        sql.SELECT("value_type_id");
+        sql.SELECT("value_type");
+        sql.SELECT("entity");
         sql.SELECT("field");
         sql.SELECT("`operation`");
         sql.SELECT("`index`");
         sql.SELECT("`value`");
         sql.SELECT("link");
+        sql.SELECT("`role`");
+        sql.SELECT("tenant");
         sql.FROM("data_scope_sub_condition");
         applyWhere(sql, example, false);
         
@@ -128,8 +143,12 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("conditions_id = #{record.conditionsId,jdbcType=BIGINT}");
         }
         
-        if (record.getValueTypeId() != null) {
-            sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
+        if (record.getValueType() != null) {
+            sql.SET("value_type = #{record.valueType,jdbcType=TINYINT}");
+        }
+        
+        if (record.getEntity() != null) {
+            sql.SET("entity = #{record.entity,jdbcType=VARCHAR}");
         }
         
         if (record.getField() != null) {
@@ -152,6 +171,14 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("link = #{record.link,jdbcType=TINYINT}");
         }
         
+        if (record.getRole() != null) {
+            sql.SET("`role` = #{record.role,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTenant() != null) {
+            sql.SET("tenant = #{record.tenant,jdbcType=VARCHAR}");
+        }
+        
         applyWhere(sql, example, true);
         return sql.toString();
     }
@@ -168,12 +195,15 @@ public class DataScopeSubConditionSqlProvider {
         
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("conditions_id = #{record.conditionsId,jdbcType=BIGINT}");
-        sql.SET("value_type_id = #{record.valueTypeId,jdbcType=BIGINT}");
+        sql.SET("value_type = #{record.valueType,jdbcType=TINYINT}");
+        sql.SET("entity = #{record.entity,jdbcType=VARCHAR}");
         sql.SET("field = #{record.field,jdbcType=VARCHAR}");
         sql.SET("`operation` = #{record.operation,jdbcType=VARCHAR}");
         sql.SET("`index` = #{record.index,jdbcType=SMALLINT}");
         sql.SET("`value` = #{record.value,jdbcType=VARCHAR}");
         sql.SET("link = #{record.link,jdbcType=TINYINT}");
+        sql.SET("`role` = #{record.role,jdbcType=VARCHAR}");
+        sql.SET("tenant = #{record.tenant,jdbcType=VARCHAR}");
         
         DataScopeSubConditionExample example = (DataScopeSubConditionExample) parameter.get("example");
         applyWhere(sql, example, true);
@@ -194,8 +224,12 @@ public class DataScopeSubConditionSqlProvider {
             sql.SET("conditions_id = #{conditionsId,jdbcType=BIGINT}");
         }
         
-        if (record.getValueTypeId() != null) {
-            sql.SET("value_type_id = #{valueTypeId,jdbcType=BIGINT}");
+        if (record.getValueType() != null) {
+            sql.SET("value_type = #{valueType,jdbcType=TINYINT}");
+        }
+        
+        if (record.getEntity() != null) {
+            sql.SET("entity = #{entity,jdbcType=VARCHAR}");
         }
         
         if (record.getField() != null) {
@@ -216,6 +250,14 @@ public class DataScopeSubConditionSqlProvider {
         
         if (record.getLink() != null) {
             sql.SET("link = #{link,jdbcType=TINYINT}");
+        }
+        
+        if (record.getRole() != null) {
+            sql.SET("`role` = #{role,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTenant() != null) {
+            sql.SET("tenant = #{tenant,jdbcType=VARCHAR}");
         }
         
         sql.WHERE("id = #{id,jdbcType=BIGINT}");

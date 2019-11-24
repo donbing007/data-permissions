@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.pojo.result.service;
 
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
+import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.Result;
 
 import java.util.List;
@@ -10,32 +12,25 @@ import java.util.List;
  * @author dongbin
  * @since 1.8
  */
-public class CheckResult extends Result {
+public class CheckResult extends Result<CheckStatus, SqlChange> {
 
-    private String newSql;
-    private List<String> backList;
-
-    public CheckResult(int code) {
-        super(code);
+    public CheckResult(CheckStatus status) {
+        super(status);
     }
 
-    public CheckResult(int code, String message) {
-        super(code, message);
+    public CheckResult(CheckStatus status, String message) {
+        super(status, message);
     }
 
-    public String getNewSql() {
-        return newSql;
+    public CheckResult(CheckStatus status, SqlChange value) {
+        super(status, value);
     }
 
-    public void setNewSql(String newSql) {
-        this.newSql = newSql;
+    public CheckResult(CheckStatus status, SqlChange value, String message) {
+        super(status, value, message);
     }
 
-    public List<String> getBackList() {
-        return backList;
-    }
-
-    public void setBackList(List<String> backList) {
-        this.backList = backList;
+    public CheckResult(CheckStatus status, List<SqlChange> values, String message) {
+        super(status, values, message);
     }
 }

@@ -60,7 +60,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
 
     protected Object doCheck(String sql, Method method, Object[] args) throws Throwable {
         CheckResult checkResult = getClient().check(sql, getAuthorization());
-        CheckStatus status = CheckStatus.getInstance(checkResult.getCode());
+        CheckStatus status = checkResult.getStatus();
 
         switch (status) {
             case PASS: {
@@ -69,19 +69,19 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
 
                 return ProxyFactory.createInterfaceProxy(
                     target,
-                    new PassResultSetProxy(checkResult.getBackList(), target));
+                    new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
             case UPDATE: {
 
-                String newSql = checkResult.getNewSql();
+                String newSql = checkResult.findFirst().getNewSql();
                 if (newSql == null) {
                     throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                 }
 
-                ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.getNewSql()});
+                ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.findFirst().getNewSql()});
                 return ProxyFactory.createInterfaceProxy(
                     target,
-                    new PassResultSetProxy(checkResult.getBackList(), target));
+                    new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
             case DENIAL: {
                 if (Integer.TYPE.equals(method.getReturnType())) {

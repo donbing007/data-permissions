@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.transfer.grpc.server;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.service.RuleCheckService;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc;
@@ -11,6 +12,7 @@ import org.lognet.springboot.grpc.GRpcService;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,17 +37,20 @@ public class GrpcStatmentCheckService extends StatmentCheckServiceGrpc.StatmentC
 
         CheckResult result = ruleCheckService.check(sql, authorizations);
         ForStatmentGrpc.StatmentResult.Builder builder = ForStatmentGrpc.StatmentResult.newBuilder();
-        builder.setStatus(result.getCode());
+        builder.setStatus(result.getStatus().getValue());
 
-        if (result.getBackList() != null) {
-            int index = 0;
-            for (String field : result.getBackList()) {
-                builder.addBackList(field);
+        Optional<SqlChange> sqlChangeOptional = result.streamValues().findFirst();
+        if (sqlChangeOptional.isPresent()) {
+            SqlChange change = sqlChangeOptional.get();
+            if (change.getBlackList() != null) {
+                for (String field : change.getBlackList()) {
+                    builder.addBackList(field);
+                }
             }
-        }
 
-        if (result.getNewSql() != null) {
-            builder.setNewSql(result.getNewSql());
+            if (change.getNewSql() != null) {
+                builder.setNewSql(change.getNewSql());
+            }
         }
 
         responseObserver.onNext(builder.build());

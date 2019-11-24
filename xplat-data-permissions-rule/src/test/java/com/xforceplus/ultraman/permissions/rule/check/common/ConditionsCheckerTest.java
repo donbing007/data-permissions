@@ -47,7 +47,7 @@ public class ConditionsCheckerTest {
 
             checker.check(context);
 
-            Assert.assertTrue(context.isUpdatedSql());
+            Assert.assertEquals(pack.update, context.isUpdatedSql());
             try {
 
                 Assert.assertEquals(s, CCJSqlParserUtil.parse(pack.expectation).toString(), sql.toSqlString());
@@ -80,7 +80,23 @@ public class ConditionsCheckerTest {
                         }}
                     );
                 }},
-                CCJSqlParserUtil.parse("select t1.c1 from t1 where t1.c1=100").toString()
+                CCJSqlParserUtil.parse("select t1.c1 from t1 where t1.c1=100").toString(),
+                true
+            )
+        );
+
+        data.put(
+            "select t1.c10 from t1",
+            new ConditionPack(
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList());
+                        }}
+                    );
+                }},
+                CCJSqlParserUtil.parse("select t1.c10 from t1").toString(),
+                false
             )
         );
 
@@ -116,7 +132,8 @@ public class ConditionsCheckerTest {
                         }}
                     );
                 }},
-                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100) or (t1.c1 != 3000)").toString()
+                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=100) or (t1.c1 != 3000)").toString(),
+                true
             )
         );
 
@@ -152,7 +169,8 @@ public class ConditionsCheckerTest {
                         }}
                     );
                 }},
-                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=5000) and ((t1.c1=100) or (t1.c1 != 3000))").toString()
+                CCJSqlParserUtil.parse("select * from t1 where (t1.c1=5000) and ((t1.c1=100) or (t1.c1 != 3000))").toString(),
+                true
             )
         );
 
@@ -187,7 +205,8 @@ public class ConditionsCheckerTest {
                     );
 
                 }},
-                CCJSqlParserUtil.parse("select t1.* from t1 inner join t2 on t1.c1=t2.c1 where t1.c1=100 and t2.c1=100").toString()
+                CCJSqlParserUtil.parse("select t1.* from t1 inner join t2 on t1.c1=t2.c1 where t1.c1=100 and t2.c1=100").toString(),
+                true
             )
         );
 
@@ -198,10 +217,13 @@ public class ConditionsCheckerTest {
         private String expectation;
         // 一个授权下有多个表的多个权限.
         private Map<Authorization, Map<String, List<DataRule>>> ruleMap;
+        private boolean update;
 
-        public ConditionPack(Map<Authorization, Map<String, List<DataRule>>> ruleMap, String expectedSql) {
+        public ConditionPack(
+            Map<Authorization, Map<String, List<DataRule>>> ruleMap, String expectedSql, boolean update) {
             this.expectation = expectedSql;
             this.ruleMap = ruleMap;
+            this.update = update;
         }
     }
 }
