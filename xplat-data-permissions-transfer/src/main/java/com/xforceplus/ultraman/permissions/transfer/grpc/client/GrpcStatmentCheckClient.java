@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.transfer.grpc.client;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc;
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.StatmentCheckServiceGrpc;
 import io.grpc.ManagedChannel;
@@ -47,14 +48,16 @@ public class GrpcStatmentCheckClient {
 
     }
 
-    public ForStatmentGrpc.StatmentResult check(String sql, Authorization authorization) {
-        ForStatmentGrpc.Statment request = ForStatmentGrpc.Statment.newBuilder()
-            .setSql(sql)
-            .addAuthorization(
-                com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.newBuilder()
-                .setRole(authorization.getRole()).setTenant(authorization.getTenant()).build()).build();
+    public ForStatmentGrpc.StatmentResult check(String sql, Authorizations authorizations) {
+        ForStatmentGrpc.Statment.Builder builder = ForStatmentGrpc.Statment.newBuilder().setSql(sql);
 
-        return stub.check(request);
+        for (Authorization authorization : authorizations.getAuthorizations()) {
+            builder.addAuthorization(
+                com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization.newBuilder()
+                .setRole(authorization.getRole()).setTenant(authorization.getTenant()).build());
+        }
+
+        return stub.check(builder.build());
     }
 
     public void setHost(String host) {

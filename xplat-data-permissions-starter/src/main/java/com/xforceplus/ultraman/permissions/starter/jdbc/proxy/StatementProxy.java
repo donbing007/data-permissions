@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
@@ -32,8 +33,8 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
     private static final Class[] METHOD_PARAMETER_TYPE = new Class[]{String.class};
     private Statement statement;
 
-    public StatementProxy(RuleCheckServiceClient client, Authorization authorization, Statement statement) {
-        super(client,authorization);
+    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement) {
+        super(client,authorizations);
         this.statement = statement;
     }
 

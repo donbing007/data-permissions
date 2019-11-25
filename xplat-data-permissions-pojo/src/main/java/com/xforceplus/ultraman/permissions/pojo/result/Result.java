@@ -39,6 +39,10 @@ public abstract class Result<C, V> implements Serializable {
         this.status = status;
         this.message = message;
 
+        if (this.message == null) {
+            this.message = "";
+        }
+
         if (values != null) {
             this.values = new ArrayList<>(values);
         }
@@ -105,13 +109,13 @@ public abstract class Result<C, V> implements Serializable {
         }
         Result<?, ?> result = (Result<?, ?>) o;
         return Objects.equals(getStatus(), result.getStatus()) &&
-            Objects.equals(values, result.values) &&
+            Objects.equals(getValues(), result.getValues()) &&
             Objects.equals(getMessage(), result.getMessage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getStatus(), values, getMessage());
+        return Objects.hash(getStatus(), getValues(), getMessage());
     }
 
     @Override

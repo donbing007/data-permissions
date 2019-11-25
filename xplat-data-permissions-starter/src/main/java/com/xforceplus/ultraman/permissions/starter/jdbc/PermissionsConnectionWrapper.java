@@ -23,7 +23,8 @@ public class PermissionsConnectionWrapper implements Connection {
     private AuthorizationSearcher authorizationSearcher;
     private Connection original;
 
-    public PermissionsConnectionWrapper(RuleCheckServiceClient client, AuthorizationSearcher authorizationSearcher, Connection original) {
+    public PermissionsConnectionWrapper(
+        RuleCheckServiceClient client, AuthorizationSearcher authorizationSearcher, Connection original) {
         this.client = client;
         this.authorizationSearcher = authorizationSearcher;
         this.original = original;

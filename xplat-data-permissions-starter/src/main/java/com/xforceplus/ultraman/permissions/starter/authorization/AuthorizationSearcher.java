@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.authorization;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 
 /**
  * 授权信息搜索定义.
@@ -14,5 +15,5 @@ public interface AuthorizationSearcher {
      * 搜索授权信息.
      * @return 授权信息.
      */
-    Authorization search();
+    Authorizations search();
 }

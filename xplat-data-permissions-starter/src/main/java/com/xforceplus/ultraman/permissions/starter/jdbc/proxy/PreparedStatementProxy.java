@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
@@ -32,10 +33,10 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
     private boolean refuse;
 
     public PreparedStatementProxy(
-        RuleCheckServiceClient client, Authorization authorization, PreparedStatementMaker maker, String sql)
+        RuleCheckServiceClient client, Authorizations authorizations, PreparedStatementMaker maker, String sql)
         throws SQLException {
 
-        super(client, authorization);
+        super(client, authorizations);
         this.sql = sql;
         this.maker = maker;
 

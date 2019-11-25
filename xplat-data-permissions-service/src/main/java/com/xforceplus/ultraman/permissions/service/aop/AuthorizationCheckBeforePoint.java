@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * 定义了对方法中参数 Authorization 实例中记录的授权信息进行有效性检测的拦截实现.
+ *
  * @version 0.1 2019/11/22 14:57
  * @author dongbin
  * @since 1.8

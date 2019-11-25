@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.client;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
@@ -21,9 +22,9 @@ public class GrpcRuleCheckServiceClient implements RuleCheckServiceClient {
     private GrpcStatmentCheckClient client;
 
     @Override
-    public CheckResult check(String sql, Authorization authorization) {
+    public CheckResult check(String sql, Authorizations authorizations) {
 
-        ForStatmentGrpc.StatmentResult statmentResult = client.check(sql, authorization);
+        ForStatmentGrpc.StatmentResult statmentResult = client.check(sql, authorizations);
         CheckResult checkResult = new CheckResult(CheckStatus.getInstance(statmentResult.getStatus()));
 
         SqlChange change = new SqlChange();

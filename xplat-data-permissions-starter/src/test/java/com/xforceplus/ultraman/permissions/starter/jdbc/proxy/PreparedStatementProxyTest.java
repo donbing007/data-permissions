@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
@@ -15,6 +16,7 @@ import org.junit.After;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,7 +32,8 @@ import static org.mockito.Mockito.when;
  */
 public class PreparedStatementProxyTest {
 
-    private Authorization auth = new Authorization("r1", "t1");
+    private Authorizations authorizations = new Authorizations(
+        Arrays.asList(new Authorization("r1", "t1")));
 
     @Before
     public void before() throws Exception {
@@ -52,11 +55,11 @@ public class PreparedStatementProxyTest {
 
             Pack pack = caseData.get(sql);
             RuleCheckServiceClient client = mock(RuleCheckServiceClient.class);
-            when(client.check(sql, auth)).thenReturn(pack.checkReuslt);
+            when(client.check(sql, authorizations)).thenReturn(pack.checkReuslt);
 
             PreparedStatementProxy proxy = null;
             try {
-                proxy = new PreparedStatementProxy(client, auth, pack.maker, sql);
+                proxy = new PreparedStatementProxy(client, authorizations, pack.maker, sql);
                 if (pack.expectedCheckException != null) {
                     Assert.fail("An exception should be thrown, but it is not.");
                 }

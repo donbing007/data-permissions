@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
-import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
 
 /**
@@ -10,18 +10,18 @@ import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient
  */
 public class AbstractStatementProxy {
     private RuleCheckServiceClient client;
-    private Authorization authorization;
+    private Authorizations authorizations;
 
-    public AbstractStatementProxy(RuleCheckServiceClient client, Authorization authorization) {
+    public AbstractStatementProxy(RuleCheckServiceClient client, Authorizations authorizations) {
         this.client = client;
-        this.authorization = authorization;
+        this.authorizations = authorizations;
     }
 
     public RuleCheckServiceClient getClient() {
         return client;
     }
 
-    public Authorization getAuthorization() {
-        return authorization;
+    public Authorizations getAuthorization() {
+        return authorizations;
     }
 }

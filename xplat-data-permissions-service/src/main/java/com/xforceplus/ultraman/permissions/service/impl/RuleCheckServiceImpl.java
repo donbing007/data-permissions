@@ -96,6 +96,8 @@ public class RuleCheckServiceImpl implements RuleCheckService {
 
                 if (change == null) {
                     change = new SqlChange(null,blackList);
+                } else {
+                    change.setBlackList(blackList);
                 }
             }
 

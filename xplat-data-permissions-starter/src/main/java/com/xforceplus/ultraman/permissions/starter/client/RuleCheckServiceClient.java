@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.client;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 
 /**
@@ -14,8 +15,8 @@ public interface RuleCheckServiceClient {
     /**
      * 验证 SQL 在当前用户下的数据权限.
      * @param sql 原始 sql.
-     * @param authorization 授权信息.
+     * @param authorizations 授权信息.
      * @return 校验结果.
      */
-    CheckResult check(String sql, Authorization authorization);
+    CheckResult check(String sql, Authorizations authorizations);
 }
