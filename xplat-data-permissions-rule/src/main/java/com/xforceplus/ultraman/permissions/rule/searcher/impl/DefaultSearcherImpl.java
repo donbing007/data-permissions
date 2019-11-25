@@ -41,18 +41,9 @@ public class DefaultSearcherImpl implements Searcher {
     @Override
     public List<FieldRule> searchFieldRule(Authorization auth, String entity) {
 
-        return loadFieldRuleFromDb(auth, entity);
-    }
-
-    @Cacheable(keyGenerator = "ruleSearchKeyGenerator")
-    @Override
-    public List<DataRule> searchDataRule(Authorization auth, String entity) {
-        return loadDataRuleFromDb(auth, entity);
-    }
-
-
-    // 查询没有需要返回空列表.
-    private List<FieldRule> loadFieldRuleFromDb(Authorization auth, String entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loads the {} field rules in {}-{} from persistence.", entity, auth.getTenant(), auth.getRole());
+        }
         FieldScopeExample example = new FieldScopeExample();
         example.createCriteria().andEntityEqualTo(entity)
             .andRoleEqualTo(auth.getRole())
@@ -64,8 +55,13 @@ public class DefaultSearcherImpl implements Searcher {
             scope -> new FieldRule(scope.getEntity(), scope.getField())).collect(Collectors.toList());
     }
 
-    // 查询没有需要返回空列表.
-    private List<DataRule> loadDataRuleFromDb(Authorization auth, String entity) {
+    @Cacheable(keyGenerator = "ruleSearchKeyGenerator")
+    @Override
+    public List<DataRule> searchDataRule(Authorization auth, String entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loads the {} data rules in {}-{} from persistence.", entity, auth.getTenant(), auth.getRole());
+        }
+
         DataScopeSubConditionExample example = new DataScopeSubConditionExample();
         example.createCriteria().andEntityEqualTo(entity)
             .andRoleEqualTo(auth.getRole())

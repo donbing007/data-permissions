@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ template "xplat-data-permissions.fullname" . }}-configmap
+    labels:
+        app: {{ template "xplat-data-permissions.name" . }}
+        chart: {{ template "xplat-data-permissions.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+data:
+    application.yml: |
+        # 联调环境
+        server:
+          port: 8080
+        # grpc 配置.
+        grpc:
+          enabled: true
+          port: 8206
+          maxInboundMetadataBytes: 1048576  # 允许的请求头大小(字节)
+          maxInboundMessageBytes: 1048576  # 允许的请求消息大小(字节).
+          heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
+          heartbeatTimeoutSeconds: 30 # 心跳超时秒.
+        # 线程池.
+        executor:
+          maxTaskSize: 100
+          # maxWorkerSize: cpu core
+        spring:
+          cache:
+            type: GENERIC
+            cache-names: rule
+          datasource:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&socketTimeout={{ .Values.jdbc.connection.readTimeoutSeconds }}&autoReconnect=true&failOverReadOnly=false
+            username: {{ .Values.jdbc.userName }}
+            password: {{ .Values.jdbc.password }}
+            hikari:
+              connection-test-query: "select 1"
+              connection-timeout: {{ .Values.jdbc.pool.connectionTimeoutSeconds }}
+              validation-timeout: {{ .Values.jdbc.connection.readTimeoutSeconds }}
+              maximum-pool-size: {{ .Values.jdbc.pool.maxSize }}
+        j2cache:
+          config-location: file:/xplat/j2cache/j2cache.properties
+          open-spring-cache: true
+          cache-clean-mode: active
+          l2-cache-open: {{ .Values.cache.l2.enabled }}
+          redis-client: lettuce
+        logging:
+          level:
+            root: {{ .Values.logger.level }}
+            io:
+              opencensus: INFO
+    j2cache.properties: |
+        j2cache.broadcast = net.oschina.j2cache.cache.support.redis.SpringRedisPubSubPolicy
+        j2cache.L1.provider_class = caffeine
+        j2cache.L2.provider_class = net.oschina.j2cache.cache.support.redis.SpringRedisProvider
+        j2cache.L2.config_section = lettuce
+        j2cache.sync_ttl_to_redis = true
+        j2cache.default_cache_null_object = true
+        j2cache.serialization = kryo
+        caffeine.region.default = {{ .Values.cache.l1.size}}, {{ .Values.cache.l1.ttl }}
+        lettuce.storage = hash
+        lettuce.channel = j2cache
+        lettuce.scheme = redis
+        lettuce.hosts = {{ .Values.cache.l2.redis.host }}:{{ .Values.cache.l2.redis.port }}
+        {{- if .Values.cache.l2.redis.password }}
+        lettuce.password = {{ .Values.cache.l2.redis.password }}
+        {{- end }}
+        lettuce.database = 0
+        lettuce.maxTotal = {{ .Values.cache.l2.redis.pool.max }}
+        lettuce.maxIdle = {{ .Values.cache.l2.redis.pool.maxIdle }}
+        lettuce.minIdle = {{ .Values.cache.l2.redis.pool.minIdle }}
+        lettuce.timeout = {{ .Values.cache.l2.redis.timeout }}
