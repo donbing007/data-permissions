@@ -52,7 +52,7 @@ annotations:
   prometheus.io/port: "8080"
 
 jdbc:
-  dbname: "xplat_data_permissions"
+  dbname: "xplat-data-permissions"
   host: "xplat-data-permissions"
   port: 3306
   userName: root
