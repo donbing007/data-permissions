@@ -5,7 +5,7 @@ LABEL maintainer="dongbin <dongbin@xforceplus.com>"
 RUN mkdir /xplat
 WORKDIR /xplat
 
-COPY ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /xplat/xplat-data-permissions.jar
+COPY ../xplat-data-permissions-boot/target/xplat-data-permissions.jar /xplat/xplat-data-permissions.jar
 
 EXPOSE 8080
 EXPOSE 8206
