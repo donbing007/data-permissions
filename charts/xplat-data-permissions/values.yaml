@@ -9,9 +9,9 @@ replicaCount: 1
 # fullnameOverride: xplat-data-permissions
 
 image:
-  repository: registry-xcloud.xforceplus.com/ultraman-xplat-db/xplat-data-permissions
+  repository: registry-developer.xforcecloud.com/ultraman-xplat-db/xplat-data-permissions
   # default .Chart.Version
-  # tag:
+  tag: 2019.11.25-192405-develop
   pullPolicy: IfNotPresent
 
 service:
@@ -52,6 +52,8 @@ annotations:
   prometheus.io/port: "8080"
 
 jdbc:
+  init:
+    enabled: true
   dbname: "xplat-data-permissions"
   host: "xplat-data-permissions"
   port: 3306

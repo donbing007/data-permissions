@@ -1,92 +1,110 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "xplat-data-permissions.fullname" . }}
-  labels:
-    app: {{ template "xplat-data-permissions.name" . }}
-    chart: {{ template "xplat-data-permissions.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ template "xplat-data-permissions.name" . }}
-      release: {{ .Release.Name }}
-  template:
-    metadata:
-      labels:
+    name: {{ template "xplat-data-permissions.fullname" . }}
+    labels:
         app: {{ template "xplat-data-permissions.name" . }}
+        chart: {{ template "xplat-data-permissions.chart" . }}
         release: {{ .Release.Name }}
-      {{- with .Values.annotations }}
-      annotations:
-{{ toYaml . | indent 8 }}
-      {{- end }}
-    spec:
-      containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ template "image.tag" . }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http-metrics
-              containerPort: 8080
-              protocol: TCP
-            - name: grpc
-              containerPort: 8206
-              protocol: TCP
-          volumeMounts:
-            - mountPath: /xplat/application.yml
-              name: config
-              subPath: application.yml
-            - mountPath: /xplat/j2cache/j2cache.properties
-              name: config
-              subPath: j2cache.properties
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /actuator/health
-              port: http-metrics
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            failureThreshold: 3
-            successThreshold: 1
-            timeoutSeconds: 3
-          readinessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /actuator/health
-              port: http-metrics
-            initialDelaySeconds: 6
-            periodSeconds: 60
-            failureThreshold: 3
-            successThreshold: 1
-            timeoutSeconds: 3
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-      {{- if .Values.affinity }}
-      {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-       {{- end }}
-       {{- else }}
-      volumes:
-        - name: config
-          configMap:
-            name: {{ template "xplat-data-permissions.fullname" . }}-configmap
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchLabels:
+        heritage: {{ .Release.Service }}
+spec:
+    replicas: {{ .Values.replicaCount }}
+    selector:
+        matchLabels:
+            app: {{ template "xplat-data-permissions.name" . }}
+            release: {{ .Release.Name }}
+    template:
+        metadata:
+            labels:
                 app: {{ template "xplat-data-permissions.name" . }}
                 release: {{ .Release.Name }}
-       {{- end }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+                {{- with .Values.annotations }}
+            annotations:
+                {{ toYaml . | indent 8 }}
+            {{- end }}
+        spec:
+            containers:
+                    {{- if .Values.jdbc.init.enabled}}
+                - name: init-db
+                  image: "luanpeng/lp:database-tools-1.0"
+                  imagePullPolicy: IfNotPresent
+                  env:
+                      - name: DRIVER_NAME
+                        value: "com.mysql.jdbc.Driver"
+                      - name: URL
+                        value: "jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&useSSL=false"
+                      - name: USERNAME
+                        value: {{ .Values.jdbc.userName }}
+                      - name: PASSWORD
+                        value: {{ .Values.jdbc.password }}
+                  volumeMounts:
+                      - mountPath: /root/db_tools/script
+                        name: config
+                        subPath: initdb.sql
+                    {{- end }}
+                - name: {{ .Chart.Name }}
+                  image: "{{ .Values.image.repository }}:{{ template "image.tag" . }}"
+                  imagePullPolicy: {{ .Values.image.pullPolicy }}
+                  ports:
+                      - name: http-metrics
+                        containerPort: 8080
+                        protocol: TCP
+                      - name: grpc
+                        containerPort: 8206
+                        protocol: TCP
+                  volumeMounts:
+                      - mountPath: /xplat/application.yml
+                        name: config
+                        subPath: application.yml
+                      - mountPath: /xplat/j2cache/j2cache.properties
+                        name: config
+                        subPath: j2cache.properties
+                  livenessProbe:
+                      httpGet:
+                          scheme: HTTP
+                          path: /actuator/health
+                          port: http-metrics
+                      initialDelaySeconds: 30
+                      periodSeconds: 60
+                      failureThreshold: 3
+                      successThreshold: 1
+                      timeoutSeconds: 3
+                  readinessProbe:
+                      httpGet:
+                          scheme: HTTP
+                          path: /actuator/health
+                          port: http-metrics
+                      initialDelaySeconds: 6
+                      periodSeconds: 60
+                      failureThreshold: 3
+                      successThreshold: 1
+                      timeoutSeconds: 3
+                  resources:
+                {{ toYaml .Values.resources | indent 12 }}
+                {{- if .Values.affinity }}
+                {{- with .Values.affinity }}
+            affinity:
+                {{ toYaml . | indent 8 }}
+                {{- end }}
+                {{- else }}
+            volumes:
+                - name: config
+                  configMap:
+                      name: {{ template "xplat-data-permissions.fullname" . }}-configmap
+            affinity:
+                podAntiAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                        - topologyKey: "kubernetes.io/hostname"
+                          labelSelector:
+                              matchLabels:
+                                  app: {{ template "xplat-data-permissions.name" . }}
+                                  release: {{ .Release.Name }}
+                {{- end }}
+                {{- with .Values.nodeSelector }}
+            nodeSelector:
+                {{ toYaml . | indent 8 }}
+                {{- end }}
+                {{- with .Values.tolerations }}
+            tolerations:
+            {{ toYaml . | indent 8 }}
+        {{- end }}
