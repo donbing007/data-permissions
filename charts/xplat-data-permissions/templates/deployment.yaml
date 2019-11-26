@@ -47,7 +47,7 @@ spec:
                   imagePullPolicy: {{ .Values.image.pullPolicy }}
                   env:
                     - name: JVM_HEAP_PERCENTAGE
-                      value: 50
+                      value: "50"
                   command: ["java"]
                   args:
                     - -jar
