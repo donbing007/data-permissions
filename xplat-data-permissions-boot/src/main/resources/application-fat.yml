@@ -41,6 +41,6 @@ j2cache:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     io:
       opencensus: INFO

@@ -1,17 +1,11 @@
-# Default values for xplat-data-permissions.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
-
-
-# fullnameOverride: xplat-data-permissions
+fullnameOverride: xplat-data-permissions
 
 image:
   repository: registry-developer.xforcecloud.com/ultraman-xplat-db/xplat-data-permissions
   # default .Chart.Version
-  tag: 2019.11.25-192405-develop
+  #tag:
   pullPolicy: IfNotPresent
 
 service:
@@ -45,37 +39,49 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity:
+affinity: {}
 
 annotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "8080"
 
+jvm:
+
 jdbc:
   init:
     enabled: true
   dbname: "xplat-data-permissions"
-  host: "xplat-data-permissions"
+  host: "x-mysql-56-b7960"
   port: 3306
   userName: root
-  password: root
+  password: xplat
   connection:
-    readTimeoutSeconds: 3000
+    readTimeoutSeconds: "3000"
   pool:
-    connectionTimeoutSeconds: 1000
+    connectionTimeoutSeconds: "1000"
     maxSize: 12
 
+executor:
+  maxTaskSize: 100
+  # maxWorkerSize: cpu core
+
+grpc:
+  enabled: true
+  maxInboundMetadataBytes: "1048576"  # 允许的请求头大小(字节),这里是字符串,防止科学计数.
+  maxInboundMessageBytes: "1048576"  # 允许的请求消息大小(字节),这里是字符串,防止科学计数.
+  heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
+  heartbeatTimeoutSeconds: 30 # 心跳超时秒.
 
 cache:
   l1:
     size: 10000
     ttl: 30d
   l2:
-    enabled: false
+    enabled: true
     redis:
-      host: "redis.server"
+      host: "xplat-data-permissions-redis-master"
       port: 6379
-      password:
+      password: 666666
       timeout: 1000
       pool:
         max: 100

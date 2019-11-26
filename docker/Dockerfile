@@ -10,4 +10,4 @@ COPY app.jar /xplat/xplat-data-permissions.jar
 EXPOSE 8080
 EXPOSE 8206
 
-ENTRYPOINT java $JAVA_OPTS -jar /xplat/xplat-data-permissions.jar
+ENTRYPOINT java $JAVA_OPS -jar /xplat/xplat-data-permissions.jar

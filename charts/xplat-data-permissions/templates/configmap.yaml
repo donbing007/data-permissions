@@ -9,33 +9,33 @@ metadata:
         heritage: {{ .Release.Service }}
 data:
     application.yml: |
-        # 联调环境
         server:
           port: 8080
-        # grpc 配置.
         grpc:
-          enabled: true
+          enabled: {{ .Values.grpc.enabled }}
           port: 8206
-          maxInboundMetadataBytes: 1048576  # 允许的请求头大小(字节)
-          maxInboundMessageBytes: 1048576  # 允许的请求消息大小(字节).
-          heartbeatIntervalSeconds: 30 # 两次心跳的间隔秒.
-          heartbeatTimeoutSeconds: 30 # 心跳超时秒.
+          maxInboundMetadataBytes: {{int .Values.grpc.maxInboundMetadataBytes }}
+          maxInboundMessageBytes: {{int .Values.grpc.maxInboundMessageBytes }}
+          heartbeatIntervalSeconds: {{ .Values.grpc.heartbeatIntervalSeconds }}
+          heartbeatTimeoutSeconds: {{ .Values.grpc.heartbeatTimeoutSeconds }}
         # 线程池.
         executor:
-          maxTaskSize: 100
-          # maxWorkerSize: cpu core
+          maxTaskSize: {{ .Values.executor.maxTaskSize }}
+          {{- if .Values.executor.maxWorkerSize }}
+          maxWorkerSize: {{ .Values.executor.maxWorkerSize }}
+          {{- end }}
         spring:
           cache:
             type: GENERIC
             cache-names: rule
           datasource:
             driver-class-name: com.mysql.cj.jdbc.Driver
-            url: jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&socketTimeout={{ .Values.jdbc.connection.readTimeoutSeconds }}&autoReconnect=true&failOverReadOnly=false
+            url: jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&socketTimeout={{int .Values.jdbc.connection.readTimeoutSeconds }}&autoReconnect=true&failOverReadOnly=false
             username: {{ .Values.jdbc.userName }}
             password: {{ .Values.jdbc.password }}
             hikari:
               connection-test-query: "select 1"
-              connection-timeout: {{ .Values.jdbc.pool.connectionTimeoutSeconds }}
+              connection-timeout: {{int .Values.jdbc.pool.connectionTimeoutSeconds }}
               validation-timeout: {{ .Values.jdbc.connection.readTimeoutSeconds }}
               maximum-pool-size: {{ .Values.jdbc.pool.maxSize }}
         j2cache:
@@ -62,9 +62,9 @@ data:
         lettuce.channel = j2cache
         lettuce.scheme = redis
         lettuce.hosts = {{ .Values.cache.l2.redis.host }}:{{ .Values.cache.l2.redis.port }}
-            {{- if .Values.cache.l2.redis.password }}
+        {{- if .Values.cache.l2.redis.password }}
         lettuce.password = {{ .Values.cache.l2.redis.password }}
-            {{- end }}
+        {{- end }}
         lettuce.database = 0
         lettuce.maxTotal = {{ .Values.cache.l2.redis.pool.max }}
         lettuce.maxIdle = {{ .Values.cache.l2.redis.pool.maxIdle }}

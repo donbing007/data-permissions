@@ -20,11 +20,11 @@ spec:
                 release: {{ .Release.Name }}
                 {{- with .Values.annotations }}
             annotations:
-                {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 14 }}
             {{- end }}
         spec:
             containers:
-                    {{- if .Values.jdbc.init.enabled}}
+               {{- if .Values.jdbc.init.enabled}}
                 - name: init-db
                   image: "luanpeng/lp:database-tools-1.0"
                   imagePullPolicy: IfNotPresent
@@ -38,13 +38,21 @@ spec:
                       - name: PASSWORD
                         value: {{ .Values.jdbc.password }}
                   volumeMounts:
-                      - mountPath: /root/db_tools/script
+                      - mountPath: /root/db_tools/script/execute.sql
                         name: config
                         subPath: initdb.sql
-                    {{- end }}
+                {{- end }}
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.repository }}:{{ template "image.tag" . }}"
                   imagePullPolicy: {{ .Values.image.pullPolicy }}
+                  command: ["java"]
+                  args:
+                    - -jar
+                    {{- range .Values.jvm }}
+                    - {{ . }}
+                    {{- end }}
+                    - /xplat/xplat-data-permissions.jar
+                    - --spring.config.location=/xplat/application.yml
                   ports:
                       - name: http-metrics
                         containerPort: 8080
@@ -67,24 +75,22 @@ spec:
                       initialDelaySeconds: 30
                       periodSeconds: 60
                       failureThreshold: 3
-                      successThreshold: 1
-                      timeoutSeconds: 3
+                      timeoutSeconds: 30
                   readinessProbe:
                       httpGet:
                           scheme: HTTP
                           path: /actuator/health
                           port: http-metrics
-                      initialDelaySeconds: 6
+                      initialDelaySeconds: 30
                       periodSeconds: 60
                       failureThreshold: 3
-                      successThreshold: 1
-                      timeoutSeconds: 3
+                      timeoutSeconds: 30
                   resources:
-                {{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 20 }}
                 {{- if .Values.affinity }}
                 {{- with .Values.affinity }}
             affinity:
-                {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 14 }}
                 {{- end }}
                 {{- else }}
             volumes:
@@ -102,9 +108,9 @@ spec:
                 {{- end }}
                 {{- with .Values.nodeSelector }}
             nodeSelector:
-                {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 14 }}
                 {{- end }}
                 {{- with .Values.tolerations }}
             tolerations:
-            {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 14 }}
         {{- end }}
