@@ -11,6 +11,22 @@ data:
     application.yml: |
         server:
           port: 8080
+        management:
+          health:
+            redis:
+              enabled: false
+          endpoints:
+            enabled-by-default: false
+            web:
+              exposure:
+                include: "*"
+          endpoint:
+            health:
+              enabled: true
+            shutdown:
+              enabled: true
+            info:
+              enabled: true
         grpc:
           enabled: {{ .Values.grpc.enabled }}
           port: 8206
@@ -25,6 +41,8 @@ data:
           maxWorkerSize: {{ .Values.executor.maxWorkerSize }}
           {{- end }}
         spring:
+          application:
+            name: "xplat-data-permissions"
           cache:
             type: GENERIC
             cache-names: rule
