@@ -45,6 +45,9 @@ spec:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.repository }}:{{ template "image.tag" . }}"
                   imagePullPolicy: {{ .Values.image.pullPolicy }}
+                  env:
+                    - name: JVM_HEAP_PERCENTAGE
+                      value: 50
                   command: ["java"]
                   args:
                     - -jar
