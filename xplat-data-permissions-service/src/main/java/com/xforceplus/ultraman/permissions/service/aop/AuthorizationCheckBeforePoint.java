@@ -2,22 +2,23 @@ package com.xforceplus.ultraman.permissions.service.aop;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
-import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.Result;
 import com.xforceplus.ultraman.permissions.repository.RoleRepository;
 import com.xforceplus.ultraman.permissions.repository.entity.Role;
 import com.xforceplus.ultraman.permissions.repository.entity.RoleExample;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 定义了对方法中参数 Authorization 实例中记录的授权信息进行有效性检测的拦截实现.
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class AuthorizationCheckBeforePoint {
+
+    final Logger logger = LoggerFactory.getLogger(AuthorizationCheckBeforePoint.class);
 
     @Resource
     private RoleRepository roleRepository;
@@ -44,30 +47,35 @@ public class AuthorizationCheckBeforePoint {
     }
 
     private Object checkAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
+        if (logger.isDebugEnabled()) {
+            Signature signature =  joinPoint.getSignature();
+            logger.debug("Intercept {}.{}.", signature.getDeclaringTypeName(), signature.getName());
+        }
+
         Object[] args = joinPoint.getArgs();
-        for (Object arg : args) {
-            if (Authorization.class.isInstance(arg)) {
-                Optional<Role> roleOptional = findRole((Authorization) arg);
-                if (!roleOptional.isPresent()) {
+        if (args != null) {
+            for (Object arg : args) {
+                if (Authorization.class.isInstance(arg)) {
+                    Optional<Role> roleOptional = findRole((Authorization) arg);
+                    if (!roleOptional.isPresent()) {
 
-                    Class returnType = getReturnType(joinPoint);
-                    if (FieldRuleManagementResult.class.equals(returnType)) {
+                        Class returnType = getReturnType(joinPoint);
+                        if (Result.class.isAssignableFrom(returnType)) {
+                            Constructor c = returnType.getConstructor(ManagementStatus.class);
+                            return c.newInstance(ManagementStatus.LOSS);
+                        } else {
+                            throw new Exception("Not a subclass of " + Result.class.toString() + " as expected.");
+                        }
 
-                        return new FieldRuleManagementResult(ManagementStatus.LOSS, "Nonexistent authorization information.");
+                    } else {
 
-                    } else if (List.class.equals(returnType)) {
+                        Authorization auth = ((Authorization) arg);
+                        if (auth.getId() == null) {
+                            auth.setId(roleOptional.get().getId());
+                        }
 
-                        return Collections.emptyList();
+                        break;
                     }
-
-                } else {
-
-                    Authorization auth = ((Authorization) arg);
-                    if (auth.getId() == null) {
-                        auth.setId(roleOptional.get().getId());
-                    }
-
-                    break;
                 }
             }
         }
@@ -76,11 +84,8 @@ public class AuthorizationCheckBeforePoint {
     }
 
     private Class getReturnType(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        List<Class> classList = Arrays.stream(args).map(arg -> arg.getClass()).collect(Collectors.toList());
-        Object target = joinPoint.getTarget();
-        Method method = target.getClass().getMethod(joinPoint.getSignature().getName(), classList.toArray(new Class[0]));
-        return method.getReturnType();
+        Signature signature =  joinPoint.getSignature();
+        return ((MethodSignature) signature).getReturnType();
     }
 
     private Optional<Role> findRole(Authorization authorization) {
