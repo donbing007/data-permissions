@@ -88,7 +88,6 @@ data:
         lettuce.maxIdle = {{ .Values.cache.l2.redis.pool.maxIdle }}
         lettuce.minIdle = {{ .Values.cache.l2.redis.pool.minIdle }}
         lettuce.timeout = {{ .Values.cache.l2.redis.timeout }}
-        {{- if .Values.jdbc.init.enabled }}
     initdb.sql: |
         create table if not exists data_scope
         (
@@ -141,4 +140,3 @@ data:
         scope_id   bigint  default 0 null comment '根据 type 不同指向不同的权限范围 column 或者 data.',
         scope_type tinyint default 0 not null comment '范围类型.是字段,还是数据范围.'
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        {{- end }}
