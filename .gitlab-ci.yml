@@ -8,7 +8,7 @@ maven-test-build:
   stage: mvn-package
   script:
     - update_pom_version
-    - ./mvnw clean deploy -s ./.mvn/wrapper/settings.xml
+    - mvn clean deploy -s ./.mvn/wrapper/settings.xml
     - mkdir -p /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     - cp ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}/app.jar
 
