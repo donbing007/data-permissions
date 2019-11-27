@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.starter.config;
 
 import com.xforceplus.ultraman.permissions.starter.DataSourceInterceptor;
 import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.starter.authorization.impl.ContextAuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.starter.authorization.impl.MockAuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.starter.client.GrpcRuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
@@ -34,7 +35,7 @@ public class AutomaticConfiguration {
 
     private boolean debug;
 
-    private AuthorizationSearcherConfig searcher;
+    private AuthorizationSearcherConfig searcher = new AuthorizationSearcherConfig();
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     public GrpcStatmentCheckClient grpcStatmentCheckClient() {
@@ -63,15 +64,15 @@ public class AutomaticConfiguration {
     @Bean
     public AuthorizationSearcher authorizationSearcher() {
         AuthorizationSearcher authorizationSearcher;
+
         switch(searcher.getName().toUpperCase()) {
             case "MOCK": {
-                MockAuthorizationSearcher s = new MockAuthorizationSearcher(searcher.getRole(), searcher.getTenant());
-
-                authorizationSearcher = s;
+                authorizationSearcher = new MockAuthorizationSearcher(searcher.getRole(), searcher.getTenant());
                 break;
             }
             case "DEFAULT": {
-
+                authorizationSearcher = new ContextAuthorizationSearcher();
+                break;
             }
             default:
                 throw new IllegalStateException("Unexpected value: " + searcher.getName());

@@ -27,6 +27,8 @@ data:
               enabled: true
             info:
               enabled: true
+            prometheus:
+              enabled: true
         grpc:
           enabled: {{ .Values.grpc.enabled }}
           port: 8206

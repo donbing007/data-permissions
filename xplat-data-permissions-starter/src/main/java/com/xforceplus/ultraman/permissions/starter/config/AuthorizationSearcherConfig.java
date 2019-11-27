@@ -19,6 +19,12 @@ public class AuthorizationSearcherConfig {
 
     private String tenant;
 
+    public AuthorizationSearcherConfig() {
+        this.name = "DEFAULT";
+        this.role = "r1";
+        this.tenant  ="t1";
+    }
+
     public String getName() {
         return name;
     }

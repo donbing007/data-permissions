@@ -13,6 +13,7 @@ import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
+import io.micrometer.core.instrument.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,9 @@ public class RuleCheckServiceImpl implements RuleCheckService {
 
     final Logger logger = LoggerFactory.getLogger(RuleCheckServiceImpl.class);
 
+    @Resource(name = "xdpSqlCheckTotal")
+    private Counter xdpSqlCheckTotal;
+
     @Resource
     private SqlParser sqlParser;
 
@@ -51,6 +55,10 @@ public class RuleCheckServiceImpl implements RuleCheckService {
             logger.error("Unable to parse {}, message is {}.", sqlStr, ex.getMessage());
 
             return new CheckResult(CheckStatus.ERROR);
+
+        } finally {
+
+            xdpSqlCheckTotal.increment();
         }
 
         Line line = lineFactory.getLine(sql);
@@ -67,7 +75,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
         try {
             line.start(context);
         } catch (Throwable ex) {
-            logger.error(ex.getMessage(),ex);
+            logger.error(ex.getMessage(), ex);
 
             return new CheckResult(CheckStatus.ERROR, ex.getMessage());
         }
