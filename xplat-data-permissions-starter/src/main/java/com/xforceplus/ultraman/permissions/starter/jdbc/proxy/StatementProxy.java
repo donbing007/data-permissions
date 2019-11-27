@@ -7,8 +7,11 @@ import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.DenialResultSet;
 import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.PassResultSetProxy;
+import com.xforceplus.ultraman.permissions.starter.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.utils.MethodHelper;
 import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -30,6 +33,7 @@ import java.sql.Statement;
  */
 public class StatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
+    final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
     private static final Class[] METHOD_PARAMETER_TYPE = new Class[]{String.class};
     private Statement statement;
 
@@ -63,10 +67,18 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
         CheckResult checkResult = getClient().check(sql, getAuthorization());
         CheckStatus status = checkResult.getStatus();
 
+        if (DebugStatus.isDebug()) {
+            logger.debug("Expected: {}", sql);
+        }
+
         switch (status) {
             case PASS: {
 
                 ResultSet target = (ResultSet) method.invoke(statement, args);
+
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: {}" , sql);
+                }
 
                 return ProxyFactory.createInterfaceProxy(
                     target,
@@ -79,12 +91,21 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                 }
 
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: {}" , newSql);
+                }
+
                 ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.findFirst().getNewSql()});
                 return ProxyFactory.createInterfaceProxy(
                     target,
                     new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
             case DENIAL: {
+
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: DENIAL");
+                }
+
                 if (Integer.TYPE.equals(method.getReturnType())) {
                     return 0;
                 } else {

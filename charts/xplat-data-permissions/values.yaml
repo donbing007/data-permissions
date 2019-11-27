@@ -1,11 +1,11 @@
 replicaCount: 1
 
-fullnameOverride: xplat-data-permissions
+#fullnameOverride: xplat-data-permissions
 
 image:
   repository: registry-developer.xforcecloud.com/ultraman-xplat-db/xplat-data-permissions
   # default .Chart.Version
-  #tag:
+  tag: "2019.11.26-160902-develop"
   pullPolicy: IfNotPresent
 
 service:
@@ -48,8 +48,6 @@ annotations:
 jvm:
 
 jdbc:
-  init:
-    enabled: true
   dbname: "xplat-data-permissions"
   host: "x-mysql-56-b7960"
   port: 3306
@@ -85,7 +83,7 @@ cache:
       timeout: 1000
       pool:
         max: 100
-        maxIdle: 30
+        maxIdle: 300
         minIdle: 10
 
 

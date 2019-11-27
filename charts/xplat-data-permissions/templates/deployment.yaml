@@ -24,30 +24,12 @@ spec:
             {{- end }}
         spec:
             containers:
-               {{- if .Values.jdbc.init.enabled}}
-                - name: init-db
-                  image: "luanpeng/lp:database-tools-1.0"
-                  imagePullPolicy: IfNotPresent
-                  env:
-                      - name: DRIVER_NAME
-                        value: "com.mysql.jdbc.Driver"
-                      - name: URL
-                        value: "jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&useSSL=false"
-                      - name: USERNAME
-                        value: {{ .Values.jdbc.userName }}
-                      - name: PASSWORD
-                        value: {{ .Values.jdbc.password }}
-                  volumeMounts:
-                      - mountPath: /root/db_tools/script/execute.sql
-                        name: config
-                        subPath: initdb.sql
-                {{- end }}
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.repository }}:{{ template "image.tag" . }}"
                   imagePullPolicy: {{ .Values.image.pullPolicy }}
                   env:
                     - name: JVM_HEAP_PERCENTAGE
-                      value: "50"
+                      value: "60"
                   command: ["java"]
                   args:
                     - -jar
@@ -74,7 +56,7 @@ spec:
                       httpGet:
                           scheme: HTTP
                           path: /actuator/health
-                          port: http-metrics
+                          port: 8080
                       initialDelaySeconds: 30
                       periodSeconds: 60
                       failureThreshold: 3
@@ -83,9 +65,9 @@ spec:
                       httpGet:
                           scheme: HTTP
                           path: /actuator/health
-                          port: http-metrics
-                      initialDelaySeconds: 30
-                      periodSeconds: 60
+                          port: 8080
+                      initialDelaySeconds: 3
+                      periodSeconds: 6
                       failureThreshold: 3
                       timeoutSeconds: 30
                   resources:

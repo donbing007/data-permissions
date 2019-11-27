@@ -25,4 +25,8 @@ public class MockAuthorizationSearcher implements AuthorizationSearcher {
         return authorizations;
     }
 
+    public void set(String role, String tenant) {
+        this.authorizations = new Authorizations(Arrays.asList(new Authorization(role,tenant)));
+    }
+
 }

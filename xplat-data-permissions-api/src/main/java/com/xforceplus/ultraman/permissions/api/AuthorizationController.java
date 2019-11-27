@@ -36,7 +36,7 @@ public class AuthorizationController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "响应正确.", response = AuthorizationManagementResult.class)}
     )
-    @GetMapping(value = "/{tenant}/xpermissions/v1/authorizations", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/xpermissions/v1/authorizations", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity list(
         @ApiParam(name = "start", value = "开始的 id", defaultValue = "0")
         @RequestParam(value = "start", required = false, defaultValue = "0") long start,
@@ -59,7 +59,7 @@ public class AuthorizationController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "响应正确.", response = AuthorizationManagementResult.class)}
     )
-    @PostMapping(value = "/{tenant}/xpermissions/v1/authorization", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/xpermissions/v1/authorization", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity save(
         @ApiParam(name = "authorization", value = "授权信息", required = true, example = "{role='string', tenant='string'}")
         @RequestBody Authorization authorization) {

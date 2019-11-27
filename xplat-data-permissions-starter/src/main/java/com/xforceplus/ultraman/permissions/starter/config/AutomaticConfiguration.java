@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSe
 import com.xforceplus.ultraman.permissions.starter.authorization.impl.MockAuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.starter.client.GrpcRuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.starter.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.GrpcStatmentCheckClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,6 +31,8 @@ public class AutomaticConfiguration {
     private long heartbeatTimeoutSeconds;
 
     private long heartbeatIntervalSeconds;
+
+    private boolean debug;
 
     private AuthorizationSearcherConfig searcher;
 
@@ -100,5 +103,10 @@ public class AutomaticConfiguration {
 
     public void setSearcher(AuthorizationSearcherConfig searcher) {
         this.searcher = searcher;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+        DebugStatus.setDebug(debug);
     }
 }

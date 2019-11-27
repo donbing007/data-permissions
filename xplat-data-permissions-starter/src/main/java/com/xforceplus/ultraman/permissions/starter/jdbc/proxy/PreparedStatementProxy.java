@@ -1,14 +1,16 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
 
-import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.DenialResultSet;
 import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.PassResultSetProxy;
+import com.xforceplus.ultraman.permissions.starter.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.utils.MethodHelper;
 import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -25,6 +27,7 @@ import java.sql.SQLException;
  */
 public class PreparedStatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
+    final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
     private static final Class[] EXPECTED_PARAMETERS_TYPE = new Class[0];
     private String sql;
     private PreparedStatementMaker maker;
@@ -41,6 +44,10 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
         this.maker = maker;
 
         check();
+
+        if (DebugStatus.isDebug()) {
+            logger.debug("Expected: {}", sql);
+        }
     }
 
     public boolean isRefuse() {
@@ -56,17 +63,33 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
         CheckStatus status = checkResult.getStatus();
         switch (status) {
             case PASS: {
+
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: {}" , sql);
+                }
+
                 sourcePreparedStatement = maker.make(sql);
                 break;
             }
             case UPDATE: {
-                if (checkResult.findFirst().getNewSql() == null) {
+                String newSql = checkResult.findFirst().getNewSql();
+                if (newSql == null) {
                     throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                 }
-                sourcePreparedStatement = maker.make(checkResult.findFirst().getNewSql());
+
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: {}" , newSql);
+                }
+
+                sourcePreparedStatement = maker.make(newSql);
                 break;
             }
             case DENIAL: {
+
+                if (DebugStatus.isDebug()) {
+                    logger.info("Actual: DENIAL");
+                }
+
                 refuse = true;
                 break;
             }
