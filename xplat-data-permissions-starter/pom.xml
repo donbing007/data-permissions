@@ -63,6 +63,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.perfmark</groupId>
+            <artifactId>perfmark-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

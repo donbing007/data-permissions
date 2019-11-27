@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: registry-developer.xforcecloud.com/ultraman-xplat-db/xplat-data-permissions
   # default .Chart.Version
-  tag: "2019.11.26-160902-develop"
+  #tag: "2019.11.26-160902-develop"
   pullPolicy: IfNotPresent
 
 service:
