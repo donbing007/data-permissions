@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
  * @author dongbin
  * @since 1.8
  */
-public class GrpcStatmentCheckClient {
+public class StatmentCheckClientGrpc {
 
-    final Logger logger = LoggerFactory.getLogger(GrpcStatmentCheckClient.class);
+    final Logger logger = LoggerFactory.getLogger(StatmentCheckClientGrpc.class);
 
     private String host = "xplat-data-permissions";
     private int port = 8206;

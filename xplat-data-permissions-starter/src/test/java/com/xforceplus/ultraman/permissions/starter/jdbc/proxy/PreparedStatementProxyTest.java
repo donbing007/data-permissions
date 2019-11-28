@@ -80,9 +80,9 @@ public class PreparedStatementProxyTest {
                 }
 
                 if (value == null) {
-                    Assert.assertNull(pack.expectedValueClass);
+                    Assert.assertNull(sql,pack.expectedValueClass);
                 } else {
-                    Assert.assertTrue(pack.expectedValueClass.isInstance(value));
+                    Assert.assertTrue(sql,pack.expectedValueClass.isInstance(value));
                 }
             }
         });
@@ -92,7 +92,7 @@ public class PreparedStatementProxyTest {
     private Map<String, Pack> buildCase() throws Exception {
         Map<String, Pack> data = new LinkedHashMap<>();
 
-        data.put("select * from t1 where c1 = ?",
+        data.put("select c1 from t1 where c1 = ?",
             new Pack(
                 new CheckResult(CheckStatus.DENIAL, new SqlChange()),
                 sql -> null,
@@ -103,7 +103,18 @@ public class PreparedStatementProxyTest {
             )
         );
 
-        data.put("select * from t1 where c1=?",
+        data.put("select c2 from t1 where c1 = ?",
+            new Pack(
+                new CheckResult(CheckStatus.DENIAL, new SqlChange()),
+                sql -> null,
+                PreparedStatement.class.getMethod("setString", new Class[]{Integer.TYPE, String.class }),
+                new Object[]{1,"test"},
+                null,
+                null
+            )
+        );
+
+        data.put("select c3 from t1 where c1=?",
             new Pack(
                 new CheckResult(CheckStatus.PASS, new SqlChange()),
                 sql -> {

@@ -133,7 +133,15 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
             }
         } else {
 
-            return method.invoke(sourcePreparedStatement, args);
+            if (!refuse) {
+
+                return method.invoke(sourcePreparedStatement, args);
+
+            } else {
+
+                return null;
+
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @ConfigurationProperties(prefix = "xplat.data.permissions.searcher")
 @Component
-public class AuthorizationSearcherConfig {
+public class AuthSearcherConfig {
 
     public static final String MOCK_NAME = "MOCK";
     public static final String CONTEXT_NAME = "CONTEXT";
@@ -22,8 +22,12 @@ public class AuthorizationSearcherConfig {
 
     private String tenant;
 
-    public AuthorizationSearcherConfig() {
+    public AuthSearcherConfig() {
         this.name = CONTEXT_NAME;
+    }
+
+    public AuthSearcherConfig(String name) {
+        this.name = name;
     }
 
     public String getName() {

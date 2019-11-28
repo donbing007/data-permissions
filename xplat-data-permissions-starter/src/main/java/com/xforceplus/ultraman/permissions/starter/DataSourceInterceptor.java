@@ -8,6 +8,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.sql.DriverManager;
+import java.util.regex.Pattern;
 
 /**
  * data source 拦截器.
@@ -23,12 +25,26 @@ public class DataSourceInterceptor implements BeanPostProcessor {
     @Resource
     private AuthorizationSearcher authorizationSearcher;
 
+    private String includeRex;
+
+    public DataSourceInterceptor(String includeRex) {
+        this.includeRex = includeRex;
+    }
+
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (DataSource.class.isInstance(bean)) {
-            return new PermissionsDataSourceWrapper(client, authorizationSearcher, (DataSource) bean);
-        } else {
-            return bean;
+
+            if (isInclude(beanName)) {
+                return new PermissionsDataSourceWrapper(client, authorizationSearcher, (DataSource) bean);
+            }
         }
+
+        return bean;
+
+    }
+
+    private boolean isInclude(String beanName) {
+        return Pattern.matches(includeRex, beanName);
     }
 }

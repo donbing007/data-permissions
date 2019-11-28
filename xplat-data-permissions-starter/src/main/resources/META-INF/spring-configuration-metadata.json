@@ -1,0 +1,53 @@
+{
+  "properties": [
+    {
+      "name": "xplat.data.permissions.host",
+      "type": "java.lang.String",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "server name or ip.",
+      "defaultValue": "127.0.0.1"
+    },
+    {
+      "name": "xplat.data.permissions.port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "server port.",
+      "defaultValue": "8206"
+    },
+    {
+      "name": "xplat.data.permissions.debug",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "Is it in debug mode.",
+      "defaultValue": "false"
+    },
+    {
+      "name": "xplat.data.permissions.includeRex",
+      "type": "java.lang.String",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AuthSearcherConfig",
+      "description": "include DataSource bean name pattern.",
+      "defaultValue": "(.*)"
+    },
+    {
+      "name": "xplat.data.permissions.searcher.name",
+      "type": "java.lang.String",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AuthSearcherConfig",
+      "description": "Auth info searcher name.",
+      "defaultValue": "CONTEXT"
+    },
+    {
+      "name": "xplat.data.permissions.searcher.role",
+      "type": "java.lang.String",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AuthSearcherConfig",
+      "description": "Mock auth role..",
+      "defaultValue": "r1"
+    },
+    {
+      "name": "xplat.data.permissions.searcher.tenant",
+      "type": "java.lang.String",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AuthSearcherConfig",
+      "description": "Mock auth tenant.",
+      "defaultValue": "t1"
+    }
+  ]
+}
