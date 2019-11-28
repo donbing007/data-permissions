@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.permissions.starter.define;
+package com.xforceplus.ultraman.permissions.jdbc.define;
 
 import java.io.*;
 import java.math.BigDecimal;

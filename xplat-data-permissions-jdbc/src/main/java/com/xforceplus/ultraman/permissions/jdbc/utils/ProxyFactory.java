@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.permissions.starter.utils;
+package com.xforceplus.ultraman.permissions.jdbc.utils;
 
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;

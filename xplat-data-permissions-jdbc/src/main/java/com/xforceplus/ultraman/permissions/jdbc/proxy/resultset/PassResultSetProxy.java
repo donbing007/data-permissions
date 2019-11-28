@@ -1,15 +1,14 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset;
+package com.xforceplus.ultraman.permissions.jdbc.proxy.resultset;
 
-import com.xforceplus.ultraman.permissions.starter.utils.ConvertingHelper;
+
+import com.xforceplus.ultraman.permissions.jdbc.utils.ConvertingHelper;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @version 0.1 2019/11/17 22:21

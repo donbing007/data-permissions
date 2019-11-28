@@ -1,11 +1,11 @@
-package com.xforceplus.ultraman.permissions.starter.authorization.impl;
+package com.xforceplus.ultraman.permissions.jdbc.authorization.impl;
 
 import com.xforceplus.tenantsecurity.domain.IAuthorizedUser;
 import com.xforceplus.tenantsecurity.domain.IRole;
 import com.xforceplus.tenantsecurity.domain.UserInfoHolder;
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
-import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
 
 import java.util.Collections;
 import java.util.List;

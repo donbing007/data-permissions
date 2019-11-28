@@ -1,14 +1,14 @@
 package com.xforceplus.ultraman.permissions.starter;
 
-import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
+
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.sql.DriverManager;
 import java.util.regex.Pattern;
 
 /**

@@ -1,12 +1,12 @@
 package com.xforceplus.ultraman.permissions.starter.config;
 
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.authorization.impl.ContextAuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.authorization.impl.MockAuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.client.GrpcRuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.DataSourceInterceptor;
-import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.authorization.impl.ContextAuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.authorization.impl.MockAuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.client.GrpcRuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.StatmentCheckClientGrpc;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -111,5 +111,9 @@ public class AutomaticConfiguration {
     public void setDebug(boolean debug) {
         this.debug = debug;
         DebugStatus.setDebug(debug);
+    }
+
+    public void setIncludeRex(String includeRex) {
+        this.includeRex = includeRex;
     }
 }

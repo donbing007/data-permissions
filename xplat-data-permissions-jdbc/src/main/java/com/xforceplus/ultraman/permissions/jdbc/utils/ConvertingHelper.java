@@ -1,6 +1,7 @@
-package com.xforceplus.ultraman.permissions.starter.utils;
+package com.xforceplus.ultraman.permissions.jdbc.utils;
 
-import com.xforceplus.ultraman.permissions.starter.define.ResultSetInvalidValues;
+
+import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
 
 import java.io.InputStream;
 import java.io.Reader;

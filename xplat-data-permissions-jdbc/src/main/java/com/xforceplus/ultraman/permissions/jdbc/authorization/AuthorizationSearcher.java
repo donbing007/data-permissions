@@ -1,6 +1,5 @@
-package com.xforceplus.ultraman.permissions.starter.authorization;
+package com.xforceplus.ultraman.permissions.jdbc.authorization;
 
-import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 
 /**

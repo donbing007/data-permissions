@@ -1,14 +1,14 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
+package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DenialResultSet;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
+import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
+import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
+import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.DenialResultSet;
-import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.PassResultSetProxy;
-import com.xforceplus.ultraman.permissions.starter.utils.DebugStatus;
-import com.xforceplus.ultraman.permissions.starter.utils.MethodHelper;
-import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

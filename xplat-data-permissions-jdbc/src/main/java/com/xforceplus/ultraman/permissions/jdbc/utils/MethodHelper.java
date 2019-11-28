@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.permissions.starter.utils;
+package com.xforceplus.ultraman.permissions.jdbc.utils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

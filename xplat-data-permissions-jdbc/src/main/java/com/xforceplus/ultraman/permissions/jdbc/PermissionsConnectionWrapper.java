@@ -1,10 +1,11 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc;
+package com.xforceplus.ultraman.permissions.jdbc;
 
-import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.PreparedStatementProxy;
-import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.StatementProxy;
-import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
+
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.PreparedStatementProxy;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.StatementProxy;
+import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 
 import java.sql.*;
 import java.util.Map;

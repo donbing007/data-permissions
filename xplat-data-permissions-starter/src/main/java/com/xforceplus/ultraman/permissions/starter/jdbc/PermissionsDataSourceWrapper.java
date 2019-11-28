@@ -1,7 +1,9 @@
 package com.xforceplus.ultraman.permissions.starter.jdbc;
 
-import com.xforceplus.ultraman.permissions.starter.authorization.AuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
+
+import com.xforceplus.ultraman.permissions.jdbc.PermissionsConnectionWrapper;
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;

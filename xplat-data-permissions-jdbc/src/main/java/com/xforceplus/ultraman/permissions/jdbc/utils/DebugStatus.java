@@ -1,4 +1,4 @@
-package com.xforceplus.ultraman.permissions.starter.utils;
+package com.xforceplus.ultraman.permissions.jdbc.utils;
 
 /**
  * debug 状态帮助.

@@ -24,7 +24,7 @@
     {
       "name": "xplat.data.permissions.includeRex",
       "type": "java.lang.String",
-      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AuthSearcherConfig",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
       "description": "include DataSource bean name pattern.",
       "defaultValue": "(.*)"
     },

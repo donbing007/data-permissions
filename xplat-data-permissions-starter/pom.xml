@@ -14,25 +14,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.xforceplus</groupId>
-            <artifactId>tenant-security-account-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>xplat-data-permissions-pojo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>xplat-data-permissions-transfer</artifactId>
+            <artifactId>xplat-data-permissions-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -75,11 +58,12 @@
         <dependency>
             <groupId>io.perfmark</groupId>
             <artifactId>perfmark-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.errorprone</groupId>
-            <artifactId>error_prone_annotations</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>error_prone_annotations</artifactId>
+                    <groupId>com.google.errorprone</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

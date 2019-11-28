@@ -1,6 +1,7 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset;
+package com.xforceplus.ultraman.permissions.jdbc.proxy.resultset;
 
-import com.xforceplus.ultraman.permissions.starter.define.ResultSetInvalidValues;
+
+import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
 
 import java.io.InputStream;
 import java.io.Reader;
