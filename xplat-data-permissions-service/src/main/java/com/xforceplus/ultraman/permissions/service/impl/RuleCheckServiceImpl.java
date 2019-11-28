@@ -58,7 +58,9 @@ public class RuleCheckServiceImpl implements RuleCheckService {
 
         } finally {
 
-            xdpSqlCheckTotal.increment();
+            if (xdpSqlCheckTotal != null) {
+                xdpSqlCheckTotal.increment();
+            }
         }
 
         Line line = lineFactory.getLine(sql);
