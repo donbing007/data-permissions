@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthorizationSearcherConfig {
 
+    public static final String MOCK_NAME = "MOCK";
+    public static final String CONTEXT_NAME = "CONTEXT";
+
     private String name;
 
     private String role;
@@ -20,9 +23,7 @@ public class AuthorizationSearcherConfig {
     private String tenant;
 
     public AuthorizationSearcherConfig() {
-        this.name = "DEFAULT";
-        this.role = "r1";
-        this.tenant  ="t1";
+        this.name = CONTEXT_NAME;
     }
 
     public String getName() {

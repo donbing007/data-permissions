@@ -66,11 +66,11 @@ public class AutomaticConfiguration {
         AuthorizationSearcher authorizationSearcher;
 
         switch(searcher.getName().toUpperCase()) {
-            case "MOCK": {
+            case AuthorizationSearcherConfig.MOCK_NAME: {
                 authorizationSearcher = new MockAuthorizationSearcher(searcher.getRole(), searcher.getTenant());
                 break;
             }
-            case "DEFAULT": {
+            case AuthorizationSearcherConfig.CONTEXT_NAME: {
                 authorizationSearcher = new ContextAuthorizationSearcher();
                 break;
             }
