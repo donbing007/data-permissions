@@ -42,7 +42,7 @@ public class DataSourceInterceptorTest {
         caseData.keySet().stream().forEach(d -> {
 
             Pack pack = caseData.get(d);
-            DataSourceInterceptor interceptor = new DataSourceInterceptor(pack.includeBeanNames);
+            DataSourceInterceptor interceptor = new DataSourceInterceptor(pack.includeRex);
             Object value = interceptor.postProcessAfterInitialization(d, d.getName());
 
             Assert.assertEquals(pack.expectedReturnClass, value.getClass());
@@ -53,11 +53,11 @@ public class DataSourceInterceptorTest {
 
     static class Pack {
         private Object expectedReturnClass;
-        private String[] includeBeanNames;
+        private String includeRex;
 
-        public Pack(Class expectedReturnClass, String[] includeBeanNames) {
+        public Pack(Class expectedReturnClass, String includeRex) {
             this.expectedReturnClass = expectedReturnClass;
-            this.includeBeanNames = includeBeanNames;
+            this.includeRex = includeRex;
         }
     }
 
@@ -68,7 +68,7 @@ public class DataSourceInterceptorTest {
         data.put(new TestDataSource("t0"),
             new Pack(
                 PermissionsDataSourceWrapper.class,
-                new String[] {"*"}
+                "(.*)"
             )
         );
 
@@ -76,23 +76,15 @@ public class DataSourceInterceptorTest {
         data.put(new TestDataSource("t1"),
             new Pack(
                 TestDataSource.class,
-                new String[] {"t2","t3"}
+                "(t2.*)"
             )
         );
 
-        // 包含,饱以老拳.
+        // 包含.
         data.put(new TestDataSource("t2"),
             new Pack(
                 PermissionsDataSourceWrapper.class,
-                new String[] {"t2","t3"}
-            )
-        );
-
-        // 包含,饱以老拳.
-        data.put(new TestDataSource("t3"),
-            new Pack(
-                PermissionsDataSourceWrapper.class,
-                new String[] {"*","t2","t3"}
+                "t2.*"
             )
         );
 

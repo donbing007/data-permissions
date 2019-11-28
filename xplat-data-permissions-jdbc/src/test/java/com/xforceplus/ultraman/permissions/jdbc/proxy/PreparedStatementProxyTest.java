@@ -1,21 +1,23 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc.proxy;
+package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DenialResultSet;
+import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
-import com.xforceplus.ultraman.permissions.starter.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.jdbc.proxy.resultset.DenialResultSet;
-import com.xforceplus.ultraman.permissions.starter.utils.ProxyFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,8 +29,8 @@ import static org.mockito.Mockito.when;
  * PreparedStatementProxy Tester.
  *
  * @author <Authors name>
- * @version 1.0 11/19/2019
- * @since <pre>Nov 19, 2019</pre>
+ * @version 1.0 11/28/2019
+ * @since <pre>Nov 28, 2019</pre>
  */
 public class PreparedStatementProxyTest {
 
@@ -80,9 +82,9 @@ public class PreparedStatementProxyTest {
                 }
 
                 if (value == null) {
-                    Assert.assertNull(sql,pack.expectedValueClass);
+                    Assert.assertNull(sql, pack.expectedValueClass);
                 } else {
-                    Assert.assertTrue(sql,pack.expectedValueClass.isInstance(value));
+                    Assert.assertTrue(sql, pack.expectedValueClass.isInstance(value));
                 }
             }
         });
@@ -107,8 +109,8 @@ public class PreparedStatementProxyTest {
             new Pack(
                 new CheckResult(CheckStatus.DENIAL, new SqlChange()),
                 sql -> null,
-                PreparedStatement.class.getMethod("setString", new Class[]{Integer.TYPE, String.class }),
-                new Object[]{1,"test"},
+                PreparedStatement.class.getMethod("setString", new Class[]{Integer.TYPE, String.class}),
+                new Object[]{1, "test"},
                 null,
                 null
             )
@@ -120,7 +122,7 @@ public class PreparedStatementProxyTest {
                 sql -> {
                     return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class, (proxy, method, args) -> {
                         if (method.getReturnType().equals(ResultSet.class)) {
-                            return ProxyFactory.createInterfactProxy(ResultSet.class,new InvocationHandler() {
+                            return ProxyFactory.createInterfactProxy(ResultSet.class, new InvocationHandler() {
 
                                 @Override
                                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
