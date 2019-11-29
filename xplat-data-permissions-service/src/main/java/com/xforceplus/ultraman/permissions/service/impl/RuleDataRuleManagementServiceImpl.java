@@ -136,7 +136,7 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     @Override
     public DataRuleManagementResult list(Authorization authorization, String entity, Continuation continuation) {
         DataScopeSubConditionExample example = new DataScopeSubConditionExample();
-        example.setOrderByClause("`conditions_id` asc, `index` asc");
+        example.setOrderByClause("`id` asc, `conditions_id` asc, `index` asc");
 
         DataScopeSubConditionExample.Criteria criteria = example.createCriteria();
         if (entity != null) {

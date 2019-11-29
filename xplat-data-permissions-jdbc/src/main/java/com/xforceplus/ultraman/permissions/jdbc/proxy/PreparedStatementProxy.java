@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DenialResultSet;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
@@ -21,8 +21,8 @@ import java.sql.SQLException;
 /**
  * 处理 PrepareStatemtn 预处理词句.
  *
+ * @author dongbin
  * @version 0.1 2019/11/17 23:11
- * @auth dongbin
  * @since 1.8
  */
 public class PreparedStatementProxy extends AbstractStatementProxy implements InvocationHandler {
@@ -65,7 +65,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
             case PASS: {
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}" , sql);
+                    logger.info("Actual: {}", sql);
                 }
 
                 sourcePreparedStatement = maker.make(sql);
@@ -78,7 +78,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                 }
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}" , newSql);
+                    logger.info("Actual: {}", newSql);
                 }
 
                 sourcePreparedStatement = maker.make(newSql);
@@ -87,9 +87,10 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
             case DENIAL: {
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: DENIAL");
+                    logger.info("Actual: DENIAL, cause {}.", checkResult.getMessage());
                 }
 
+                sourcePreparedStatement = maker.make(sql);
                 refuse = true;
                 break;
             }
@@ -117,13 +118,15 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                 if (method.getReturnType().equals(Integer.TYPE)) {
                     return 0;
                 } else {
-                    return DenialResultSet.getInstance();
+                    ResultSet resultSet = (ResultSet) method.invoke(sourcePreparedStatement, args);
+                    return ProxyFactory.createInterfaceProxy(ResultSet.class, new DeniaResultSetProxy(resultSet));
+
                 }
             } else {
 
                 Object value = method.invoke(sourcePreparedStatement, args);
                 if (method.getReturnType().equals(ResultSet.class)) {
-                    return ProxyFactory.createInterfaceProxy(value,
+                    return ProxyFactory.createInterfaceProxy(ResultSet.class,
                         new PassResultSetProxy(checkResult.findFirst().getBlackList(), (ResultSet) value));
                 } else {
 

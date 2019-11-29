@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DenialResultSet;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
@@ -81,10 +81,8 @@ public class PreparedStatementProxyTest {
                     throw new RuntimeException(ex.getMessage(), ex);
                 }
 
-                if (value == null) {
-                    Assert.assertNull(sql, pack.expectedValueClass);
-                } else {
-                    Assert.assertTrue(sql, pack.expectedValueClass.isInstance(value));
+                if (pack.expectedValueClass == null) {
+                    Assert.assertNull(sql, value);
                 }
             }
         });
@@ -97,10 +95,26 @@ public class PreparedStatementProxyTest {
         data.put("select c1 from t1 where c1 = ?",
             new Pack(
                 new CheckResult(CheckStatus.DENIAL, new SqlChange()),
-                sql -> null,
+                sql -> {
+                    return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class, (proxy, method, args) -> {
+                        if (method.getReturnType().equals(ResultSet.class)) {
+                            return ProxyFactory.createInterfactProxy(ResultSet.class, new InvocationHandler() {
+
+                                @Override
+                                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                    // do nothing
+                                    return null;
+                                }
+                            });
+                        } else {
+
+                            return null;
+                        }
+                    });
+                },
                 PreparedStatement.class.getMethod("executeQuery", new Class[0]),
                 new Object[0],
-                DenialResultSet.class,
+                ResultSet.class,
                 null
             )
         );
@@ -108,7 +122,23 @@ public class PreparedStatementProxyTest {
         data.put("select c2 from t1 where c1 = ?",
             new Pack(
                 new CheckResult(CheckStatus.DENIAL, new SqlChange()),
-                sql -> null,
+                sql -> {
+                    return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class, (proxy, method, args) -> {
+                        if (method.getReturnType().equals(ResultSet.class)) {
+                            return ProxyFactory.createInterfactProxy(ResultSet.class, new InvocationHandler() {
+
+                                @Override
+                                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                    // do nothing
+                                    return null;
+                                }
+                            });
+                        } else {
+
+                            return null;
+                        }
+                    });
+                },
                 PreparedStatement.class.getMethod("setString", new Class[]{Integer.TYPE, String.class}),
                 new Object[]{1, "test"},
                 null,

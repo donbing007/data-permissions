@@ -4,8 +4,8 @@ import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 
 /**
+ * @author dongbin
  * @version 0.1 2019/11/19 10:22
- * @auth dongbin
  * @since 1.8
  */
 public class AbstractStatementProxy {

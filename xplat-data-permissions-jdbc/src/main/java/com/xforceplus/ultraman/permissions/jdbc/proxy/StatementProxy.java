@@ -1,7 +1,7 @@
 package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DenialResultSet;
+import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
@@ -25,8 +25,8 @@ import java.sql.Statement;
  * int executeUpdate(String sql) throws SQLException;
  * 拦截其方法的执行,在执行之前进行权限验证.
  *
+ * @author dongbin
  * @version 0.1 2019/11/15 17:11
- * @auth dongbin
  * @see Statement
  * @since 1.8
  */
@@ -37,7 +37,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
     private Statement statement;
 
     public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement) {
-        super(client,authorizations);
+        super(client, authorizations);
         this.statement = statement;
     }
 
@@ -76,7 +76,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                 ResultSet target = (ResultSet) method.invoke(statement, args);
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}" , sql);
+                    logger.info("Actual: {}", sql);
                 }
 
                 return ProxyFactory.createInterfaceProxy(
@@ -91,24 +91,25 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                 }
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}" , newSql);
+                    logger.info("Actual: {}", newSql);
                 }
 
                 ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.findFirst().getNewSql()});
                 return ProxyFactory.createInterfaceProxy(
-                    target,
+                    ResultSet.class,
                     new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
             case DENIAL: {
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: DENIAL");
+                    logger.info("Actual: DENIAL, cause {}", checkResult.getMessage());
                 }
 
                 if (Integer.TYPE.equals(method.getReturnType())) {
                     return 0;
                 } else {
-                    return DenialResultSet.getInstance();
+                    ResultSet target = (ResultSet) method.invoke(statement, new Object[]{sql});
+                    return ProxyFactory.createInterfaceProxy(ResultSet.class, new DeniaResultSetProxy(target));
                 }
             }
             case ERROR: {
