@@ -35,7 +35,7 @@ public class PermissionsConnectionWrapper implements Connection {
     public Statement createStatement() throws SQLException {
         Statement source = original.createStatement();
 
-        return (Statement) ProxyFactory.createInterfaceProxy(
+        return (Statement) ProxyFactory.createInterfacetProxyFromObject(
             source, new StatementProxy(client, authorizationSearcher.search(), source));
     }
 
@@ -60,7 +60,7 @@ public class PermissionsConnectionWrapper implements Connection {
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency);
 
-        return (Statement) ProxyFactory.createInterfaceProxy(
+        return (Statement) ProxyFactory.createInterfacetProxyFromObject(
             source, new StatementProxy(client, authorizationSearcher.search(), source));
     }
 
@@ -85,7 +85,7 @@ public class PermissionsConnectionWrapper implements Connection {
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
 
-        return (Statement) ProxyFactory.createInterfaceProxy(
+        return (Statement) ProxyFactory.createInterfacetProxyFromObject(
             source, new StatementProxy(client, authorizationSearcher.search(), source));
     }
 

@@ -1,10 +1,13 @@
 package com.xforceplus.ultraman.permissions.jdbc.utils;
 
+import com.xforceplus.ultraman.permissions.pojo.result.Result;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.ResultSet;
 
 /**
  * 代理工厂,提供接口和实类两种方式来构造一个代理对象.
@@ -20,7 +23,7 @@ public class ProxyFactory {
      * @param handle 拦截对象.
      * @return 已经被代理过的对象.
      */
-    public static Object createInterfaceProxy(Object target, InvocationHandler handle) {
+    public static Object createInterfacetProxyFromObject(Object target, InvocationHandler handle) {
         return Proxy.newProxyInstance(
             target.getClass().getClassLoader(),
             target.getClass().getInterfaces(),
@@ -33,9 +36,7 @@ public class ProxyFactory {
      * @param handle 拦截对象的实现。
      * @return 代理对象。
      */
-    public static Object createInterfactProxy(
-        Class interfaceType,
-        InvocationHandler handle) {
+    public static Object createInterfactProxy(Class interfaceType, InvocationHandler handle) {
         return ProxyFactory.createInterfactProxy(
             interfaceType.getClassLoader(),
             interfaceType,
@@ -49,10 +50,7 @@ public class ProxyFactory {
      * @param handle 拦截对象的实现。
      * @return 代理对象。
      */
-    public static Object createInterfactProxy(
-        ClassLoader classLoader,
-        Class interfaceType,
-        InvocationHandler handle) {
+    public static Object createInterfactProxy(ClassLoader classLoader, Class interfaceType, InvocationHandler handle) {
         return Proxy.newProxyInstance(
             classLoader,
             new Class[]{interfaceType},
@@ -68,7 +66,7 @@ public class ProxyFactory {
      * @param handle 拦截对象.
      * @return 目标对象的子类.
      */
-    public static Object createObjectProxy(Object target, MethodInterceptor handle) {
+    public static Object createObjectProxyFromObject(Object target, MethodInterceptor handle) {
         return ProxyFactory.createObjectProxy(
             target.getClass().getClassLoader(),
             target.getClass(),

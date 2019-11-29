@@ -119,14 +119,17 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                     return 0;
                 } else {
                     ResultSet resultSet = (ResultSet) method.invoke(sourcePreparedStatement, args);
-                    return ProxyFactory.createInterfaceProxy(ResultSet.class, new DeniaResultSetProxy(resultSet));
+                    return ProxyFactory.createInterfactProxy(
+                        ResultSet.class,
+                        new DeniaResultSetProxy(resultSet)
+                    );
 
                 }
             } else {
 
                 Object value = method.invoke(sourcePreparedStatement, args);
                 if (method.getReturnType().equals(ResultSet.class)) {
-                    return ProxyFactory.createInterfaceProxy(ResultSet.class,
+                    return ProxyFactory.createInterfactProxy(ResultSet.class,
                         new PassResultSetProxy(checkResult.findFirst().getBlackList(), (ResultSet) value));
                 } else {
 

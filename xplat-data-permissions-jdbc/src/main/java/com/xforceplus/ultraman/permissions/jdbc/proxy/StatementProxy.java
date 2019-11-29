@@ -53,7 +53,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
     }
 
     public Statement getStatement() {
-        return statement;
+        return null;
     }
 
     private Object doExecute(Method method, Object[] args) throws Throwable {
@@ -79,7 +79,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     logger.info("Actual: {}", sql);
                 }
 
-                return ProxyFactory.createInterfaceProxy(
+                return ProxyFactory.createInterfacetProxyFromObject(
                     target,
                     new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
@@ -95,7 +95,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                 }
 
                 ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.findFirst().getNewSql()});
-                return ProxyFactory.createInterfaceProxy(
+                return ProxyFactory.createInterfactProxy(
                     ResultSet.class,
                     new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
             }
@@ -109,7 +109,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     return 0;
                 } else {
                     ResultSet target = (ResultSet) method.invoke(statement, new Object[]{sql});
-                    return ProxyFactory.createInterfaceProxy(ResultSet.class, new DeniaResultSetProxy(target));
+                    return ProxyFactory.createInterfactProxy(ResultSet.class, new DeniaResultSetProxy(target));
                 }
             }
             case ERROR: {
