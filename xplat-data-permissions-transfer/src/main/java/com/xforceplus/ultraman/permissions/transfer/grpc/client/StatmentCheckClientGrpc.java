@@ -40,7 +40,7 @@ public class StatmentCheckClientGrpc {
 
         stub = StatmentCheckServiceGrpc.newBlockingStub(channel);
 
-        logger.info("Statment check client start!");
+        logger.info("Xplat-data-permissions-client successfully connects to {}:{}.!",host,port);
     }
 
     public void destroy() throws InterruptedException {
