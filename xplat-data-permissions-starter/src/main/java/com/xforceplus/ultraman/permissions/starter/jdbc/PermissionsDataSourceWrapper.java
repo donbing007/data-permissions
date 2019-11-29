@@ -75,4 +75,8 @@ public class PermissionsDataSourceWrapper implements DataSource {
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return original.getParentLogger();
     }
+
+    public DataSource getOriginal() {
+        return original;
+    }
 }

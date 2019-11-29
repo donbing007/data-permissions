@@ -1,5 +1,10 @@
 package com.xforceplus.ultraman.permissions.starter;
 
+import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
+import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
 import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,30 +13,27 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.context.ApplicationContext;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * DataSourceInterceptor Tester.
+ * DataSourceWrapper Tester.
  *
  * @author <Authors name>
- * @version 1.0 11/28/2019
- * @since <pre>Nov 28, 2019</pre>
+ * @version 1.0 11/29/2019
+ * @since <pre>Nov 29, 2019</pre>
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DataSourceWrapper.class)
-public class DataSourceInterceptorTest {
+public class DataSourceWrapperTest {
 
     @Before
     public void before() throws Exception {
@@ -42,68 +44,38 @@ public class DataSourceInterceptorTest {
     }
 
     /**
-     * Method: postProcessAfterInitialization(Object bean, String beanName)
+     * Method: wrap(DataSource dataSource)
      */
     @Test
-    public void testPostProcessAfterInitialization() throws Exception {
-        Map<TestDataSource, Pack> caseData = buildCase();
+    public void testWrap() throws Exception {
 
-        mockStatic(DataSourceWrapper.class);
-        caseData.keySet().stream().forEach(d -> {
+        DataSourceWrapper wrapper = new DataSourceWrapper();
 
-            Pack pack = caseData.get(d);
-            DataSourceInterceptor interceptor = new DataSourceInterceptor(pack.includeRex);
-
-
-            when(DataSourceWrapper.wrap(d)).thenReturn((DataSource) pack.expectedReturnValue);
-            Object value = interceptor.postProcessAfterInitialization(d, d.getName());
-
-            Assert.assertEquals(pack.expectedReturnValue.getClass(), value.getClass());
-
+        ApplicationContext context = mock(ApplicationContext.class);
+        when(context.getBean(BeanNameDefine.RULE_CHECK_CLIENT)).thenReturn(new RuleCheckServiceClient() {
+            @Override
+            public CheckResult check(String sql, Authorizations authorizations) {
+                return null;
+            }
+        });
+        when(context.getBean(BeanNameDefine.AUTHORIZATION_SEARCHER)).thenReturn(new AuthorizationSearcher() {
+            @Override
+            public Authorizations search() {
+                return null;
+            }
         });
 
+        wrapper.setApplicationContext(context);
+        DataSource dataSource  = wrapper.wrap(new TestDataSource("d1"));
+        Assert.assertEquals(PermissionsDataSourceWrapper.class, dataSource.getClass());
+
+        dataSource  = wrapper.wrap(
+            new PermissionsDataSourceWrapper(null, null, new TestDataSource("d2")));
+        Assert.assertEquals(PermissionsDataSourceWrapper.class, dataSource.getClass());
+        Assert.assertEquals("d2",
+            ((TestDataSource)((PermissionsDataSourceWrapper) dataSource).getOriginal()).getName());
+
     }
-
-    static class Pack {
-        private DataSource expectedReturnValue;
-        private String includeRex;
-
-        public Pack(DataSource expectedReturnValue, String includeRex) {
-            this.expectedReturnValue = expectedReturnValue;
-            this.includeRex = includeRex;
-        }
-    }
-
-    private Map<TestDataSource, Pack> buildCase() {
-        Map<TestDataSource, Pack> data = new LinkedHashMap<>();
-
-        // 包含所有
-        data.put(new TestDataSource("t0"),
-            new Pack(
-                new PermissionsDataSourceWrapper(null,null, new TestDataSource("t0")),
-                "(.*)"
-            )
-        );
-
-        // 不包含,原样返回.
-        data.put(new TestDataSource("t1"),
-            new Pack(
-                new TestDataSource("t1"),
-                "(t2.*)"
-            )
-        );
-
-        // 包含.
-        data.put(new TestDataSource("t2"),
-            new Pack(
-                new PermissionsDataSourceWrapper(null, null, new TestDataSource("t2")),
-                "t2.*"
-            )
-        );
-
-        return data;
-    }
-
 
     static class TestDataSource implements DataSource {
 
@@ -120,8 +92,8 @@ public class DataSourceInterceptorTest {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof TestDataSource)) return false;
-            TestDataSource that = (TestDataSource) o;
+            if (!(o instanceof DataSourceInterceptorTest.TestDataSource)) return false;
+            DataSourceInterceptorTest.TestDataSource that = (DataSourceInterceptorTest.TestDataSource) o;
             return Objects.equals(getName(), that.getName());
         }
 
@@ -175,4 +147,6 @@ public class DataSourceInterceptorTest {
             return null;
         }
     }
-}
+
+
+} 

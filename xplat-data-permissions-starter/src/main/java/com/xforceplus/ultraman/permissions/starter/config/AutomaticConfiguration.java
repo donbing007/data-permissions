@@ -7,16 +7,19 @@ import com.xforceplus.ultraman.permissions.jdbc.client.GrpcRuleCheckServiceClien
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.DataSourceInterceptor;
+import com.xforceplus.ultraman.permissions.starter.DataSourceWrapper;
+import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.StatmentCheckClientGrpc;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 /**
- * @version 0.1 2019/10/23 14:31
  * @author dongbin
+ * @version 0.1 2019/10/23 14:31
  * @since 1.8
  */
 @Configuration
@@ -58,16 +61,16 @@ public class AutomaticConfiguration {
         return client;
     }
 
-    @Bean
+    @Bean(BeanNameDefine.RULE_CHECK_CLIENT)
     public RuleCheckServiceClient ruleCheckServiceClient() {
         return new GrpcRuleCheckServiceClient();
     }
 
-    @Bean
+    @Bean(BeanNameDefine.AUTHORIZATION_SEARCHER)
     public AuthorizationSearcher authorizationSearcher() {
         AuthorizationSearcher authorizationSearcher;
 
-        switch(searcherConfig.getName().toUpperCase()) {
+        switch (searcherConfig.getName().toUpperCase()) {
             case AuthSearcherConfig.MOCK_NAME: {
                 authorizationSearcher = new MockAuthorizationSearcher(searcherConfig.getRole(), searcherConfig.getTenant());
                 break;
@@ -84,8 +87,18 @@ public class AutomaticConfiguration {
     }
 
     @Bean
+    @DependsOn({
+        BeanNameDefine.DATA_SOURCE_WRAPPER,
+        BeanNameDefine.RULE_CHECK_CLIENT,
+        BeanNameDefine.AUTHORIZATION_SEARCHER
+    })
     public DataSourceInterceptor dataSourceInterceptor() {
         return new DataSourceInterceptor(includeRex);
+    }
+
+    @Bean(BeanNameDefine.DATA_SOURCE_WRAPPER)
+    public DataSourceWrapper dataSourceWrapper() {
+        return new DataSourceWrapper();
     }
 
     public void setHost(String host) {

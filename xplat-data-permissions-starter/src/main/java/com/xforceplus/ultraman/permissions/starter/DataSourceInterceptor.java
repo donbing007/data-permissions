@@ -1,9 +1,6 @@
 package com.xforceplus.ultraman.permissions.starter;
 
 
-import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
-import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
-import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -19,12 +16,6 @@ import java.util.regex.Pattern;
  */
 public class DataSourceInterceptor implements BeanPostProcessor {
 
-    @Resource
-    private RuleCheckServiceClient client;
-
-    @Resource
-    private AuthorizationSearcher authorizationSearcher;
-
     private String includeRex;
 
     public DataSourceInterceptor(String includeRex) {
@@ -33,10 +24,14 @@ public class DataSourceInterceptor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+
+
         if (DataSource.class.isInstance(bean)) {
 
             if (isInclude(beanName)) {
-                return new PermissionsDataSourceWrapper(client, authorizationSearcher, (DataSource) bean);
+
+                return DataSourceWrapper.wrap((DataSource) bean);
+
             }
         }
 
@@ -47,4 +42,5 @@ public class DataSourceInterceptor implements BeanPostProcessor {
     private boolean isInclude(String beanName) {
         return Pattern.matches(includeRex, beanName);
     }
+
 }
