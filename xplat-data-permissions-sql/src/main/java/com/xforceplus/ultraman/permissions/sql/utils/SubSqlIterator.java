@@ -3,6 +3,8 @@ package com.xforceplus.ultraman.permissions.sql.utils;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.processor.*;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SubSqlAbility;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 
 import java.util.*;
 

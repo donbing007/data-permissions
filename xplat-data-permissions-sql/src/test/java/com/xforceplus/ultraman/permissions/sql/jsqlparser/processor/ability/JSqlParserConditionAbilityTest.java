@@ -224,7 +224,7 @@ public class JSqlParserConditionAbilityTest {
 
         data.put("select * from t1 where c1=10 and c2='10' or c3 is null",
             new RemoveConditionPack(
-                new Condition(new Field("c3"), ConditionOperator.IS_NUll, NullValue.getInstance()),
+                new Condition(new Field("c3"), ConditionOperator.IS, NullValue.getInstance()),
                 CCJSqlParserUtil.parse("select * from t1 where c1=10 and c2='10'").toString()));
 
         data.put("select * from t1 where c1=10 and c2='10' or c3 is null and c4=c1+1",
@@ -545,6 +545,10 @@ public class JSqlParserConditionAbilityTest {
                     ConditionOperator.EQUALS, new StringValue("test"))
             )
         );
+
+        data.put("select c1 from t1 where c1 is not null",
+            Arrays.asList(
+                new Condition(new Field("c1"), ConditionOperator.IS_NOT, NullValue.getInstance())));
 
         return data;
     }

@@ -17,7 +17,8 @@ public enum ConditionOperator {
     GREATER_THAN_EQUALS(">="),
     MINOR_THAN("<"),
     MINOR_THAN_EQUALS("<="),
-    IS_NUll("IS NULL");
+    IS_NOT("IS NOT"),
+    IS("IS");
 
     private String symbol;
 

@@ -182,7 +182,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
                     buildCondition(
                         expr.getLeftExpression(),
                         Arrays.asList(NullValue.getInstance()),
-                        ConditionOperator.IS_NUll));
+                        expr.isNot() ? ConditionOperator.IS_NOT : ConditionOperator.IS));
             }
 
             @Override
