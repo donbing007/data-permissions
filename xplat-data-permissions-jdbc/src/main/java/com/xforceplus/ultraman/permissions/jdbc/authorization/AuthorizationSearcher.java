@@ -5,7 +5,7 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 /**
  * 授权信息搜索定义.
  * @version 0.1 2019/11/15 17:16
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface AuthorizationSearcher {

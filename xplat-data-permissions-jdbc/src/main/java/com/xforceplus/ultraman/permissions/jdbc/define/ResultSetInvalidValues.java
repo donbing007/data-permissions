@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * @version 0.1 2019/11/16 23:10
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class ResultSetInvalidValues {

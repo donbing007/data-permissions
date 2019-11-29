@@ -6,7 +6,7 @@ import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 /**
  * 验证客户端.
  * @version 0.1 2019/11/15 14:24
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public interface RuleCheckServiceClient {

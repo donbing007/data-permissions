@@ -11,7 +11,7 @@ import java.sql.*;
 /**
  * 转换帮助类.
  * @version 0.1 2019/11/17 21:39
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class ConvertingHelper {

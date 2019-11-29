@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * 依赖用户中心的授权信息上下文传递.
  * 从线程上下文中拿取授权信息.
  * @version 0.1 2019/11/19 15:38
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class ContextAuthorizationSearcher implements AuthorizationSearcher {

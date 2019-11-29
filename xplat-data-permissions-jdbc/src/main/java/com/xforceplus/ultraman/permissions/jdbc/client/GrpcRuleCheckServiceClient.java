@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 /**
  * grpc 实现.
  * @version 0.1 2019/11/15 14:42
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class GrpcRuleCheckServiceClient implements RuleCheckServiceClient {

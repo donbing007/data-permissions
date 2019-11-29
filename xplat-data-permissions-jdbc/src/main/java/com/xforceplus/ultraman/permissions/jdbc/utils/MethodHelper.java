@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 /**
  * @version 0.1 2019/11/18 16:43
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class MethodHelper {
