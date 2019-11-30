@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class GrpcServerBuilderConfig extends GRpcServerBuilderConfigurer {
 
-    @Resource
+    @Resource(name = "grpcExecutor")
     private Executor executor;
 
     @Resource

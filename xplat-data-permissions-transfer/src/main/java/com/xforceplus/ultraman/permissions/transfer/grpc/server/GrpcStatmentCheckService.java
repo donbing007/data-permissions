@@ -9,6 +9,7 @@ import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrp
 import com.xforceplus.ultraman.permissions.transfer.grpc.generate.StatmentCheckServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author dongbin
  * @since 1.8
  */
+@ConditionalOnProperty(prefix = "grpc", name = "enabled", havingValue = "true")
 @GRpcService
 public class GrpcStatmentCheckService extends StatmentCheckServiceGrpc.StatmentCheckServiceImplBase {
 

@@ -29,7 +29,7 @@ public class ExecutorConfig {
         this.maxTaskSize = maxTaskSize;
     }
 
-    @Bean
+    @Bean("grpcExecutor")
     public Executor executor() {
         int cpuCore = Runtime.getRuntime().availableProcessors();
 
