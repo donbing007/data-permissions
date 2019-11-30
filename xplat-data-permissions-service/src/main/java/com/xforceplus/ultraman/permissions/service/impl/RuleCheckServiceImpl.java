@@ -13,7 +13,6 @@ import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
-import io.micrometer.core.instrument.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,17 +24,14 @@ import java.util.List;
 /**
  * sql 权限校验服务实现.
  *
- * @version 0.1 2019/11/13 15:20
  * @author dongbin
+ * @version 0.1 2019/11/13 15:20
  * @since 1.8
  */
 @Service
 public class RuleCheckServiceImpl implements RuleCheckService {
 
     final Logger logger = LoggerFactory.getLogger(RuleCheckServiceImpl.class);
-
-    @Resource(name = "xdpSqlCheckTotal")
-    private Counter xdpSqlCheckTotal;
 
     @Resource
     private SqlParser sqlParser;
@@ -56,11 +52,6 @@ public class RuleCheckServiceImpl implements RuleCheckService {
 
             return new CheckResult(CheckStatus.ERROR);
 
-        } finally {
-
-            if (xdpSqlCheckTotal != null) {
-                xdpSqlCheckTotal.increment();
-            }
         }
 
         Line line = lineFactory.getLine(sql);
@@ -105,7 +96,7 @@ public class RuleCheckServiceImpl implements RuleCheckService {
                 }
 
                 if (change == null) {
-                    change = new SqlChange(null,blackList);
+                    change = new SqlChange(null, blackList);
                 } else {
                     change.setBlackList(blackList);
                 }
