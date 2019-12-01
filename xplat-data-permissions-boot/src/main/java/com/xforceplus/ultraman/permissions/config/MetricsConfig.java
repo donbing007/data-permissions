@@ -34,10 +34,6 @@ public class MetricsConfig implements SchedulingConfigurer {
      */
     private static final String HANDLED_TOTAL_NAME = "xdp.check.handled.total";
     /**
-     * counter 完成请求的各状态次数.
-     */
-    private static final String HANDLED_STATUS_TOTAL_NAME = "xdp.check.handled.status.total";
-    /**
      * counter rpc 状态统计.
      */
     private static final String RPC_STATUS_TOTAL_NAME = "xdp.check.rpc.status.total";
@@ -85,8 +81,6 @@ public class MetricsConfig implements SchedulingConfigurer {
 
                         handledLatency.record(latency);
 
-                        Metrics.counter(HANDLED_TOTAL_NAME).increment();
-
                         Metrics.counter(RPC_STATUS_TOTAL_NAME, "status", status.getCode().name()).increment();
 
                         super.close(status, trailers);
@@ -98,7 +92,7 @@ public class MetricsConfig implements SchedulingConfigurer {
                             if (ForStatmentGrpc.StatmentResult.class.equals(message.getClass())) {
                                 ForStatmentGrpc.StatmentResult result = (ForStatmentGrpc.StatmentResult) message;
                                 CheckStatus status = CheckStatus.getInstance(result.getStatus());
-                                Metrics.counter(HANDLED_STATUS_TOTAL_NAME, "status", status.name()).increment();
+                                Metrics.counter(HANDLED_TOTAL_NAME, "status", status.name()).increment();
                             }
                         } finally {
                             super.sendMessage(message);
