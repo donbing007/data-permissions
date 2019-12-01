@@ -5,15 +5,14 @@ import com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrp
 import io.grpc.*;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import javax.annotation.Resource;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 指标配置.
@@ -23,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 1.8
  */
 @Configuration
-public class MetricsConfig implements SchedulingConfigurer {
+public class MetricsConfig {
 
     /**
      * counter 接收到的检查请求次数.
@@ -41,17 +40,9 @@ public class MetricsConfig implements SchedulingConfigurer {
      * summary 处理延时直方图.
      */
     private static final String HANDLED_LATENCY_SECONDS_NAME = "xdp.check.handled_latency_seconds";
-    /**
-     * gauge 当前活跃工作者数量.
-     */
-    private static final String ACTIVE_WORKER = "xdp.check.active.worker";
-    /**
-     * gauge 堆积的任务数量.
-     */
-    private static final String STACKING_TASK = "xdp.check.stacking.count";
 
     @Resource(name = "grpcExecutor")
-    private Executor grpcExecutor;
+    private ExecutorService grpcExecutor;
 
     @Bean
     @GRpcGlobalInterceptor
@@ -105,17 +96,10 @@ public class MetricsConfig implements SchedulingConfigurer {
         };
     }
 
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        if (grpcExecutor != null) {
-
-            taskRegistrar.addFixedDelayTask(() -> {
-
-                if (ThreadPoolExecutor.class.isInstance(grpcExecutor)) {
-                    Metrics.gauge(ACTIVE_WORKER, ((ThreadPoolExecutor) grpcExecutor).getActiveCount());
-                    Metrics.gauge(STACKING_TASK, ((ThreadPoolExecutor) grpcExecutor).getQueue().size());
-                }
-            }, 30);
-        }
+    @Bean
+    public ExecutorServiceMetrics executorServiceMetrics() {
+        ExecutorServiceMetrics esm = new ExecutorServiceMetrics(grpcExecutor, "xdp", Tags.empty());
+        esm.bindTo(Metrics.globalRegistry);
+        return esm;
     }
 }

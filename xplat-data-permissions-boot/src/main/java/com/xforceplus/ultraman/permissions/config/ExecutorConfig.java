@@ -30,7 +30,7 @@ public class ExecutorConfig {
     }
 
     @Bean("grpcExecutor")
-    public Executor executor() {
+    public ExecutorService executor() {
         int cpuCore = Runtime.getRuntime().availableProcessors();
 
         int core = 0, max = 0;

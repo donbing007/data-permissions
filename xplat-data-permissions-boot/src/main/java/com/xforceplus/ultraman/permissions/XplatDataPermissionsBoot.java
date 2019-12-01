@@ -19,7 +19,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableConfigurationProperties
 @EnableSwagger2Doc
-@EnableScheduling
 public class XplatDataPermissionsBoot {
 
     public static void main(String[] args) throws Exception {
