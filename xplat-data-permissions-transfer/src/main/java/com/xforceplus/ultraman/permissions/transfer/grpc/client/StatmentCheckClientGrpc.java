@@ -26,6 +26,7 @@ public class StatmentCheckClientGrpc {
     private int port = 8206;
     private long heartbeatIntervalSeconds = 30;
     private long heartbeatTimeoutSeconds = 30;
+    private long readTimeMs = 200L;
 
     private ManagedChannel channel;
     private StatmentCheckServiceGrpc.StatmentCheckServiceBlockingStub stub;
@@ -57,22 +58,46 @@ public class StatmentCheckClientGrpc {
                 .setRole(authorization.getRole()).setTenant(authorization.getTenant()).build());
         }
 
-        return stub.check(builder.build());
+        return stub.withDeadlineAfter(readTimeMs, TimeUnit.MILLISECONDS).check(builder.build());
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public void setHost(String host) {
         this.host = host;
     }
 
+    public int getPort() {
+        return port;
+    }
+
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public long getHeartbeatIntervalSeconds() {
+        return heartbeatIntervalSeconds;
     }
 
     public void setHeartbeatIntervalSeconds(long heartbeatIntervalSeconds) {
         this.heartbeatIntervalSeconds = heartbeatIntervalSeconds;
     }
 
+    public long getHeartbeatTimeoutSeconds() {
+        return heartbeatTimeoutSeconds;
+    }
+
     public void setHeartbeatTimeoutSeconds(long heartbeatTimeoutSeconds) {
         this.heartbeatTimeoutSeconds = heartbeatTimeoutSeconds;
+    }
+
+    public long getReadTimeMs() {
+        return readTimeMs;
+    }
+
+    public void setReadTimeMs(long readTimeMs) {
+        this.readTimeMs = readTimeMs;
     }
 }

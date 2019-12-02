@@ -38,6 +38,8 @@ public class AutomaticConfiguration {
 
     private long heartbeatIntervalSeconds;
 
+    private long readTimeoutMs;
+
     private String includeRex = "(.*)";
 
     private boolean debug;
@@ -58,6 +60,10 @@ public class AutomaticConfiguration {
         }
         if (heartbeatIntervalSeconds > 0) {
             client.setHeartbeatIntervalSeconds(heartbeatIntervalSeconds);
+        }
+
+        if (readTimeoutMs > 0) {
+            client.setReadTimeMs(readTimeoutMs);
         }
 
         return client;
@@ -131,5 +137,9 @@ public class AutomaticConfiguration {
 
     public void setIncludeRex(String includeRex) {
         this.includeRex = includeRex;
+    }
+
+    public void setReadTimeoutMs(long readTimeoutMs) {
+        this.readTimeoutMs = readTimeoutMs;
     }
 }
