@@ -25,6 +25,7 @@ public class GrpcRuleCheckServiceClient implements RuleCheckServiceClient {
 
         ForStatmentGrpc.StatmentResult statmentResult = client.check(sql, authorizations);
         CheckResult checkResult = new CheckResult(CheckStatus.getInstance(statmentResult.getStatus()));
+        checkResult.setMessage(statmentResult.getMessage());
 
         SqlChange change = new SqlChange();
         change.setNewSql(statmentResult.getNewSql());

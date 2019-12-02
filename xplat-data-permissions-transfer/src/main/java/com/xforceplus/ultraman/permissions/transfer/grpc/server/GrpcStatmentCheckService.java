@@ -38,6 +38,7 @@ public class GrpcStatmentCheckService extends StatmentCheckServiceGrpc.StatmentC
         CheckResult result = ruleCheckService.check(sql, authorizations);
         ForStatmentGrpc.StatmentResult.Builder builder = ForStatmentGrpc.StatmentResult.newBuilder();
         builder.setStatus(result.getStatus().getValue());
+        builder.setMessage(result.getMessage());
 
         Optional<SqlChange> sqlChangeOptional = result.streamValues().findFirst();
         if (sqlChangeOptional.isPresent()) {

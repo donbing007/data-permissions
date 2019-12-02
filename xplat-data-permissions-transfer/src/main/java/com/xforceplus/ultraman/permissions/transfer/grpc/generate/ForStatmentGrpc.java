@@ -1124,6 +1124,24 @@ public final class ForStatmentGrpc {
      */
     com.google.protobuf.ByteString
         getBackListBytes(int index);
+
+    /**
+     * <pre>
+     * 响应的消息.
+     * </pre>
+     *
+     * <code>string message = 4;</code>
+     */
+    java.lang.String getMessage();
+    /**
+     * <pre>
+     * 响应的消息.
+     * </pre>
+     *
+     * <code>string message = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
   }
   /**
    * Protobuf type {@code com.xforceplus.ultraman.permissions.StatmentResult}
@@ -1141,6 +1159,7 @@ public final class ForStatmentGrpc {
       status_ = 0;
       newSql_ = "";
       backList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      message_ = "";
     }
 
     @java.lang.Override
@@ -1192,6 +1211,12 @@ public final class ForStatmentGrpc {
                 mutable_bitField0_ |= 0x00000004;
               }
               backList_.add(s);
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
               break;
             }
           }
@@ -1322,6 +1347,48 @@ public final class ForStatmentGrpc {
       return backList_.getByteString(index);
     }
 
+    public static final int MESSAGE_FIELD_NUMBER = 4;
+    private volatile java.lang.Object message_;
+    /**
+     * <pre>
+     * 响应的消息.
+     * </pre>
+     *
+     * <code>string message = 4;</code>
+     */
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 响应的消息.
+     * </pre>
+     *
+     * <code>string message = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1342,6 +1409,9 @@ public final class ForStatmentGrpc {
       }
       for (int i = 0; i < backList_.size(); i++) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, backList_.getRaw(i));
+      }
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, message_);
       }
       unknownFields.writeTo(output);
     }
@@ -1366,6 +1436,9 @@ public final class ForStatmentGrpc {
         size += dataSize;
         size += 1 * getBackListList().size();
       }
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, message_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1388,6 +1461,8 @@ public final class ForStatmentGrpc {
           .equals(other.getNewSql());
       result = result && getBackListList()
           .equals(other.getBackListList());
+      result = result && getMessage()
+          .equals(other.getMessage());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1407,6 +1482,8 @@ public final class ForStatmentGrpc {
         hash = (37 * hash) + BACKLIST_FIELD_NUMBER;
         hash = (53 * hash) + getBackListList().hashCode();
       }
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1542,6 +1619,8 @@ public final class ForStatmentGrpc {
 
         backList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
+        message_ = "";
+
         return this;
       }
 
@@ -1573,6 +1652,7 @@ public final class ForStatmentGrpc {
           bitField0_ = (bitField0_ & ~0x00000004);
         }
         result.backList_ = backList_;
+        result.message_ = message_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1630,6 +1710,10 @@ public final class ForStatmentGrpc {
             ensureBackListIsMutable();
             backList_.addAll(other.backList_);
           }
+          onChanged();
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1913,6 +1997,95 @@ public final class ForStatmentGrpc {
   checkByteStringIsUtf8(value);
         ensureBackListIsMutable();
         backList_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <pre>
+       * 响应的消息.
+       * </pre>
+       *
+       * <code>string message = 4;</code>
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 响应的消息.
+       * </pre>
+       *
+       * <code>string message = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 响应的消息.
+       * </pre>
+       *
+       * <code>string message = 4;</code>
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 响应的消息.
+       * </pre>
+       *
+       * <code>string message = 4;</code>
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 响应的消息.
+       * </pre>
+       *
+       * <code>string message = 4;</code>
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
         onChanged();
         return this;
       }
@@ -2220,14 +2393,14 @@ public final class ForStatmentGrpc {
       "aman.permissions\032\nBase.proto\"b\n\010Statment" +
       "\022\013\n\003sql\030\001 \001(\t\022I\n\rauthorization\030\002 \003(\01322.c" +
       "om.xforceplus.ultraman.permissions.Autho" +
-      "rization\"B\n\016StatmentResult\022\016\n\006status\030\001 \001" +
-      "(\005\022\016\n\006newSql\030\002 \001(\t\022\020\n\010backList\030\003 \003(\t2\203\001\n" +
-      "\024StatmentCheckService\022k\n\005check\022-.com.xfo" +
-      "rceplus.ultraman.permissions.Statment\0323." +
-      "com.xforceplus.ultraman.permissions.Stat" +
-      "mentResultBR\n:com.xforceplus.ultraman.pe" +
-      "rmissions.transfer.grpc.generateB\017ForSta" +
-      "tmentGrpcH\001\210\001\001b\006proto3"
+      "rization\"S\n\016StatmentResult\022\016\n\006status\030\001 \001" +
+      "(\005\022\016\n\006newSql\030\002 \001(\t\022\020\n\010backList\030\003 \003(\t\022\017\n\007" +
+      "message\030\004 \001(\t2\203\001\n\024StatmentCheckService\022k" +
+      "\n\005check\022-.com.xforceplus.ultraman.permis" +
+      "sions.Statment\0323.com.xforceplus.ultraman" +
+      ".permissions.StatmentResultBR\n:com.xforc" +
+      "eplus.ultraman.permissions.transfer.grpc" +
+      ".generateB\017ForStatmentGrpcH\001\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2253,7 +2426,7 @@ public final class ForStatmentGrpc {
     internal_static_com_xforceplus_ultraman_permissions_StatmentResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_xforceplus_ultraman_permissions_StatmentResult_descriptor,
-        new java.lang.String[] { "Status", "NewSql", "BackList", });
+        new java.lang.String[] { "Status", "NewSql", "BackList", "Message", });
     com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.getDescriptor();
   }
 

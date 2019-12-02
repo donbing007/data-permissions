@@ -21,4 +21,5 @@ message StatmentResult {
     int32 status = 1; // 状态码.
     string newSql = 2; // 如果状态为 UPDATE,那么此为新的语句.
     repeated string backList = 3; // 需要隐藏的字段.
+    string message = 4; // 响应的消息.
 }
