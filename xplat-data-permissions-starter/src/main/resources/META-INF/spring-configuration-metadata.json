@@ -18,7 +18,14 @@
       "name": "xplat.data.permissions.debug",
       "type": "java.lang.Boolean",
       "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
-      "description": "Is it in debug mode.",
+      "description": "Is it in debug mode?",
+      "defaultValue": "false"
+    },
+    {
+      "name": "xplat.data.permissions.manual",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "Is it in manual mode?",
       "defaultValue": "false"
     },
     {

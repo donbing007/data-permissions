@@ -11,6 +11,7 @@ import com.xforceplus.ultraman.permissions.starter.DataSourceWrapper;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.StatmentCheckClientGrpc;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 /**
+ * 自动配置.
  * @author dongbin
  * @version 0.1 2019/10/23 14:31
  * @since 1.8
@@ -92,6 +94,7 @@ public class AutomaticConfiguration {
         BeanNameDefine.RULE_CHECK_CLIENT,
         BeanNameDefine.AUTHORIZATION_SEARCHER
     })
+    @ConditionalOnProperty(prefix = "xplat.data.permissions", name = "manual", havingValue = "false",matchIfMissing = true)
     public DataSourceInterceptor dataSourceInterceptor() {
         return new DataSourceInterceptor(includeRex);
     }
