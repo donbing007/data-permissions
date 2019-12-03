@@ -12,6 +12,9 @@ maven-develop-build:
     - ./mvnw install -s ./.mvn/wrapper/settings.xml
     - mkdir -p /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     - cp ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}/app.jar
+  only:
+    - master
+    - develop
 
 maven-tag-build:
   stage: tag-mvn-package
@@ -20,6 +23,8 @@ maven-tag-build:
     - ./mvnw deploy -s ./.mvn/wrapper/settings.xml
     - mkdir -p /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     - cp ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}/app.jar
+  only:
+    - tags
 
 docker-build:
   stage: docker-build
