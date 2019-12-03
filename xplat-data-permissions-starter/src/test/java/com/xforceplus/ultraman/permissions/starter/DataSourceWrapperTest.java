@@ -1,18 +1,15 @@
 package com.xforceplus.ultraman.permissions.starter;
 
+import com.xforceplus.ultraman.permissions.jdbc.PermissionsDataSourceWrapper;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
-import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
 import javax.sql.DataSource;

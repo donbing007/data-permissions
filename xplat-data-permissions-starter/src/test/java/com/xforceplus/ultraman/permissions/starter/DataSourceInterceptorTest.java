@@ -1,6 +1,6 @@
 package com.xforceplus.ultraman.permissions.starter;
 
-import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
+import com.xforceplus.ultraman.permissions.jdbc.PermissionsDataSourceWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
