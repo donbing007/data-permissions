@@ -8,6 +8,7 @@ import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.rule.assembly.Line;
 import com.xforceplus.ultraman.permissions.rule.assembly.LineFactory;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
+import com.xforceplus.ultraman.permissions.service.AbstractBaseTest;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.SqlParser;
 import com.xforceplus.ultraman.permissions.sql.define.Alias;
@@ -32,7 +33,7 @@ import java.util.*;
  * @version 1.0 11/13/2019
  * @since <pre>Nov 13, 2019</pre>
  */
-public class RuleCheckServiceImplTest {
+public class RuleCheckServiceImplTest extends AbstractBaseTest {
 
     private SqlParser sqlParser = JSqlParser.getInstance();
     private Authorizations authorizations = new Authorizations(Arrays.asList(new Authorization("r1", "t1")));
@@ -63,32 +64,6 @@ public class RuleCheckServiceImplTest {
             Assert.assertEquals(pack.expectedResult, result);
 
         });
-    }
-
-    // 注入字段.
-    private static void injectField(RuleCheckServiceImpl impl, String fieldName, Object value) {
-        Field field;
-        try {
-            field = impl.getClass().getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        if (field == null) {
-            throw new RuntimeException("Can not found field " + fieldName + ".");
-        }
-
-
-        if (field.getType().isInstance(value)) {
-            field.setAccessible(true);
-            try {
-                field.set(impl, value);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
-        } else {
-            throw new RuntimeException("Type mismatch!");
-        }
     }
 
     private static class Pack {

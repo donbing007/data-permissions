@@ -13,6 +13,8 @@ import com.xforceplus.ultraman.permissions.repository.entity.FieldScopeExample;
 import com.xforceplus.ultraman.permissions.repository.entity.RolePermissions;
 import com.xforceplus.ultraman.permissions.repository.entity.RolePermissionsExample;
 import com.xforceplus.ultraman.permissions.service.RuleFieldRuleManagementService;
+import com.xforceplus.ultraman.permissions.service.aop.AuthorizationCheck;
+import com.xforceplus.ultraman.permissions.service.aop.NoAuthorizationPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
@@ -41,9 +43,10 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     @Resource
     private FieldScopeRepository fieldScopeRepository;
 
-    @Transactional
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     @Override
+    @Transactional
+    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public FieldRuleManagementResult save(Authorization authorization, FieldRule rule) {
         if (isExist(authorization, rule)) {
             return new FieldRuleManagementResult(ManagementStatus.REPETITION);
@@ -93,9 +96,10 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         return new FieldRuleManagementResult(ManagementStatus.FAIL);
     }
 
-    @Transactional
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     @Override
+    @Transactional
+    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public FieldRuleManagementResult remove(Authorization authorization, FieldRule rule) {
         RolePermissionsExample example = new RolePermissionsExample();
         example.createCriteria().andRoleIdEqualTo(authorization.getId())
@@ -114,11 +118,13 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     }
 
     @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     public FieldRuleManagementResult list(Authorization authorization, Continuation continuation) {
         return list(authorization, null, continuation);
     }
 
     @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     public FieldRuleManagementResult list(Authorization authorization, String entity, Continuation continuation) {
         FieldScopeExample example = new FieldScopeExample();
         example.setOrderByClause("id ASC");

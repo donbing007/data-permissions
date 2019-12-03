@@ -12,6 +12,8 @@ import com.xforceplus.ultraman.permissions.repository.DataScopeSubConditionRepos
 import com.xforceplus.ultraman.permissions.repository.RolePermissionsRepository;
 import com.xforceplus.ultraman.permissions.repository.entity.*;
 import com.xforceplus.ultraman.permissions.service.RuleDataRuleManagementService;
+import com.xforceplus.ultraman.permissions.service.aop.AuthorizationCheck;
+import com.xforceplus.ultraman.permissions.service.aop.NoAuthorizationPlan;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -45,9 +47,10 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     private DataScopeSubConditionRepository dataScopeSubConditionRepository;
 
 
-    @Transactional
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     @Override
+    @Transactional
+    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public DataRuleManagementResult save(Authorization authorization, DataRule rule) {
         DataScopeExample dataScopeExample = new DataScopeExample();
         dataScopeExample.createCriteria().andEntityEqualTo(rule.getEntity());
@@ -112,9 +115,10 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
         return new DataRuleManagementResult(ManagementStatus.SUCCESS);
     }
 
-    @Transactional
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     @Override
+    @Transactional
+    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public DataRuleManagementResult remove(Authorization authorization, DataRule rule) {
         DataScopeSubConditionExample dataScopeSubConditionExample = new DataScopeSubConditionExample();
         dataScopeSubConditionExample.createCriteria().andEntityEqualTo(rule.getEntity())
@@ -129,11 +133,13 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     }
 
     @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     public DataRuleManagementResult list(Authorization authorization, Continuation continuation) {
         return list(authorization, continuation);
     }
 
     @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     public DataRuleManagementResult list(Authorization authorization, String entity, Continuation continuation) {
         DataScopeSubConditionExample example = new DataScopeSubConditionExample();
         example.setOrderByClause("`id` asc, `conditions_id` asc, `index` asc");

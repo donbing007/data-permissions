@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +48,7 @@ public class AuthorizationCheckBeforePoint {
         return checkAuthorization(joinPoint);
     }
 
-    private Object checkAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object checkAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
         if (logger.isDebugEnabled()) {
             Signature signature =  joinPoint.getSignature();
             logger.debug("Intercept {}.{}.", signature.getDeclaringTypeName(), signature.getName());
@@ -59,20 +61,27 @@ public class AuthorizationCheckBeforePoint {
                     Optional<Role> roleOptional = findRole((Authorization) arg);
                     if (!roleOptional.isPresent()) {
 
-                        Class returnType = getReturnType(joinPoint);
-                        if (Result.class.isAssignableFrom(returnType)) {
-                            Constructor c = returnType.getConstructor(ManagementStatus.class);
-                            return c.newInstance(ManagementStatus.LOSS);
+                        MethodSignature sign = (MethodSignature) joinPoint.getSignature();
+                        Method method = sign.getMethod();
+                        AuthorizationCheck checkAnnotation = method.getAnnotation(AuthorizationCheck.class);
+                        NoAuthorizationPlan plan;
+                        if (checkAnnotation == null) {
+                            plan = NoAuthorizationPlan.ERROR;
                         } else {
-                            throw new Exception("Not a subclass of " + Result.class.toString() + " as expected.");
+                            plan = checkAnnotation.value();
                         }
+
+                        switch (plan) {
+                            case CREATE:
+                                return processorCreate((Authorization) arg, joinPoint);
+                            default:
+                                return processorErr((Authorization) arg, joinPoint);
+                        }
+
 
                     } else {
 
-                        Authorization auth = ((Authorization) arg);
-                        if (auth.getId() == null) {
-                            auth.setId(roleOptional.get().getId());
-                        }
+                        setAuthorization(((Authorization) arg), roleOptional.get());
 
                         break;
                     }
@@ -81,6 +90,41 @@ public class AuthorizationCheckBeforePoint {
         }
 
         return joinPoint.proceed();
+    }
+
+    private Object processorErr(Authorization arg, ProceedingJoinPoint joinPoint) throws Throwable {
+        Class returnType = getReturnType(joinPoint);
+
+        if (Result.class.equals(returnType)) {
+            return new Result(ManagementStatus.LOSS) {};
+        }
+
+        if (Result.class.isAssignableFrom(returnType)) {
+            Constructor c = returnType.getConstructor(ManagementStatus.class);
+            return c.newInstance(ManagementStatus.LOSS);
+        } else {
+            throw new Exception("Not a subclass of " + Result.class.toString() + " as expected.");
+        }
+    }
+
+    private Object processorCreate(Authorization arg, ProceedingJoinPoint joinPoint) throws Throwable  {
+        Role role = new Role();
+        role.setTenantId(arg.getTenant());
+        role.setRoleExternalId(arg.getRole());
+        if (roleRepository.insert(role) > 0) {
+
+            setAuthorization(arg, role);
+            return joinPoint.proceed();
+
+        } else {
+            throw new Exception("The role could not be created.[" + role.toString() +"]");
+        }
+    }
+
+    private void setAuthorization(Authorization auth, Role role) {
+        if (auth.getId() == null) {
+            auth.setId(role.getId());
+        }
     }
 
     private Class getReturnType(ProceedingJoinPoint joinPoint) throws Throwable {
