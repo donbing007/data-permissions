@@ -21,9 +21,9 @@ spring:
     cache-names: rule
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/xplat-data-permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=6000&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://127.0.0.1:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=6000&autoReconnect=true&failOverReadOnly=false
     username: root
-    password: xplat
+    password: root
     hikari:
       connection-test-query: "select 1"
       connection-timeout: 10000
@@ -39,6 +39,6 @@ j2cache:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     io:
       opencensus: INFO

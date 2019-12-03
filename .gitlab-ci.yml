@@ -1,14 +1,23 @@
 image: registry.cn-hangzhou.aliyuncs.com/choerodon-tools/cibase:0.6.0
 
 stages:
-  - mvn-package
+  - develop-mvn-package
+  - tag-mvn-package
   - docker-build
 
-maven-test-build:
-  stage: mvn-package
+maven-develop-build:
+  stage: develop-mvn-package
   script:
     - update_pom_version
-    - ./mvnw clean deploy -s ./.mvn/wrapper/settings.xml
+    - ./mvnw install -s ./.mvn/wrapper/settings.xml
+    - mkdir -p /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    - cp ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}/app.jar
+
+maven-tag-build:
+  stage: tag-mvn-package
+  script:
+    - update_pom_version
+    - ./mvnw deploy -s ./.mvn/wrapper/settings.xml
     - mkdir -p /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     - cp ./xplat-data-permissions-boot/target/xplat-data-permissions.jar /cache/${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}/app.jar
 
