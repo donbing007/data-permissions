@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.rule.check.select;
 
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.when;
  */
 public class SelectFieldCheckerTest {
 
-    private Authorization auth = new Authorization("r1", "t1");
     private SqlParser sqlParser = JSqlParser.getInstance();
 
     @Before
@@ -41,18 +41,20 @@ public class SelectFieldCheckerTest {
     public void check() {
 
         SelectFieldChecker checker = new SelectFieldChecker();
-        Map<SearchRequest, List<RuleCheckPack>> caseData = buildCase();
+        Map<SearchRequest, RuleCheckPack> caseData = buildCase();
         caseData.keySet().stream().forEach(request -> {
             try {
 
                 Searcher searcher = mock(Searcher.class);
-                List<RuleCheckPack> packs = caseData.get(request);
-                for (RuleCheckPack pack : packs) {
-                    when(searcher.searchFieldRule(pack.auth, pack.entity)).thenReturn(pack.rules);
+                RuleCheckPack pack = caseData.get(request);
+                Authorizations authorizations = pack.auths;
+                List<FieldRule> rules;
+                for (Authorization auth : authorizations.getAuthorizations()) {
+                    rules = pack.rules.get(auth.toString() + pack.entity);
+                    when(searcher.searchFieldRule(auth, pack.entity)).thenReturn(rules);
                 }
 
-
-                Context context = new DefaultContext(sqlParser.parser(request.sql), auth, searcher);
+                Context context = new DefaultContext(sqlParser.parser(request.sql), pack.auths, searcher);
                 checker.check(context);
 
                 Assert.assertEquals(request.sql, request.refused, context.isRefused());
@@ -94,49 +96,58 @@ public class SelectFieldCheckerTest {
     }
 
     private static class RuleCheckPack {
-        private Authorization auth;
+        private Authorizations auths;
         private String entity;
-        private List<FieldRule> rules;
+        // key = authorization.toString() + entity
+        private Map<String, List<FieldRule>> rules;
 
-        public RuleCheckPack(Authorization auth, String entity, List<FieldRule> rules) {
-            this.auth = auth;
+        public RuleCheckPack(Authorizations auths, String entity, Map<String, List<FieldRule>> rules) {
+            this.auths = auths;
             this.entity = entity;
             this.rules = rules;
         }
     }
 
-    private Map<SearchRequest, List<RuleCheckPack>> buildCase() {
-        Map<SearchRequest, List<RuleCheckPack>> data = new LinkedHashMap<>();
+    private Map<SearchRequest, RuleCheckPack> buildCase() {
+        Map<SearchRequest, RuleCheckPack> data = new LinkedHashMap<>();
 
         data.put(new SearchRequest(
                 "select t.c1, t.c2 from t1 t",
                 false,
                 Collections.emptyList()),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "c1"),
-                        new FieldRule("t1", "c2"),
-                        new FieldRule("t1", "c3")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c1"),
+                            new FieldRule("t1", "c2"),
+                            new FieldRule("t1", "c3")
+                        )
+                    );
+                }}
             )
         );
 
         data.put(new SearchRequest(
-                "select t.c1, t.c3 from t1 t",
+                "select tt.c1, tt.c3 from t1 tt",
                 false,
                 Arrays.asList(
-                    new Field("t", "c1")
+                    new Field("tt", "c1")
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "c3"),
-                        new FieldRule("t1", "c4"),
-                        new FieldRule("t1", "c5")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c3"),
+                            new FieldRule("t1", "c4"),
+                            new FieldRule("t1", "c5")
+                        )
+                    );
+                }}
             )
         );
 
@@ -146,14 +157,18 @@ public class SelectFieldCheckerTest {
                 Arrays.asList(
                     new Field("t", "c1")
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "c3"),
-                        new FieldRule("t1", "c4"),
-                        new FieldRule("t1", "c5")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c3"),
+                            new FieldRule("t1", "c4"),
+                            new FieldRule("t1", "c5")
+                        )
+                    );
+                }}
             )
         );
 
@@ -162,14 +177,18 @@ public class SelectFieldCheckerTest {
                 false,
                 Arrays.asList(
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t2",
-                    Arrays.asList(
-                        new FieldRule("t2", "c1"),
-                        new FieldRule("t2", "c2"),
-                        new FieldRule("t2", "c3")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t2",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t2",
+                        Arrays.asList(
+                            new FieldRule("t2", "c1"),
+                            new FieldRule("t2", "c2"),
+                            new FieldRule("t2", "c3")
+                        )
+                    );
+                }}
             )
         );
 
@@ -179,28 +198,38 @@ public class SelectFieldCheckerTest {
                 Arrays.asList(
                     new Field("t", "c1andc2")
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t2",
-                    Arrays.asList(
-                        new FieldRule("t2", "c2"),
-                        new FieldRule("t2", "c3")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t2",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t2",
+                        Arrays.asList(
+                            new FieldRule("t2", "c2"),
+                            new FieldRule("t2", "c3")
+                        )
+                    );
+                }}
             )
         );
 
         data.put(new SearchRequest(
-                "select t1.c2 from t1 where t1.c1=10",
+                "select t1.c2 from t1 where t1.c1=1111",
                 true,
                 Arrays.asList(
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "c2"),
-                        new FieldRule("t1", "c3")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c2"),
+                            new FieldRule("t1", "c3")
+                        )
+                    );
+                }}
             )
         );
 
@@ -209,28 +238,91 @@ public class SelectFieldCheckerTest {
                 false,
                 Arrays.asList(
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "*")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "*")
+                        )
+                    );
+                }}
             )
         );
 
         data.put(new SearchRequest(
-                "select t1.c2 from t1 where t1.c1=10",
+                "select t1.c2 from t1 where t1.c1=11000",
                 true,
                 Arrays.asList(
                     new Field("t1", "c2")
                 )),
-            Arrays.asList(
-                new RuleCheckPack(auth, "t1",
-                    Arrays.asList(
-                        new FieldRule("t1", "*"),
-                        new FieldRule("t1", "c3")
-                    )
-                )
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "*"),
+                            new FieldRule("t1", "c3")
+                        )
+                    );
+                }}
+            )
+        );
+
+        data.put(new SearchRequest(
+                "select t1.c2 from t1 where t1.c1=1123455",
+                false,
+                Arrays.asList(
+                )),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(
+                    new Authorization("r1", "t1"),
+                    new Authorization("r2", "t1")
+                )),
+                "t1",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "*")
+                        )
+                    );
+
+                    put(
+                        new Authorization("r2", "t1").toString() + "t1",
+                        Collections.emptyList()
+                    );
+                }}
+            )
+        );
+
+        data.put(new SearchRequest(
+                "select t1.c2 from t1 where t1.c1=1123455333",
+                true,
+                Arrays.asList(
+                    new Field("t1", "c2")
+                )),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(
+                    new Authorization("r1", "t1"),
+                    new Authorization("r2", "t1")
+                )),
+                "t1",
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Collections.emptyList()
+                    );
+
+                    put(
+                        new Authorization("r2", "t1").toString() + "t1",
+                        Collections.emptyList()
+                    );
+                }}
             )
         );
 

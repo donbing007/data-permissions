@@ -13,8 +13,8 @@ import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbilit
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbility;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 /**
@@ -104,15 +104,28 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
             Field field;
             From from;
             List<FieldRule> rules;
+            boolean found = false;
             for (AbstractMap.SimpleEntry<Field, From> entry : froms) {
                 field = entry.getKey();
                 from = entry.getValue();
 
                 for (Authorization authorization : context.authorization().getAuthorizations()) {
                     rules = context.getSercher().searchFieldRule(authorization, from.getTable());
-                    if (!FieldCheckHelper.checkRule(rules, field)) {
-                        return true;
+
+                    if (rules == null || rules.isEmpty()) {
+                        rules = Collections.emptyList();
                     }
+
+                    if (FieldCheckHelper.checkRule(rules, field)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                // 当前字段,没有在规则表中找到.应该隐藏.
+                // 之后的字段不用再查看.
+                if (!found) {
+                    return true;
                 }
             }
 
