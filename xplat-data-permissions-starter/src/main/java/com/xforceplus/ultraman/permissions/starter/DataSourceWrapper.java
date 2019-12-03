@@ -1,9 +1,9 @@
 package com.xforceplus.ultraman.permissions.starter;
 
+import com.xforceplus.ultraman.permissions.jdbc.PermissionsDataSourceWrapper;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
-import com.xforceplus.ultraman.permissions.starter.jdbc.PermissionsDataSourceWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

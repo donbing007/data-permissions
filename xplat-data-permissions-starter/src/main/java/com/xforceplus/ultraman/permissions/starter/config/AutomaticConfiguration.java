@@ -34,15 +34,15 @@ public class AutomaticConfiguration {
 
     private int port = 8206;
 
-    private long heartbeatTimeoutSeconds;
+    private long heartbeatTimeoutSeconds = 30;
 
-    private long heartbeatIntervalSeconds;
+    private long heartbeatIntervalSeconds = 30;
 
-    private long readTimeoutMs;
+    private long readTimeoutMs = 200;
 
     private String includeRex = "(.*)";
 
-    private boolean debug;
+    private boolean debug = false;
 
     private AuthSearcherConfig searcherConfig = new AuthSearcherConfig();
 

@@ -1,7 +1,6 @@
-package com.xforceplus.ultraman.permissions.starter.jdbc;
+package com.xforceplus.ultraman.permissions.jdbc;
 
 
-import com.xforceplus.ultraman.permissions.jdbc.PermissionsConnectionWrapper;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 
@@ -13,8 +12,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 /**
+ * 数据源包装.
  * @version 0.1 2019/11/15 15:33
- * @auth dongbin
+ * @author dongbin
  * @since 1.8
  */
 public class PermissionsDataSourceWrapper implements DataSource {

@@ -29,6 +29,27 @@
       "defaultValue": "false"
     },
     {
+      "name": "xplat.data.permissions.readTimeoutMs",
+      "type": "java.lang.Long",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "client read timeout(ms).",
+      "defaultValue": "200"
+    },
+    {
+      "name": "xplat.data.permissions.heartbeatTimeoutSeconds",
+      "type": "java.lang.Long",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "client health timeout.",
+      "defaultValue": "30"
+    },
+    {
+      "name": "xplat.data.permissions.heartbeatIntervalSeconds",
+      "type": "java.lang.Long",
+      "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
+      "description": "client health interval.",
+      "defaultValue": "30"
+    },
+    {
       "name": "xplat.data.permissions.includeRex",
       "type": "java.lang.String",
       "sourceType": "com.xforceplus.ultraman.permissions.starter.config.AutomaticConfiguration",
