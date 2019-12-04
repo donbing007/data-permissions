@@ -1,5 +1,7 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
+import com.xforceplus.ultraman.permissions.sql.jsqlparser.processor.ability.JSqlParserSelectFieldFromAbility;
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertItemAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.InsertValueAbility;
@@ -27,4 +29,5 @@ public interface InsertSqlProcessor extends SqlProcessor {
      * @return 实例.
      */
     InsertItemAbility buildInsertItemAbility();
+
 }

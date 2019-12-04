@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 
 /**
@@ -17,4 +18,11 @@ public interface SqlProcessor {
      * @return 实例.
      */
     FromAbility buildFromAbility();
+
+    /**
+     * 字段来源搜索器.
+     *
+     * @return 字段来源.
+     */
+    FieldFromAbility buildFieldFromAbility();
 }

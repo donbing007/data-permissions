@@ -25,7 +25,7 @@ public class DefaultContext implements Context {
     private Searcher searcher;
     private boolean refused;
     private String refusedCause;
-    private List<Item> blackList;
+    private Set<Item> blackList;
     private boolean updated;
 
     public DefaultContext(Sql sql) {
@@ -47,7 +47,6 @@ public class DefaultContext implements Context {
     public DefaultContext(Sql sql, Authorizations authorizations, Searcher searcher) {
         this.sql = sql;
         this.authorizations = authorizations;
-        blackList = new ArrayList<>();
         this.searcher = searcher;
     }
 
@@ -104,13 +103,13 @@ public class DefaultContext implements Context {
 
     @Override
     public Item[] blackList() {
-        return blackList.toArray(new Item[0]);
+        return this.blackList == null ? new Item[0] : blackList.toArray(new Item[0]);
     }
 
     @Override
     public void black(Item item) {
         if (this.blackList == null) {
-            this.blackList = new LinkedList<>();
+            this.blackList = new HashSet<>();
         }
 
         blackList.add(item);
@@ -118,7 +117,7 @@ public class DefaultContext implements Context {
 
     @Override
     public int blackSize() {
-        return this.blackList.size();
+        return this.blackList == null ? 0 : this.blackList.size();
     }
 
     @Override

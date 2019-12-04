@@ -25,13 +25,6 @@ public interface UpdateSqlProcessor extends SqlProcessor {
     UpdateSetAbility buildUpdateSetAbility();
 
     /**
-     * 字段来源搜索器.
-     *
-     * @return 字段来源.
-     */
-    FieldFromAbility buildFieldFromAbility();
-
-    /**
      * 得到当前的嵌套查询和子查询.
      *
      * @return 语句列表.

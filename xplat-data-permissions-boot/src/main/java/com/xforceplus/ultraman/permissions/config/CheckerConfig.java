@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.config;
 
 import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsChecker;
+import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsFieldChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.*;
 import com.xforceplus.ultraman.permissions.rule.check.insert.InsertFieldChecker;
 import com.xforceplus.ultraman.permissions.rule.check.select.SelectFieldChecker;
@@ -44,6 +45,11 @@ public class CheckerConfig {
     @Bean
     public ConditionsChecker conditionsChecker() {
         return new ConditionsChecker();
+    }
+
+    @Bean
+    public ConditionsFieldChecker conditionsFieldChecker() {
+        return new ConditionsFieldChecker();
     }
 
     @Bean

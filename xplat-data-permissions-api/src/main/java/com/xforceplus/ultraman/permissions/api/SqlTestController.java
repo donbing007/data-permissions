@@ -33,13 +33,18 @@ public class SqlTestController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "得到规则验证后的结果.", response = CheckResult.class)}
     )
-    @GetMapping(value = "/{tenant}/xpermissions/v1/test", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/xpermissions/v1/test", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity test(
         @ApiParam(name = "sql", value = "原始 sql", required = true) @RequestParam("sql") String sql,
-        @ApiParam(name = "tenant", value = "发起 SQL 的当前租户.", required = true) @PathVariable("tenant") String tenant,
-        @ApiParam(name = "role", value = "发起 SQL 的当前租户角色.", required = true) @RequestParam("role") String role) {
+        @ApiParam(name = "tenant", value = "发起 SQL 的当前租户.", required = true) @RequestParam("tenant") String tenant,
+        @ApiParam(name = "roles", value = "发起 SQL 的当前租户角色列表.", required = true) @RequestParam("role[]") String[] roles) {
 
-        CheckResult result = ruleCheckService.check(sql, new Authorizations(new Authorization(role, tenant)));
+        Authorizations authorizations = new Authorizations();
+        for (String role : roles) {
+            authorizations.add(new Authorization(role, tenant));
+        }
+
+        CheckResult result = ruleCheckService.check(sql, authorizations);
 
         return new ResponseEntity(
             result,

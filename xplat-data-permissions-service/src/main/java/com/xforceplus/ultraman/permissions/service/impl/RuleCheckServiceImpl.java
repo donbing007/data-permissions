@@ -144,5 +144,12 @@ public class RuleCheckServiceImpl implements RuleCheckService {
                 blackList.add(item.getAlias().getName());
             }
         }
+
+        @Override
+        public void visit(Parentheses item) {
+            if (item.hasAlias()) {
+                blackList.add(item.getAlias().getName());
+            }
+        }
     }
 }

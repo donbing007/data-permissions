@@ -122,11 +122,10 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public DataRuleManagementResult remove(Authorization authorization, DataRule rule) {
+
         DataScopeSubConditionExample dataScopeSubConditionExample = new DataScopeSubConditionExample();
-        dataScopeSubConditionExample.createCriteria().andEntityEqualTo(rule.getEntity())
-            .andFieldEqualTo(rule.getField())
-            .andRoleEqualTo(authorization.getRole())
-            .andTenantEqualTo(authorization.getTenant());
+        dataScopeSubConditionExample.createCriteria().andConditionsIdEqualTo(rule.getId());
+
         if (dataScopeSubConditionRepository.deleteByExample(dataScopeSubConditionExample) > 0) {
             if (dataScopeConditionsRepository.deleteByPrimaryKey(rule.getId()) > 0) {
                 return new DataRuleManagementResult(ManagementStatus.SUCCESS);

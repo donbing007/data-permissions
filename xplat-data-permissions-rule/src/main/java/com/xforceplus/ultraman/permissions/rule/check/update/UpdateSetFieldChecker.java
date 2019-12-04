@@ -1,29 +1,26 @@
 package com.xforceplus.ultraman.permissions.rule.check.update;
 
-import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
-import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
+import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
+import com.xforceplus.ultraman.permissions.rule.utils.FieldCheckHelper;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.Field;
-import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.define.UpdateSet;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessorVisitorAdapter;
 import com.xforceplus.ultraman.permissions.sql.processor.UpdateSqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.UpdateSetAbility;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 检查 update set 字段是否有权限.
- * @version 0.1 2019/11/12 16:52
+ *
  * @author dongbin
+ * @version 0.1 2019/11/12 16:52
  * @since 1.8
  */
 public class UpdateSetFieldChecker extends AbstractTypeSafeChecker {
@@ -36,55 +33,26 @@ public class UpdateSetFieldChecker extends AbstractTypeSafeChecker {
     protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
 
-        if (SqlType.UPDATE != sql.type()) {
-            return;
-        }
+        UpdateSqlProcessor processor = (UpdateSqlProcessor) sql.buildProcessor();
 
-        sql.visit(new SqlProcessorVisitorAdapter() {
-            @Override
-            public void visit(UpdateSqlProcessor processor) {
+        Authorizations authorizations = context.authorization();
+        Searcher searcher = context.getSercher();
 
-                for (Authorization authorization : context.authorization().getAuthorizations()) {
-                    // 查找当前表的允许字段列表.
-                    FromAbility fromAbility = processor.buildFromAbility();
-                    Map<From, List<FieldRule>> fieldRules = new HashMap();
-                    for (From from : fromAbility.list()) {
-                        fieldRules.put(from, context.getSercher().searchFieldRule(authorization, from.getTable()));
-                    }
+        UpdateSetAbility updateSetAbility = processor.buildUpdateSetAbility();
+        List<UpdateSet> updateSets = updateSetAbility.list();
+        List<Field> fields = updateSets.parallelStream().map(u -> u.getField()).collect(Collectors.toList());
 
-                    UpdateSetAbility updateSetAbility = processor.buildUpdateSetAbility();
-                    FieldFromAbility fieldFromAbility = processor.buildFieldFromAbility();
-                    List<UpdateSet> updateSets = updateSetAbility.list();
+        Collection<Field> noRuleFields =
+            FieldCheckHelper.checkFieldsRule(processor.buildFieldFromAbility(), authorizations, fields, searcher);
 
-                    List<AbstractMap.SimpleEntry<Field, From>> sourceFroms;
-                    for (UpdateSet updateSet : updateSets) {
-                        sourceFroms = fieldFromAbility.searchRealTableName(updateSet.getField());
-                        for (AbstractMap.SimpleEntry<Field, From> entry : sourceFroms) {
-                            doCheck(fieldRules, entry.getValue(), entry.getKey(), context);
-
-                            // 已经拒绝不需要再继续检查.
-                            if (context.isRefused()) {
-                                return;
-                            }
-                        }
-                    }
-                }
+        if (!noRuleFields.isEmpty()) {
+            StringBuilder buff = new StringBuilder();
+            buff.append("Field [");
+            for (Field f : noRuleFields) {
+                buff.append(f.toSqlString()).append(",");
             }
-        });
-    }
-
-    private void doCheck(Map<From, List<FieldRule>> fieldRules, From from, Field field, Context context) {
-        List<FieldRule> rules = fieldRules.get(from);
-        if (rules == null) {
-            context.refused("No field \"" + field.toSqlString() + "\" permission.");
+            buff.append("] has no permissions.");
+            context.refused(buff.toString());
         }
-
-        for (FieldRule rule : rules) {
-            if (rule.getField().equals(field.getName())) {
-                return;
-            }
-        }
-
-        context.refused("No field \"" + field.toSqlString() + "\" permission.");
     }
 }

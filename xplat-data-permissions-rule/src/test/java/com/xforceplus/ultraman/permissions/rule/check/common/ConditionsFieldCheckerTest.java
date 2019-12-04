@@ -1,9 +1,10 @@
-package com.xforceplus.ultraman.permissions.rule.check.select;
-
+package com.xforceplus.ultraman.permissions.rule.check.common;
 
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.rule.check.select.SelectFieldChecker;
+import com.xforceplus.ultraman.permissions.rule.check.select.SelectFieldCheckerTest;
 import com.xforceplus.ultraman.permissions.rule.context.Context;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
@@ -13,10 +14,10 @@ import com.xforceplus.ultraman.permissions.sql.define.Field;
 import com.xforceplus.ultraman.permissions.sql.define.Func;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
 
 import java.util.*;
 
@@ -24,25 +25,32 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * checker test.
+ * ConditionsFieldChecker Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0 12/04/2019
+ * @since <pre>Dec 4, 2019</pre>
  */
-public class SelectFieldCheckerTest {
+public class ConditionsFieldCheckerTest {
 
     private SqlParser sqlParser = JSqlParser.getInstance();
 
     @Before
-    public void setUp() throws Exception {
-
+    public void before() throws Exception {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void after() throws Exception {
     }
 
-    @Test
-    public void check() {
 
-        SelectFieldChecker checker = new SelectFieldChecker();
+
+    /**
+     * Method: checkCondition(ConditionAbility conditionAbility, FieldFromAbility fieldFromAbility, Context context)
+     */
+    @Test
+    public void testCheckCondition() throws Exception {
+        ConditionsFieldChecker checker = new ConditionsFieldChecker();
         Map<SearchRequest, RuleCheckPack> caseData = buildCase();
         caseData.keySet().stream().forEach(request -> {
             try {
@@ -67,7 +75,6 @@ public class SelectFieldCheckerTest {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
         });
-
     }
 
     private static class SearchRequest {
@@ -133,31 +140,9 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select tt.c1, tt.c3 from t1 tt",
-                false,
-                Arrays.asList(
-                    new Field("tt", "c1")
-                )),
-            new RuleCheckPack(
-                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
-                new HashMap() {{
-                    put(new Authorization("r1", "t1").toString() + "t1",
-                        Arrays.asList(
-                            new FieldRule("t1", "c3"),
-                            new FieldRule("t1", "c4"),
-                            new FieldRule("t1", "c5")
-                        )
-                    );
-                }}
-            )
-        );
-
-        data.put(new SearchRequest(
-                "select t.c1 from t1 t",
+                "select tt.c1, tt.c3 from t1 tt where tt.c1=100 and tt.c2=200",
                 true,
                 Arrays.asList(
-                    new Field("t", "c1")
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
@@ -175,7 +160,27 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select t.c1andc2 from t1 (select (t2.c1+t2.c2) c1andc2 from t2)",
+                "select t.c1 from t1 t where t.c1=300",
+                true,
+                Arrays.asList(
+                )),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t1",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c3"),
+                            new FieldRule("t1", "c4"),
+                            new FieldRule("t1", "c5")
+                        )
+                    );
+                }}
+            )
+        );
+
+        data.put(new SearchRequest(
+                "select t.c1andc2 from (select (t2.c1+t2.c2) c1andc2 from t2 where t2.c2=100) t where t.c1andc2=100",
                 false,
                 Arrays.asList(
                 )),
@@ -195,10 +200,9 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select t.c1andc2 from (select (t2.c1+t2.c2) c1andc2 from t2) t",
+                "select t.c1andc2 from (select t2.c1, t2.c2, t2.c3 c1andc2 from t2 where t2.c1=30) t",
                 true,
                 Arrays.asList(
-                    new Field("t", "c1andc2")
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
@@ -217,7 +221,7 @@ public class SelectFieldCheckerTest {
 
         data.put(new SearchRequest(
                 "select t1.c2 from t1 where t1.c1=1111",
-                false,
+                true,
                 Arrays.asList(
                 )),
             new RuleCheckPack(
@@ -255,10 +259,9 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select t1.c2 from t1 where t1.c1=11000",
+                "select t1.c2 from t1 where t1.c2=11000",
                 true,
                 Arrays.asList(
-                    new Field("t1", "c2")
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
@@ -276,7 +279,7 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select t1.c2 from t1 where t1.c1=1123455",
+                "select t1.c2 from t1 where t1.c2=1123455",
                 false,
                 Arrays.asList(
                 )),
@@ -303,10 +306,9 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select t1.c2 from t1 where t1.c1=1123455333",
+                "select t1.c2 from t1 where t1.c2=1123455333",
                 true,
                 Arrays.asList(
-                    new Field("t1", "c2")
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(
@@ -329,33 +331,7 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select count(t1.c2) as a from t1 where t1.c1=00000",
-                true,
-                Arrays.asList(
-                    new Func("count", Arrays.asList(new Field("t1", "c2")), new Alias("a", true))
-                )),
-            new RuleCheckPack(
-                new Authorizations(Arrays.asList(
-                    new Authorization("r1", "t1"),
-                    new Authorization("r2", "t1")
-                )),
-                "t1",
-                new HashMap() {{
-                    put(
-                        new Authorization("r1", "t1").toString() + "t1",
-                        Collections.emptyList()
-                    );
-
-                    put(
-                        new Authorization("r2", "t1").toString() + "t1",
-                        Collections.emptyList()
-                    );
-                }}
-            )
-        );
-
-        data.put(new SearchRequest(
-                "select t.count from (select count(t1.c2) count from t1 ) t where t.count=00000",
+                "select t.count from (select count(t1.c2) count from t1 where t1.c2=100) t where t.count=00000",
                 false,
                 Arrays.asList()),
             new RuleCheckPack(
@@ -381,18 +357,9 @@ public class SelectFieldCheckerTest {
         );
 
         data.put(new SearchRequest(
-                "select sum(t.c1, t.c2) as s, t.c3 from (select t1.c1, t1.c2, t1.c3 count from t1 ) t",
-                false,
-                Arrays.asList(
-                    new Func(
-                        "sum",
-                        Arrays.asList(
-                            new Field("t","c1"),
-                            new Field("t","c2")
-                        ),
-                        new Alias("s", true)
-                    )
-                )),
+                "select sum(t.c1, t.c2) as s, t.c3 from (select t1.c1, t1.c2, t1.c3 count from t1 ) t where t.c1=200",
+                true,
+                Arrays.asList()),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(
                     new Authorization("r1", "t1"),
@@ -417,4 +384,6 @@ public class SelectFieldCheckerTest {
 
         return data;
     }
-}
+
+
+} 

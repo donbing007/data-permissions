@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.rule.assembly;
 import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
 import com.xforceplus.ultraman.permissions.rule.check.Checker;
 import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsChecker;
+import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsFieldChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.AllFieldCannotUseChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.FromSubSelectMustAliasChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.SelectItemNotFeildAliasMustChecker;
@@ -33,6 +34,7 @@ public class SelectLine extends AbstractLine {
             SelectItemNotFeildAliasMustChecker.class,
             SelectItemRefMustChecker.class,
             SelectFieldChecker.class,
+            ConditionsFieldChecker.class,
             ConditionsChecker.class
         );
     }

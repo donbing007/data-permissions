@@ -22,13 +22,6 @@ public interface DeleteSqlProcessor extends SqlProcessor {
     ConditionAbility buildConditionAbility();
 
     /**
-     * 得到当前字段实际表名搜索处理器.
-     *
-     * @return 处理器实例.
-     */
-    FieldFromAbility buildFieldFromAbility();
-
-    /**
      * 得到当前的嵌套查询和子查询.
      *
      * @return 语句列表.

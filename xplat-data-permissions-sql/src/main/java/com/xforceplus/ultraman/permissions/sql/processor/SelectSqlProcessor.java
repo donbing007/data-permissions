@@ -31,11 +31,4 @@ public interface SelectSqlProcessor extends SqlProcessor {
      * @return 语句列表.
      */
     SubSqlAbility buildSubSqlAbility();
-
-    /**
-     * 得到当前字段实际表名搜索处理器.
-     *
-     * @return 处理器实例.
-     */
-    FieldFromAbility buildFieldFromAbility();
 }

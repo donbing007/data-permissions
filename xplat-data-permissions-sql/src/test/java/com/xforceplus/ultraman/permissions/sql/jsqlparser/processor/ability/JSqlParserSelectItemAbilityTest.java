@@ -157,6 +157,19 @@ public class JSqlParserSelectItemAbilityTest {
             )
         );
 
+        data.put("select sum(t.c1, t.c2) as s from (select t1.c1,t2.c2,t.c3,t.count count from t1 ) t where t.count=00000",
+            Arrays.asList(
+                new Func(
+                    "sum",
+                    Arrays.asList(
+                        new Field("t","c1"),
+                        new Field("t", "c2")
+                    ),
+                    new Alias("s", true)
+                )
+            )
+        );
+
         return data;
     }
 

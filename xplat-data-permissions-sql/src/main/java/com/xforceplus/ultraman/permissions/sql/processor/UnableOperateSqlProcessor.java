@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.sql.processor;
 
+import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 
 /**
@@ -19,6 +20,11 @@ public class UnableOperateSqlProcessor implements SqlProcessor {
 
     @Override
     public FromAbility buildFromAbility() {
+        return null;
+    }
+
+    @Override
+    public FieldFromAbility buildFieldFromAbility() {
         return null;
     }
 }

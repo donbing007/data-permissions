@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.rule.assembly;
 
 import com.xforceplus.ultraman.permissions.rule.check.Checker;
 import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsChecker;
+import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsFieldChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.CanNotAllowSubChecker;
 import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
@@ -25,6 +26,7 @@ public class DeleteLine extends AbstractLine {
     protected List<Class<? extends Checker>> selectChecker() {
         return Arrays.asList(
             CanNotAllowSubChecker.class,
+            ConditionsFieldChecker.class,
             ConditionsChecker.class
         );
     }

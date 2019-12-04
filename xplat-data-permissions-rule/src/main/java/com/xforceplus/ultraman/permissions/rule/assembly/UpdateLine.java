@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.rule.assembly;
 
 import com.xforceplus.ultraman.permissions.rule.check.Checker;
 import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsChecker;
+import com.xforceplus.ultraman.permissions.rule.check.common.ConditionsFieldChecker;
 import com.xforceplus.ultraman.permissions.rule.check.common.validation.CanNotAllowSubChecker;
 import com.xforceplus.ultraman.permissions.rule.check.update.UpdateSetFieldChecker;
 import com.xforceplus.ultraman.permissions.sql.Sql;
@@ -11,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @version 0.1 2019/11/13 13:57
  * @author dongbin
+ * @version 0.1 2019/11/13 13:57
  * @since 1.8
  */
 public class UpdateLine extends AbstractLine {
@@ -25,6 +26,7 @@ public class UpdateLine extends AbstractLine {
         return Arrays.asList(
             CanNotAllowSubChecker.class,
             UpdateSetFieldChecker.class,
+            ConditionsFieldChecker.class,
             ConditionsChecker.class
         );
     }
