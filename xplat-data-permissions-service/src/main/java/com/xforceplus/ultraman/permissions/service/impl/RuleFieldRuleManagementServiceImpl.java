@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -98,7 +99,7 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
 
     @Override
     @Transactional
-    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public FieldRuleManagementResult remove(Authorization authorization, FieldRule rule) {
         RolePermissionsExample example = new RolePermissionsExample();
@@ -114,6 +115,7 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
             }
         }
 
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         return new FieldRuleManagementResult(ManagementStatus.FAIL, "Unable to remove field rule.");
     }
 

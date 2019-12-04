@@ -102,8 +102,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             if (allConditions == null) {
                 allConditions = authConditions;
             } else {
-                allConditions = buildRelationship(
-                    new Parentheses(allConditions), new Parentheses(authConditions), RuleConditionRelationship.OR);
+                if (authConditions != null) {
+                    allConditions = buildRelationship(
+                        new Parentheses(allConditions), new Parentheses(authConditions), RuleConditionRelationship.OR);
+                }
             }
         }
 

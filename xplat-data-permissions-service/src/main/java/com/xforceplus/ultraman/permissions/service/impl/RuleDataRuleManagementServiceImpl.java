@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.repository.DataScopeConditionsRepository;
 import com.xforceplus.ultraman.permissions.repository.DataScopeRepository;
@@ -19,6 +20,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
@@ -117,7 +119,7 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
 
     @Override
     @Transactional
-    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
     public DataRuleManagementResult remove(Authorization authorization, DataRule rule) {
         DataScopeSubConditionExample dataScopeSubConditionExample = new DataScopeSubConditionExample();
@@ -125,11 +127,15 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
             .andFieldEqualTo(rule.getField())
             .andRoleEqualTo(authorization.getRole())
             .andTenantEqualTo(authorization.getTenant());
-        dataScopeSubConditionRepository.deleteByExample(dataScopeSubConditionExample);
+        if (dataScopeSubConditionRepository.deleteByExample(dataScopeSubConditionExample) > 0) {
+            if (dataScopeConditionsRepository.deleteByPrimaryKey(rule.getId()) > 0) {
+                return new DataRuleManagementResult(ManagementStatus.SUCCESS);
+            }
+        }
 
-        dataScopeConditionsRepository.deleteByPrimaryKey(rule.getId());
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        return new DataRuleManagementResult(ManagementStatus.FAIL, "Unable to remove data rule.");
 
-        return new DataRuleManagementResult(ManagementStatus.SUCCESS);
     }
 
     @Override

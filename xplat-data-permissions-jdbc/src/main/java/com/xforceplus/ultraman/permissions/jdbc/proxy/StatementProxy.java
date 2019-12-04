@@ -67,7 +67,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
         CheckStatus status = checkResult.getStatus();
 
         if (DebugStatus.isDebug()) {
-            logger.debug("Expected: {}", sql);
+            logger.info("Expected: {}", sql);
         }
 
         switch (status) {

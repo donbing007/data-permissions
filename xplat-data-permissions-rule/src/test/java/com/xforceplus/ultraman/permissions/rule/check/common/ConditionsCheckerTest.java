@@ -101,6 +101,49 @@ public class ConditionsCheckerTest {
         );
 
         data.put(
+            "select t11.c10 from t11",
+            new ConditionPack(
+                new LinkedHashMap<Authorization, Map<String, List<DataRule>>>() {{
+
+                    put(new Authorization("r2", "t1"),
+                        Collections.emptyMap());
+
+                    put(new Authorization("r1", "t1"),
+                        new LinkedHashMap() {{
+                            put("t11", Arrays.asList(
+                                new DataRule("t11", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100"
+                                    )
+                                ))
+                            ));
+                        }}
+                    );
+                }},
+                CCJSqlParserUtil.parse("select t11.c10 from t11 where t11.c1=100").toString(),
+                true
+            )
+        );
+
+        data.put(
+            "select t111.c10 from t111",
+            new ConditionPack(
+                new LinkedHashMap<Authorization, Map<String, List<DataRule>>>() {{
+
+                    put(new Authorization("r2", "t1"), Collections.emptyMap());
+
+                    put(new Authorization("r1", "t1"), Collections.emptyMap());
+
+                }},
+                CCJSqlParserUtil.parse("select t111.c10 from t111").toString(),
+                false
+            )
+        );
+
+        data.put(
             "select * from t1",
             new ConditionPack(
                 new HashMap<Authorization, Map<String, List<DataRule>>>() {{
