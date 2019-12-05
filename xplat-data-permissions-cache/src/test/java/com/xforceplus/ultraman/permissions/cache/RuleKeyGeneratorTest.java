@@ -38,17 +38,17 @@ public class RuleKeyGeneratorTest {
             target,
             target.getClass().getMethod("successMethod0", new Class[]{Authorization.class, String.class}),
             new Authorization(role,tenant), entity);
-        Assert.assertEquals("rule-field-t1-r1-user", key);
+        Assert.assertEquals("xplat-rule-field-t1-r1-user", key);
 
         key = (String) generator.generate(target,
             target.getClass().getMethod("successMethod1", new Class[]{Authorization.class, ParameterEntity.class}),
             new Authorization(role, tenant), new ParameterEntity(new Object(), entity));
-        Assert.assertEquals("rule-field-t1-r1-user", key);
+        Assert.assertEquals("xplat-rule-field-t1-r1-user", key);
 
         key = (String) generator.generate(target,
             target.getClass().getMethod("successMethod2", new Class[]{Authorization.class, ParameterEntity.class}),
             new Authorization(role, tenant), new ParameterEntity(new Object(), entity));
-        Assert.assertEquals("rule-field-t1-r1-user", key);
+        Assert.assertEquals("xplat-rule-field-t1-r1-user", key);
 
         try {
             key = (String) generator.generate(target,
