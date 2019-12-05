@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * 条件字段检查.
+ *
  * @author dongbin
  * @version 0.1 2019/12/4 17:08
  * @since 1.8
@@ -49,7 +50,7 @@ public class ConditionsFieldChecker extends AbstractTypeSafeChecker {
                     SubSqlIterator subSqlIterator = new SubSqlIterator(processor.buildSubSqlAbility());
                     Sql subSql;
                     JSubSelectSqlProcessor subSelectProcessor;
-                    while(subSqlIterator.hasNext()) {
+                    while (subSqlIterator.hasNext()) {
                         subSql = subSqlIterator.next();
                         subSelectProcessor = (JSubSelectSqlProcessor) subSql.buildProcessor();
 

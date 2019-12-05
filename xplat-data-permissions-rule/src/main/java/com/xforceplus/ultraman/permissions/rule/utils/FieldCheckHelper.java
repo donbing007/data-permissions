@@ -114,7 +114,7 @@ public class FieldCheckHelper {
      * 找出所有的字段,可能的来源为函数,表达式,括号等.
      *
      * @param item 目标元素.
-     * @param top 最顶层元素.
+     * @param top  最顶层元素.
      * @param pool key 为实际字段,value 为最上层的字段或函数,表达式..等.
      */
     public static void fillField(Item item, Item top, Map<Field, Item> pool) {
@@ -133,7 +133,7 @@ public class FieldCheckHelper {
 
             @Override
             public void visit(Arithmeitc item) {
-                fillField(item.getRight(),top,pool);
+                fillField(item.getRight(), top, pool);
                 fillField(item.getLeft(), top, pool);
             }
 

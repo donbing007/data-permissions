@@ -387,8 +387,8 @@ public class SelectFieldCheckerTest {
                     new Func(
                         "sum",
                         Arrays.asList(
-                            new Field("t","c1"),
-                            new Field("t","c2")
+                            new Field("t", "c1"),
+                            new Field("t", "c2")
                         ),
                         new Alias("s", true)
                     )

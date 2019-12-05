@@ -21,8 +21,9 @@ import java.util.Optional;
 
 /**
  * insert
- * @version 0.1 2019/10/25 18:55
+ *
  * @author dongbin
+ * @version 0.1 2019/10/25 18:55
  * @since 1.8
  */
 public class JInsertSqlProcessor extends JSqlProcessor implements InsertSqlProcessor {
@@ -52,7 +53,7 @@ public class JInsertSqlProcessor extends JSqlProcessor implements InsertSqlProce
             From from = fromAbility.list().stream().findFirst().get();
 
 
-            return Arrays.asList(new AbstractMap.SimpleEntry<>((Field)item, from));
+            return Arrays.asList(new AbstractMap.SimpleEntry<>((Field) item, from));
         };
     }
 
