@@ -35,12 +35,12 @@ public class RuleKeyGenerator implements KeyGenerator {
         if (target.getClass().getName().contains(FIELD_RULE_FLAG)
             || method.getName().contains(FIELD_RULE_FLAG)) {
 
-            buff.append("rule-field-");
+            buff.append("xplat-rule-field-");
 
         } else if (target.getClass().getName().contains(DATA_RULE_FLAG)
             || method.getName().contains(DATA_RULE_FLAG)) {
 
-            buff.append("rule-data-");
+            buff.append("xplat-rule-data-");
 
         } else {
 

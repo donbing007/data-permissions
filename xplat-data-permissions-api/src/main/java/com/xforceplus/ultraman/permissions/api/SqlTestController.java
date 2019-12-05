@@ -37,7 +37,7 @@ public class SqlTestController {
     public ResponseEntity test(
         @ApiParam(name = "sql", value = "原始 sql", required = true) @RequestParam("sql") String sql,
         @ApiParam(name = "tenant", value = "发起 SQL 的当前租户.", required = true) @RequestParam("tenant") String tenant,
-        @ApiParam(name = "roles", value = "发起 SQL 的当前租户角色列表.", required = true) @RequestParam("role[]") String[] roles) {
+        @ApiParam(name = "roles", value = "发起 SQL 的当前租户角色列表.", required = true) @RequestParam("roles") String[] roles) {
 
         Authorizations authorizations = new Authorizations();
         for (String role : roles) {
