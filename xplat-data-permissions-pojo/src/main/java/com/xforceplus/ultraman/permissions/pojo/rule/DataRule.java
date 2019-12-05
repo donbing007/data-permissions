@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.pojo.rule;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,8 +17,13 @@ public class DataRule implements Serializable {
     public static final byte TYPE = 1;
 
     private Long id;
+
+    @NotEmpty(message = "The field of a data rule cannot be null.")
     private String entity;
+
+    @NotEmpty(message = "Invalid field name..")
     private String field;
+
     private List<DataRuleCondition> conditions;
 
     public DataRule() {

@@ -26,6 +26,7 @@ public class HttpCodeAssembler {
             case FAIL: return HttpStatus.INTERNAL_SERVER_ERROR;
             case LOSS: return HttpStatus.BAD_REQUEST;
             case REPETITION: return HttpStatus.BAD_REQUEST;
+            case INVALID_PARAMETER: return HttpStatus.BAD_REQUEST;
             case UNKNOWN: return HttpStatus.INTERNAL_SERVER_ERROR;
             default: return success;
         }

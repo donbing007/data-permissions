@@ -5,7 +5,6 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
-import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.repository.DataScopeConditionsRepository;
 import com.xforceplus.ultraman.permissions.repository.DataScopeRepository;
@@ -17,19 +16,21 @@ import com.xforceplus.ultraman.permissions.service.aop.AuthorizationCheck;
 import com.xforceplus.ultraman.permissions.service.aop.NoAuthorizationPlan;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * @version 0.1 2019/11/22 10:10
  * @author dongbin
+ * @version 0.1 2019/11/22 10:10
  * @since 1.8
  */
 @CacheConfig(cacheNames = "rule")
@@ -49,11 +50,23 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     private DataScopeSubConditionRepository dataScopeSubConditionRepository;
 
 
+    @Resource
+    private Validator validator;
+
     @Override
     @Transactional
     @AuthorizationCheck(NoAuthorizationPlan.CREATE)
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rule.entity != null")
     public DataRuleManagementResult save(Authorization authorization, DataRule rule) {
+        Set<ConstraintViolation<DataRule>> violationSet = validator.validate(rule);
+        if (!violationSet.isEmpty()) {
+            throw new IllegalArgumentException(violationSet.stream().findFirst().get().getMessage());
+        }
+
+        if (rule.getConditions() == null || rule.getConditions().isEmpty()) {
+            throw new IllegalArgumentException("Invalid condition.");
+        }
+
         DataScopeExample dataScopeExample = new DataScopeExample();
         dataScopeExample.createCriteria().andEntityEqualTo(rule.getEntity());
         List<DataScope> dataScopes = dataScopeRepository.selectByExample(dataScopeExample);
@@ -120,8 +133,12 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     @Override
     @Transactional
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rule.entity != null")
     public DataRuleManagementResult remove(Authorization authorization, DataRule rule) {
+        Set<ConstraintViolation<DataRule>> violationSet = validator.validate(rule);
+        if (!violationSet.isEmpty()) {
+            throw new IllegalArgumentException(violationSet.stream().findFirst().get().getMessage());
+        }
 
         DataScopeSubConditionExample dataScopeSubConditionExample = new DataScopeSubConditionExample();
         dataScopeSubConditionExample.createCriteria().andConditionsIdEqualTo(rule.getId());
@@ -133,7 +150,7 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
         }
 
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        return new DataRuleManagementResult(ManagementStatus.FAIL, "Unable to remove data rule.");
+        return new DataRuleManagementResult(ManagementStatus.LOSS, "Unable to remove data rule.");
 
     }
 

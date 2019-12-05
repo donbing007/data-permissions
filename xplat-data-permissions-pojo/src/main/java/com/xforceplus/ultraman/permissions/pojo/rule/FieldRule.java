@@ -1,5 +1,6 @@
 package com.xforceplus.ultraman.permissions.pojo.rule;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,7 +16,10 @@ public class FieldRule implements Serializable {
     public static final byte TYPE = 0;
 
     private Long id;
+    @NotEmpty(message = "The entity of a field rule cannot be null.")
     private String entity;
+
+    @NotEmpty(message = "Invalid field name..")
     private String field;
 
     public FieldRule() {

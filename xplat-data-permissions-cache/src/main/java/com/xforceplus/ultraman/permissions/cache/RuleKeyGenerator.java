@@ -12,8 +12,6 @@ import java.lang.reflect.Parameter;
 
 /**
  * service 的缓存 key 生成器.
- * 需要在编译时指定 "-parameters" 参数.
- * 否则无法取得目标参数方法实际名称,造成查找 entity 失败.
  *
  * @version 0.1 2019/11/22 10:52
  * @auth dongbin
@@ -108,7 +106,12 @@ public class RuleKeyGenerator implements KeyGenerator {
         for (Field field : fields) {
             if (isEntity(field.getName(), field.getType())) {
                 field.setAccessible(true);
-                return field.get(param).toString();
+                String entity = (String) field.get(param);
+                if (entity == null) {
+                    throw new IllegalArgumentException("No suitable entity was found.");
+                } else {
+                    return entity;
+                }
             }
         }
 

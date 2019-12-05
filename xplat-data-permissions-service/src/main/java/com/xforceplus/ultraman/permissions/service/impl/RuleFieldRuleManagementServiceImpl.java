@@ -4,7 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
+import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRule;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.repository.FieldScopeRepository;
 import com.xforceplus.ultraman.permissions.repository.RolePermissionsRepository;
@@ -24,7 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,11 +49,19 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     @Resource
     private FieldScopeRepository fieldScopeRepository;
 
+    @Resource
+    private Validator validator;
+
     @Override
     @Transactional
     @AuthorizationCheck(NoAuthorizationPlan.CREATE)
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rule.entity != null")
     public FieldRuleManagementResult save(Authorization authorization, FieldRule rule) {
+        Set<ConstraintViolation<FieldRule>> violationSet = validator.validate(rule);
+        if (!violationSet.isEmpty()) {
+            throw new IllegalArgumentException(violationSet.stream().findFirst().get().getMessage());
+        }
+
         if (isExist(authorization, rule)) {
             return new FieldRuleManagementResult(ManagementStatus.REPETITION);
         }
@@ -100,8 +113,13 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     @Override
     @Transactional
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
-    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator")
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rule.entity != null")
     public FieldRuleManagementResult remove(Authorization authorization, FieldRule rule) {
+        Set<ConstraintViolation<FieldRule>> violationSet = validator.validate(rule);
+        if (!violationSet.isEmpty()) {
+            throw new IllegalArgumentException(violationSet.stream().findFirst().get().getMessage());
+        }
+
         RolePermissionsExample example = new RolePermissionsExample();
         example.createCriteria().andRoleIdEqualTo(authorization.getId())
             .andScopeIdEqualTo(rule.getId())
@@ -116,7 +134,7 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         }
 
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        return new FieldRuleManagementResult(ManagementStatus.FAIL, "Unable to remove field rule.");
+        return new FieldRuleManagementResult(ManagementStatus.LOSS, "Unable to remove field rule.");
     }
 
     @Override

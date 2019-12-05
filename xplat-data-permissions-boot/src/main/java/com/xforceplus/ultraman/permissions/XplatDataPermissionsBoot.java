@@ -6,12 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 启动主类.
- * @version 0.1 2019/11/14 10:19
+ *
  * @author dongbin
+ * @version 0.1 2019/11/14 10:19
  * @since 1.8
  */
 @SpringBootApplication

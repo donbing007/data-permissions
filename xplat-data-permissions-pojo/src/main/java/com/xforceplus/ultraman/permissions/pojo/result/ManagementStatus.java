@@ -12,7 +12,8 @@ public enum ManagementStatus {
     SUCCESS(1), // 成功
     FAIL(2), // 发生错误.
     LOSS(3), // 丢失
-    REPETITION(4); // 数据重复
+    REPETITION(4), // 数据重复
+    INVALID_PARAMETER(5); //错误的参数
 
 
     private int value;
