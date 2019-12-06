@@ -66,7 +66,7 @@ public class RuleAuthorizationManagementServiceImpl implements RuleAuthorization
 
         PageHelper.startPage(1, continuation.getSize());
         List<Role> roles = roleRepository.selectByExample(example);
-        Set<Authorization> authorizations = roles.parallelStream().map(role ->
+        Set<Authorization> authorizations = roles.stream().map(role ->
             new Authorization() {{
                 setId(role.getId());
                 setRole(role.getRoleExternalId());

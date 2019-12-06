@@ -51,7 +51,7 @@ public class DefaultSearcherImpl implements Searcher {
         example.setOrderByClause("id ASC");
         List<FieldScope> scopes = fieldScopeRepository.selectByExample(example);
 
-        return scopes.parallelStream().map(
+        return scopes.stream().map(
             scope -> new FieldRule(scope.getEntity(), scope.getField())).collect(Collectors.toList());
     }
 

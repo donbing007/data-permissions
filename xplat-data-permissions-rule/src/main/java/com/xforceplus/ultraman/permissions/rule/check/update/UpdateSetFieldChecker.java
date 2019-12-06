@@ -40,7 +40,7 @@ public class UpdateSetFieldChecker extends AbstractTypeSafeChecker {
 
         UpdateSetAbility updateSetAbility = processor.buildUpdateSetAbility();
         List<UpdateSet> updateSets = updateSetAbility.list();
-        List<Field> fields = updateSets.parallelStream().map(u -> u.getField()).collect(Collectors.toList());
+        List<Field> fields = updateSets.stream().map(u -> u.getField()).collect(Collectors.toList());
 
         Collection<Field> noRuleFields =
             FieldCheckHelper.checkFieldsRule(processor.buildFieldFromAbility(), authorizations, fields, searcher);

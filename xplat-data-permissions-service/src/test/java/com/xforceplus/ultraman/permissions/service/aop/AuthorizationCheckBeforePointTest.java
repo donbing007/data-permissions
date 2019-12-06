@@ -46,7 +46,7 @@ public class AuthorizationCheckBeforePointTest extends AbstractBaseTest {
     public void testCheckAuth() throws Throwable {
 
         List<Pack> caseData = buildCase();
-        caseData.parallelStream().forEach(pack -> {
+        caseData.stream().forEach(pack -> {
 
             Object returnValue;
             try {

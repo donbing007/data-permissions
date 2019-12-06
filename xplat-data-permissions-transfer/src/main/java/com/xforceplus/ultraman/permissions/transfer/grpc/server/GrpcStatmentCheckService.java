@@ -32,7 +32,7 @@ public class GrpcStatmentCheckService extends StatmentCheckServiceGrpc.StatmentC
         List<com.xforceplus.ultraman.permissions.transfer.grpc.generate.AuthorizationGrpc.Authorization> authorizationList
             = request.getAuthorizationList();
 
-        Authorizations authorizations = new Authorizations(authorizationList.parallelStream().map(
+        Authorizations authorizations = new Authorizations(authorizationList.stream().map(
             a -> new Authorization(a.getRole(), a.getTenant())).collect(Collectors.toList()));
 
         CheckResult result = ruleCheckService.check(sql, authorizations);

@@ -1,18 +1,11 @@
 package com.xforceplus.ultraman.permissions.rule.check.common.validation;
 
-import com.xforceplus.ultraman.permissions.rule.check.AbstractTypeSafeChecker;
-import com.xforceplus.ultraman.permissions.rule.context.Context;
-import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
-import com.xforceplus.ultraman.permissions.sql.utils.SubSqlIterator;
 
-import java.util.ArrayDeque;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * 查询语句不可以使用"*"返回检查器.
