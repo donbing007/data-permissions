@@ -79,6 +79,13 @@ public class JSqlParserSelectItemAbility extends AbstractJSqlParserHandler imple
             this.selectFields = selectFields;
         }
 
+        // 只处理第一个语句,如果有子句交由外层处理.
+        @Override
+        public void visit(SetOperationList setOpList) {
+            SelectBody body = setOpList.getSelects().get(0);
+            body.accept(new ListSelectVisitorImpl(selectFields));
+        }
+
         @Override
         public void visit(PlainSelect plainSelect) {
 

@@ -9,6 +9,7 @@ import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.define.SqlType;
 import com.xforceplus.ultraman.permissions.sql.processor.SelectSqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.SelectItemAbility;
+import com.xforceplus.ultraman.permissions.sql.utils.SubSqlIterator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +36,24 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
         SelectSqlProcessor processor = (SelectSqlProcessor) sql.buildProcessor();
 
         checkSelectItem(processor, context);
+
+        if (!context.isRefused()) {
+
+            SubSqlIterator subSqlIterator = new SubSqlIterator(processor.buildSubSqlAbility());
+            Sql subSql;
+            while (subSqlIterator.hasNext()) {
+                subSql = subSqlIterator.next();
+
+                if (subSql.isUnion()) {
+                    checkSelectItem((SelectSqlProcessor) subSql.buildProcessor(), context);
+                }
+
+                if (context.isRefused()) {
+                    return;
+                }
+            }
+
+        }
     }
 
     private void checkSelectItem(SelectSqlProcessor selectSqlProcessor, Context context) {

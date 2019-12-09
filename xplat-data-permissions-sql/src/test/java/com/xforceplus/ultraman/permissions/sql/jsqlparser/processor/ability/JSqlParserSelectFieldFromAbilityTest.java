@@ -129,6 +129,19 @@ public class JSqlParserSelectFieldFromAbilityTest {
             )
         );
 
+        data.put("select distinct summ.auth_tax_period as auth_tax_period from crp_purchaser_auth_summ summ " +
+                "where summ.auth_tax_period is not null and summ.auth_tax_period <> '' " +
+                "union all select s.name as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'",
+            new SearchPack(
+                new Field("summ", "auth_tax_period", new Alias("auth_tax_period", true)),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(
+                        new Field("summ", "auth_tax_period", new Alias("auth_tax_period", true)),
+                        new From("crp_purchaser_auth_summ",new Alias("summ")))
+                )
+            )
+        );
+
 
         return data;
     }

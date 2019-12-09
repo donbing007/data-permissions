@@ -52,8 +52,10 @@ public class SelectFieldCheckerTest {
                 Authorizations authorizations = pack.auths;
                 List<FieldRule> rules;
                 for (Authorization auth : authorizations.getAuthorizations()) {
-                    rules = pack.rules.get(auth.toString() + pack.entity);
-                    when(searcher.searchFieldRule(auth, pack.entity)).thenReturn(rules);
+                    for (String entity : pack.entitys) {
+                        rules = pack.rules.get(auth.toString() + entity);
+                        when(searcher.searchFieldRule(auth, entity)).thenReturn(rules);
+                    }
                 }
 
                 Context context = new DefaultContext(sqlParser.parser(request.sql), pack.auths, searcher);
@@ -99,13 +101,13 @@ public class SelectFieldCheckerTest {
 
     private static class RuleCheckPack {
         private Authorizations auths;
-        private String entity;
+        private List<String> entitys;
         // key = authorization.toString() + entity
         private Map<String, List<FieldRule>> rules;
 
-        public RuleCheckPack(Authorizations auths, String entity, Map<String, List<FieldRule>> rules) {
+        public RuleCheckPack(Authorizations auths, List<String> entitys, Map<String, List<FieldRule>> rules) {
             this.auths = auths;
-            this.entity = entity;
+            this.entitys = entitys;
             this.rules = rules;
         }
     }
@@ -119,7 +121,7 @@ public class SelectFieldCheckerTest {
                 Collections.emptyList()),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(new Authorization("r1", "t1").toString() + "t1",
                         Arrays.asList(
@@ -140,7 +142,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(new Authorization("r1", "t1").toString() + "t1",
                         Arrays.asList(
@@ -161,7 +163,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(new Authorization("r1", "t1").toString() + "t1",
                         Arrays.asList(
@@ -181,7 +183,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t2",
+                Arrays.asList("t2"),
                 new HashMap() {{
                     put(new Authorization("r1", "t1").toString() + "t2",
                         Arrays.asList(
@@ -202,7 +204,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t2",
+                Arrays.asList("t2"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t2",
@@ -222,7 +224,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -242,7 +244,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -262,7 +264,7 @@ public class SelectFieldCheckerTest {
                 )),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -285,7 +287,7 @@ public class SelectFieldCheckerTest {
                     new Authorization("r1", "t1"),
                     new Authorization("r2", "t1")
                 )),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -313,7 +315,7 @@ public class SelectFieldCheckerTest {
                     new Authorization("r1", "t1"),
                     new Authorization("r2", "t1")
                 )),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -339,7 +341,7 @@ public class SelectFieldCheckerTest {
                     new Authorization("r1", "t1"),
                     new Authorization("r2", "t1")
                 )),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -363,7 +365,7 @@ public class SelectFieldCheckerTest {
                     new Authorization("r1", "t1"),
                     new Authorization("r2", "t1")
                 )),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -398,7 +400,7 @@ public class SelectFieldCheckerTest {
                     new Authorization("r1", "t1"),
                     new Authorization("r2", "t1")
                 )),
-                "t1",
+                Arrays.asList("t1"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "t1",
@@ -411,6 +413,35 @@ public class SelectFieldCheckerTest {
                         new Authorization("r2", "t1").toString() + "t1",
                         Collections.emptyList()
                     );
+                }}
+            )
+        );
+
+        data.put(new SearchRequest(
+                "select distinct summ.auth_tax_period as auth_tax_period from crp_purchaser_auth_summ summ " +
+                    "where summ.auth_tax_period is not null and summ.auth_tax_period <> '' " +
+                    "union all " +
+                    "select s.name as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'",
+                false,
+                Arrays.asList()),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                Arrays.asList("crp_purchaser_auth_summ","dim_auth_charge_status"),
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "crp_purchaser_auth_summ",
+                        Arrays.asList(
+                            new FieldRule("crp_purchaser_auth_summ", "*")
+                        )
+                    );
+
+                    put(
+                        new Authorization("r1", "t1").toString() + "dim_auth_charge_status",
+                        Arrays.asList(
+                            new FieldRule("dim_auth_charge_status", "*")
+                        )
+                    );
+
                 }}
             )
         );

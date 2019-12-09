@@ -78,7 +78,22 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
 
         } else {
 
-            return doSearchFromPlainSelect(field, (PlainSelect) getSelect().getSelectBody(), true);
+            SelectBody body = getSelect().getSelectBody();
+            List<AbstractMap.SimpleEntry<Field, From>> results = new ArrayList<>();
+            body.accept(new SelectVisitorAdapter() {
+                @Override
+                public void visit(PlainSelect plainSelect) {
+                    results.addAll(doSearchFromPlainSelect(field, plainSelect, true));
+                }
+
+                @Override
+                public void visit(SetOperationList setOpList) {
+                    results.addAll(doSearchFromPlainSelect(field,
+                        (PlainSelect) setOpList.getSelects().get(0), true));
+                }
+            });
+
+            return results;
         }
     }
 

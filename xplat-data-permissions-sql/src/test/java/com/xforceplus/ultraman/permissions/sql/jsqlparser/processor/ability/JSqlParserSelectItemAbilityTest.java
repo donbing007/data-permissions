@@ -170,6 +170,14 @@ public class JSqlParserSelectItemAbilityTest {
             )
         );
 
+        data.put("select distinct summ.auth_tax_period as auth_tax_period from crp_purchaser_auth_summ summ " +
+                "where summ.auth_tax_period is not null and summ.auth_tax_period <> '' " +
+                "union all select s.name as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'",
+            Arrays.asList(
+                new Field("summ", "auth_tax_period", new Alias("auth_tax_period", true))
+            )
+        );
+
         return data;
     }
 

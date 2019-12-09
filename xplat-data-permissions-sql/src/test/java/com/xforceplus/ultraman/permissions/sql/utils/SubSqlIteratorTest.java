@@ -60,7 +60,7 @@ public class SubSqlIteratorTest {
                 });
 
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                throw new RuntimeException(ex.getMessage() + " " + sql, ex);
             }
         });
 
@@ -114,6 +114,14 @@ public class SubSqlIteratorTest {
             Arrays.asList(
                 CCJSqlParserUtil.parse("select * from t2").toString(),
                 CCJSqlParserUtil.parse("select * from t3").toString()
+            )
+        );
+
+        data.put("select distinct summ.auth_tax_period as auth_tax_period from crp_purchaser_auth_summ summ where " +
+                "summ.auth_tax_period is not null and summ.auth_tax_period <> '' union all select s.name" +
+                " as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select s.name as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'").toString()
             )
         );
 
