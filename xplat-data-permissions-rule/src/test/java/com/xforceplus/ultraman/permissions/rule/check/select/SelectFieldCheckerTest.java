@@ -426,7 +426,7 @@ public class SelectFieldCheckerTest {
                 Arrays.asList()),
             new RuleCheckPack(
                 new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
-                Arrays.asList("crp_purchaser_auth_summ","dim_auth_charge_status"),
+                Arrays.asList("crp_purchaser_auth_summ", "dim_auth_charge_status"),
                 new HashMap() {{
                     put(
                         new Authorization("r1", "t1").toString() + "crp_purchaser_auth_summ",
