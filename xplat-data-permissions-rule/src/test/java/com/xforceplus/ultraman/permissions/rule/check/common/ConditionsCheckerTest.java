@@ -253,6 +253,41 @@ public class ConditionsCheckerTest {
             )
         );
 
+        data.put(
+            "select t1.* from t1 union select t2.* from t2",
+            new ConditionPack(
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("t1", Arrays.asList(
+                                new DataRule("t1", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
+
+                            put("t2", Arrays.asList(
+                                new DataRule("t2", "c1", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.INTEGER,
+                                        RuleConditionRelationship.AND,
+                                        "100")
+                                ))
+                            ));
+
+                        }}
+                    );
+
+                }},
+                CCJSqlParserUtil.parse("select t1.* from t1 where t1.c1=100 union select t2.* from t2 where t2.c1=100").toString(),
+                true
+            )
+        );
+
         return data;
     }
 

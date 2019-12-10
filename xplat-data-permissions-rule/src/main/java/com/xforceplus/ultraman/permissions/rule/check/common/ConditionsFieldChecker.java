@@ -41,10 +41,14 @@ public class ConditionsFieldChecker extends AbstractTypeSafeChecker {
     protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
 
+
         sql.visit(new SqlProcessorVisitorAdapter() {
             @Override
             public void visit(SelectSqlProcessor processor) {
-                checkCondition(processor.buildConditionAbility(), processor.buildFieldFromAbility(), context);
+                // 如果是联合语句,在子句中会进行检查.
+                if (!sql.isUnion()) {
+                    checkCondition(processor.buildConditionAbility(), processor.buildFieldFromAbility(), context);
+                }
 
                 if (!context.isRefused()) {
                     SubSqlIterator subSqlIterator = new SubSqlIterator(processor.buildSubSqlAbility());
@@ -75,10 +79,6 @@ public class ConditionsFieldChecker extends AbstractTypeSafeChecker {
                 checkCondition(processor.buildConditionAbility(), processor.buildFieldFromAbility(), context);
             }
         });
-    }
-
-    private void doCheck(Sql sql) {
-
     }
 
     //任何一个字段没有权限都将拒绝执行.

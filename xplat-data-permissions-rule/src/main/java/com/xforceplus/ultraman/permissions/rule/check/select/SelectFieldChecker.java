@@ -33,26 +33,31 @@ public class SelectFieldChecker extends AbstractTypeSafeChecker {
     protected void checkTypeSafe(Context context) {
         Sql sql = context.sql();
 
+        if (sql.isUnion()) {
+
+            checkSubSql(sql, context);
+
+        } else {
+
+            SelectSqlProcessor processor = (SelectSqlProcessor) sql.buildProcessor();
+
+            checkSelectItem(processor, context);
+
+        }
+    }
+
+    private void checkSubSql(Sql sql, Context context) {
         SelectSqlProcessor processor = (SelectSqlProcessor) sql.buildProcessor();
+        SubSqlIterator subSqlIterator = new SubSqlIterator(processor.buildSubSqlAbility());
+        Sql subSql;
+        while (subSqlIterator.hasNext()) {
+            subSql = subSqlIterator.next();
 
-        checkSelectItem(processor, context);
+            checkSelectItem((SelectSqlProcessor) subSql.buildProcessor(), context);
 
-        if (!context.isRefused()) {
-
-            SubSqlIterator subSqlIterator = new SubSqlIterator(processor.buildSubSqlAbility());
-            Sql subSql;
-            while (subSqlIterator.hasNext()) {
-                subSql = subSqlIterator.next();
-
-                if (subSql.isUnion()) {
-                    checkSelectItem((SelectSqlProcessor) subSql.buildProcessor(), context);
-                }
-
-                if (context.isRefused()) {
-                    return;
-                }
+            if (context.isRefused()) {
+                return;
             }
-
         }
     }
 

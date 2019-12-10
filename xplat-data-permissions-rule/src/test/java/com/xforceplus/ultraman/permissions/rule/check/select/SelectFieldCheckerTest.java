@@ -446,6 +446,30 @@ public class SelectFieldCheckerTest {
             )
         );
 
+        data.put(new SearchRequest(
+                "select summ.auth_tax_period as auth_tax_period from crp_purchaser_auth_summ summ " +
+                    "where summ.auth_tax_period is not null and summ.auth_tax_period <> '' " +
+                    "union all " +
+                    "select s.name as auth_tax_period from dim_auth_charge_status s where s.type = 'noAuth'",
+                true,
+                Arrays.asList(
+                    new Field("s", "name", new Alias("auth_tax_period", true))
+                )),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                Arrays.asList("crp_purchaser_auth_summ", "dim_auth_charge_status"),
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "crp_purchaser_auth_summ",
+                        Arrays.asList(
+                            new FieldRule("crp_purchaser_auth_summ", "*")
+                        )
+                    );
+
+                }}
+            )
+        );
+
         return data;
     }
 }

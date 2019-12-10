@@ -160,6 +160,20 @@ public class JSqlParserSubSqlAbilityTest {
                 CCJSqlParserUtil.parse("select * from t2").toString()
             )
         );
+
+        data.put("select * from t1 union select * from t2",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t1").toString(),
+                CCJSqlParserUtil.parse("select * from t2").toString()
+            )
+        );
+
+        data.put("select * from t1 union all select * from t2",
+            Arrays.asList(
+                CCJSqlParserUtil.parse("select * from t1").toString(),
+                CCJSqlParserUtil.parse("select * from t2").toString()
+            )
+        );
         return data;
     }
 } 

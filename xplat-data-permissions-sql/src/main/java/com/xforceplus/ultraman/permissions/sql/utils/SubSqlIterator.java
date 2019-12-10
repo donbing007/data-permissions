@@ -10,6 +10,9 @@ import java.util.*;
 
 /**
  * 子查询迭代器.
+ * 如果是 union 语句,那么所有 union/union all 联合的语句都将是子句.
+ * select * from (select * from t2) t1  ->  select * from t2
+ * select * from t1 union select * from t2 -> select * from t1, select * from t2
  *
  * @author dongbin
  * @version 0.1 2019/11/8 16:12
