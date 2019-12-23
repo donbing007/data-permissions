@@ -98,3 +98,7 @@ fabric.properties
 *.iml
 target/
 *.xml.versionsBackup
+.classpath
+.project
+.settings/
+.factorypath

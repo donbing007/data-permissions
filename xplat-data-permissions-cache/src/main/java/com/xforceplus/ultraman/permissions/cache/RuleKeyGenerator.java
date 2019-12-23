@@ -1,14 +1,15 @@
 package com.xforceplus.ultraman.permissions.cache;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
+
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 
 /**
  * service 的缓存 key 生成器.
