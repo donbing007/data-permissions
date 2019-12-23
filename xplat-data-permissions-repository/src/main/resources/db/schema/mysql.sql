@@ -51,3 +51,6 @@ create table if not exists role_permissions
   scope_id   bigint  default 0 null comment '根据 type 不同指向不同的权限范围 column 或者 data.',
   scope_type tinyint default 0 not null comment '范围类型.是字段,还是数据范围.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index data_scope_sub_condition_entity_role_tenant_index on xplat_data_permissions.data_scope_sub_condition (entity, role, tenant);
+create index field_scope_entity_role_tenant_index on xplat_data_permissions.field_scope (entity, role, tenant);
