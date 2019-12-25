@@ -24,15 +24,15 @@ create table if not exists data_scope_sub_condition
   `index`       smallint(6) default 0 not null comment '当前条件在主条件中处于的位置,从0开始.',
   `value`         varchar(255)          not null comment '操作目标数据.',
   link          tinyint     default 0 not null comment '和上一子条件的连接方式,0表示 and,1表示 or.',
-  role          varchar(64)          not null comment '角色,冗余.',
-  tenant        varchar(64)          not null comment '租户,冗余.'
+  role          varchar(128)          not null comment '角色,冗余.',
+  tenant        varchar(128)          not null comment '租户,冗余.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists field_scope
 (
   id     bigint auto_increment primary key,
-  role   varchar(64)             not null comment '权限属于的角色.冗余.',
-  tenant varchar(64)             not null comment '权限属于的租户.冗余.',
+  role   varchar(128)             not null comment '权限属于的角色.冗余.',
+  tenant varchar(128)             not null comment '权限属于的租户.冗余.',
   entity varchar(64)             not null comment '实体对象描述',
   field  varchar(64) default '*' not null comment '字段描述,一般是字段名称.默认为"*",表示所有范围.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -40,8 +40,8 @@ create table if not exists field_scope
 create table if not exists role
 (
   id               bigint auto_increment primary key,
-  role_external_id varchar(64) not null comment '角色外部定义标识.',
-  tenant_id        varchar(64) not null comment '角色属于的租户标识.'
+  role_external_id varchar(128) not null comment '角色外部定义标识.',
+  tenant_id        varchar(128) not null comment '角色属于的租户标识.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists role_permissions
@@ -52,5 +52,5 @@ create table if not exists role_permissions
   scope_type tinyint default 0 not null comment '范围类型.是字段,还是数据范围.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-alter table data_scope_sub_condition add index idx_data_scope_sub_condition_entity_role_tenant_index(entity, role, tenant);
-alter table field_scope add index idx_field_scope_entity_role_tenant_index(entity, role, tenant);
+alter table data_scope_sub_condition add index idx_data_scope_sub_condition_entity_role_tenant_index(entity, role(90), tenant(90));
+alter table field_scope add index idx_field_scope_entity_role_tenant_index(entity, role(90), tenant(90));
