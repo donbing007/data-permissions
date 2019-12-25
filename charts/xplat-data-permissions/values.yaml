@@ -47,6 +47,10 @@ annotations:
   prometheus.io/path: "/actuator/prometheus"
 
 jvm:
+  - -server
+  - -version:gc
+  - -XX:+UseParallelGC
+  - -XX:+PrintGCTimeStamps
 
 jdbc:
   dbname: "xplat-data-permissions"
