@@ -1,4 +1,5 @@
-[![pipeline status](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/master/pipeline.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/master)
+[![pipeline status](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/develop/pipeline.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/develop)
+
 
 #引言
 
