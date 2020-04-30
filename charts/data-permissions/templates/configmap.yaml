@@ -50,14 +50,14 @@ data:
             cache-names: rule
           datasource:
             driver-class-name: com.mysql.cj.jdbc.Driver
-            url: jdbc:mysql://{{ .Values.jdbc.host}}:{{ .Values.jdbc.port}}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&socketTimeout={{int .Values.jdbc.connection.readTimeoutSeconds }}&autoReconnect=true&failOverReadOnly=false
-            username: {{ .Values.jdbc.userName }}
-            password: {{ .Values.jdbc.password }}
+            url: jdbc:mysql://{{ .Values.jdbc.host | default "127.0.0.1" }}:{{ .Values.jdbc.port | default "3306" }}/{{ .Values.jdbc.dbname }}?useUnicode=true&characterEncoding=utf8&socketTimeout={{int .Values.jdbc.connection.readTimeoutSeconds }}&autoReconnect=true&failOverReadOnly=false
+            username: {{ .Values.jdbc.userName | default "root" }}
+            password: {{ .Values.jdbc.password | default "root" }}
             hikari:
               connection-test-query: "select 1"
-              connection-timeout: {{int .Values.jdbc.pool.connectionTimeoutSeconds }}
-              validation-timeout: {{ .Values.jdbc.connection.readTimeoutSeconds }}
-              maximum-pool-size: {{ .Values.jdbc.pool.maxSize }}
+              connection-timeout: {{int .Values.jdbc.pool.connectionTimeoutSeconds | default "1000" }}
+              validation-timeout: {{ .Values.jdbc.connection.readTimeoutSeconds | default "3000" }}
+              maximum-pool-size: {{ .Values.jdbc.pool.maxSize | default "3" }}
         j2cache:
           config-location: file:/xplat/j2cache/j2cache.properties
           open-spring-cache: true
@@ -77,68 +77,16 @@ data:
         j2cache.sync_ttl_to_redis = true
         j2cache.default_cache_null_object = true
         j2cache.serialization = kryo
-        caffeine.region.default = {{ .Values.cache.l1.size}}, {{ .Values.cache.l1.ttl }}
-        lettuce.storage = hash
-        lettuce.channel = j2cache
-        lettuce.scheme = redis
-        lettuce.hosts = {{ .Values.cache.l2.redis.host }}:{{ .Values.cache.l2.redis.port }}
+        caffeine.region.default = {{ .Values.cache.l1.size | default "10000" }}, {{ .Values.cache.l1.ttl | default "30d" }}
+        lettuce.storage = {{ .Values.cache.l2.redis.storage | default "hash" }}
+        lettuce.channel = {{ .Values.cache.l2.redis.channel | default "dataPermissions" }}
+        lettuce.scheme = {{ .Values.cache.l2.redis.scheme | default "redis" }}
+        lettuce.hosts = {{ .Values.cache.l2.redis.host }}:{{ .Values.cache.l2.redis.port | default "6379" }}
         {{- if .Values.cache.l2.redis.password }}
         lettuce.password = {{ .Values.cache.l2.redis.password }}
         {{- end }}
-        lettuce.database = 0
-        lettuce.maxTotal = {{ .Values.cache.l2.redis.pool.max }}
-        lettuce.maxIdle = {{ .Values.cache.l2.redis.pool.maxIdle }}
-        lettuce.minIdle = {{ .Values.cache.l2.redis.pool.minIdle }}
-        lettuce.timeout = {{ .Values.cache.l2.redis.timeout }}
-    initdb.sql: |
-        create table if not exists data_scope
-        (
-        id     bigint auto_increment primary key,
-        entity varchar(255) not null comment '实体描述信息.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists data_scope_conditions
-        (
-        id            bigint auto_increment primary key,
-        data_scope_id bigint       not null comment '数据权限定义标识.',
-        field         varchar(255) not null comment '字段描述信息,一般为字段名称.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists data_scope_sub_condition
-        (
-        id            bigint auto_increment primary key,
-        conditions_id bigint                not null comment '主条件标识.',
-        value_type bigint                not null comment '值的数据类型.',
-        entity        varchar(255)          not null comment '实体信息,冗余.',
-        field         varchar(255)          not null comment '字段描述信息,一般为字段名称.冗余.',
-        operation     varchar(255)          not null comment '条件操作符',
-        `index`       smallint(6) default 0 not null comment '当前条件在主条件中处于的位置,从0开始.',
-        `value`         varchar(255)          not null comment '操作目标数据.',
-        link          tinyint     default 0 not null comment '和上一子条件的连接方式,0表示 and,1表示 or.',
-        role          varchar(255)          not null comment '角色,冗余.',
-        tenant        varchar(255)          not null comment '租户,冗余.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists field_scope
-        (
-        id     bigint auto_increment primary key,
-        role   varchar(255)             not null comment '权限属于的角色.冗余.',
-        tenant varchar(255)             not null comment '权限属于的租户.冗余.',
-        entity varchar(255)             not null comment '实体对象描述',
-        field  varchar(255) default '*' not null comment '字段描述,一般是字段名称.默认为"*",表示所有范围.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists role
-        (
-        id               bigint auto_increment primary key,
-        role_external_id varchar(255) not null comment '角色外部定义标识.',
-        tenant_id        varchar(255) not null comment '角色属于的租户标识.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists role_permissions
-        (
-        id         bigint auto_increment primary key,
-        role_id    bigint            not null comment '角色标识',
-        scope_id   bigint  default 0 null comment '根据 type 不同指向不同的权限范围 column 或者 data.',
-        scope_type tinyint default 0 not null comment '范围类型.是字段,还是数据范围.'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        lettuce.database = {{ .Values.cache.l2.redis.database | default "0" }}
+        lettuce.maxTotal = {{ .Values.cache.l2.redis.pool.max | default "10" }}
+        lettuce.maxIdle = {{ .Values.cache.l2.redis.pool.maxIdle | default "6" }}
+        lettuce.minIdle = {{ .Values.cache.l2.redis.pool.minIdle | default "3" }}
+        lettuce.timeout = {{ .Values.cache.l2.redis.timeout | default "1000" }}

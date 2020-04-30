@@ -48,9 +48,7 @@ annotations:
 
 jvm:
   - -server
-  - -version:gc
   - -XX:+UseParallelGC
-  - -XX:+PrintGCTimeStamps
 
 jdbc:
   dbname: "xplat-data-permissions"
@@ -82,7 +80,12 @@ cache:
   l2:
     enabled: true
     redis:
-      host: "xplat-data-permissions-redis-master"
+      # redis -> single redis server
+      # rediss -> single redis server with ssl
+      # redis-sentinel -> redis sentinel
+      # redis-cluster -> cluster servers
+      scheme: redis-cluster
+      host: "redis"
       port: 6379
       password: 666666
       timeout: 1000
