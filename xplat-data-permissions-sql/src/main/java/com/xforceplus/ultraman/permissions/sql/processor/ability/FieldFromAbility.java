@@ -5,9 +5,8 @@ import com.xforceplus.ultraman.permissions.sql.define.From;
 import com.xforceplus.ultraman.permissions.sql.define.Item;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 
-import java.text.ParseException;
-import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 查找指定字段的实际来源表名称.
@@ -25,5 +24,5 @@ public interface FieldFromAbility {
      * @param item 字段.
      * @return 来源名称列表.
      */
-    List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException;
+    List<Map.Entry<Field, From>> searchRealTableName(Item item) throws ProcessorException;
 }

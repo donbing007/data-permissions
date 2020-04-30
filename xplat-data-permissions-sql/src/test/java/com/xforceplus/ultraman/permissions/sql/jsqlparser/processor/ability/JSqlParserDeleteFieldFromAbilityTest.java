@@ -40,7 +40,7 @@ public class JSqlParserDeleteFieldFromAbilityTest {
 
                 JSqlParserDeleteFieldFromAbility h = new JSqlParserDeleteFieldFromAbility(CCJSqlParserUtil.parse(sql));
                 SearchPack pack = caseData.get(sql);
-                List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.field);
+                List<Map.Entry<Field, From>> froms = h.searchRealTableName(pack.field);
 
                 Assert.assertEquals(sql, pack.expectedFroms.size(), froms.size());
                 Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]),

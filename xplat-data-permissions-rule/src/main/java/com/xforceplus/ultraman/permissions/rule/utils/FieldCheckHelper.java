@@ -4,14 +4,14 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
-import com.xforceplus.ultraman.permissions.sql.Sql;
 import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
-import com.xforceplus.ultraman.permissions.sql.processor.SqlProcessor;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
-import com.xforceplus.ultraman.permissions.sql.processor.ability.FromAbility;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -72,7 +72,7 @@ public class FieldCheckHelper {
         return targetFields.stream().filter(field -> {
 
             // 字段实际的来源表,因为一个字段有可能是由子表的多个字段组成而成的,需要每一个字段都有权限.
-            List<AbstractMap.SimpleEntry<Field, From>> fieldFroms = fieldFromAbility.searchRealTableName(field);
+            List<Map.Entry<Field, From>> fieldFroms = fieldFromAbility.searchRealTableName(field);
 
             // 当前处理的字段
             Field targetField;
@@ -83,7 +83,7 @@ public class FieldCheckHelper {
 
             // 某个子字段是否在所有角色中的某个角色的字段规则中.true 在,false 不在.
             boolean found;
-            for (AbstractMap.SimpleEntry<Field, From> fieldFromEntry : fieldFroms) {
+            for (Map.Entry<Field, From> fieldFromEntry : fieldFroms) {
 
                 targetField = fieldFromEntry.getKey();
                 targetFrom = fieldFromEntry.getValue();

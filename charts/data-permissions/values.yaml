@@ -84,7 +84,7 @@ cache:
       # rediss -> single redis server with ssl
       # redis-sentinel -> redis sentinel
       # redis-cluster -> cluster servers
-      scheme: redis-cluster
+      scheme: redis
       host: "redis"
       port: 6379
       password: 666666

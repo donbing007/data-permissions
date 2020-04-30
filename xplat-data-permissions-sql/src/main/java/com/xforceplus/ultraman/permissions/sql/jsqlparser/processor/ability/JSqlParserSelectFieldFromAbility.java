@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.jsqlparser.utils.ConversionHelper;
 import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.FieldFromAbility;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
@@ -29,9 +30,9 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
+    public List<Map.Entry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
 
-        List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
+        List<Map.Entry<Field, From>> froms = new ArrayList();
         item.visit(new ItemVisitorAdapter() {
             @Override
             public void visit(Field field) {
@@ -67,7 +68,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
 
-    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    private List<Map.Entry<Field, From>> searchRealTableName(Field field) {
         if (isSubSelect()) {
 
             return doSearchFromPlainSelect(field, getSubSelect(), true);
@@ -75,7 +76,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         } else {
 
             SelectBody body = getSelect().getSelectBody();
-            List<AbstractMap.SimpleEntry<Field, From>> results = new ArrayList<>();
+            List<Map.Entry<Field, From>> results = new ArrayList<>();
             body.accept(new SelectVisitorAdapter() {
                 @Override
                 public void visit(PlainSelect plainSelect) {
@@ -93,8 +94,8 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         }
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> doSearchFromPlainSelect(Field field, PlainSelect plainSelect, boolean equalsSubAlisa) {
-        List<AbstractMap.SimpleEntry<Field, From>> froms = doSearchFromItem(field, plainSelect.getFromItem(), equalsSubAlisa);
+    private List<Map.Entry<Field, From>> doSearchFromPlainSelect(Field field, PlainSelect plainSelect, boolean equalsSubAlisa) {
+        List<Map.Entry<Field, From>> froms = doSearchFromItem(field, plainSelect.getFromItem(), equalsSubAlisa);
 
         if (froms.isEmpty()) {
             froms = doSearchJoins(field, plainSelect.getJoins(), equalsSubAlisa);
@@ -103,7 +104,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         return froms;
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> doSearchFromItem(Field field, FromItem fromItem, boolean equalsSubAlisa) {
+    private List<Map.Entry<Field, From>> doSearchFromItem(Field field, FromItem fromItem, boolean equalsSubAlisa) {
 
         if (fromItem == null) {
             return null;
@@ -130,63 +131,75 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
              */
 
             SubSelect subSelect = (SubSelect) fromItem;
+            SelectBody selectBody = subSelect.getSelectBody();
 
-            /**
-             *  当前查找的字段替换成子查询中的返回段.
-             *  select t1.id from (select t2.id from t2) t1;
-             *  在子查询中,目标字段 t1.id 会被替换成 t2.id.
-             *  如果映射结果是一个函数,那么函数的参数中出现的字段都将被查询.
-             *  select t1.total from (select func(t2.c1, t2.c2) total from t2) t1;
-             *  t.total 会被映射成 t2.c1 和 c2.c2 的组合.
-             */
-            Item mappingItem = findMappingField(field, (PlainSelect) subSelect.getSelectBody());
-            if (mappingItem != null) {
+            if (PlainSelect.class.isInstance(selectBody)) {
+                /**
+                 *  当前查找的字段替换成子查询中的返回段.
+                 *  select t1.id from (select t2.id from t2) t1;
+                 *  在子查询中,目标字段 t1.id 会被替换成 t2.id.
+                 *  如果映射结果是一个函数,那么函数的参数中出现的字段都将被查询.
+                 *  select t1.total from (select func(t2.c1, t2.c2) total from t2) t1;
+                 *  t.total 会被映射成 t2.c1 和 c2.c2 的组合.
+                 */
+                Item mappingItem = findMappingField(field, (PlainSelect) selectBody);
+                if (mappingItem != null) {
 
-                if (Field.class.isInstance(mappingItem)) {
+                    if (Field.class.isInstance(mappingItem)) {
 
-                    /**
-                     * from 子查询必须有别名.从这里进入表示最终来源表一定在子查询 table 中或者子查询的子查询中.
-                     */
-                    if (equalsSubAlisa) {
-                        if (!subSelect.getAlias().getName().equals(field.getRef())) {
-                            // 没有匹配的表,有可能在 join 中如果存在.
-                            return Collections.emptyList();
-                        }
-                    }
-
-                    return doSearchFromPlainSelect((Field) mappingItem, (PlainSelect) subSelect.getSelectBody(), false);
-
-                } else if (Func.class.isInstance(mappingItem)) {
-                    Func f = (Func) mappingItem;
-                    List<Item> parameters = f.getParameters();
-                    Field parameterField;
-                    List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
-                    if (parameters != null && !parameters.isEmpty()) {
-                        for (Item parameter : parameters) {
-                            if (Field.class.isInstance(parameter)) {
-
-                                parameterField = (Field) parameter;
-
-                                froms.addAll(doSearchFromPlainSelect(parameterField, (PlainSelect) subSelect.getSelectBody(), true));
-
+                        /**
+                         * from 子查询必须有别名.从这里进入表示最终来源表一定在子查询 table 中或者子查询的子查询中.
+                         */
+                        if (equalsSubAlisa) {
+                            if (!subSelect.getAlias().getName().equals(field.getRef())) {
+                                // 没有匹配的表,有可能在 join 中如果存在.
+                                return Collections.emptyList();
                             }
                         }
+
+                        return doSearchFromPlainSelect((Field) mappingItem, (PlainSelect) selectBody, false);
+
+                    } else if (Func.class.isInstance(mappingItem)) {
+                        Func f = (Func) mappingItem;
+                        List<Item> parameters = f.getParameters();
+                        Field parameterField;
+                        List<Map.Entry<Field, From>> froms = new ArrayList();
+                        if (parameters != null && !parameters.isEmpty()) {
+                            for (Item parameter : parameters) {
+                                if (Field.class.isInstance(parameter)) {
+
+                                    parameterField = (Field) parameter;
+
+                                    froms.addAll(doSearchFromPlainSelect(parameterField, (PlainSelect) selectBody, true));
+
+                                }
+                            }
+                        }
+
+                        if (froms.isEmpty()) {
+                            return Collections.emptyList();
+                        } else {
+                            return froms;
+                        }
+                    } else if (Arithmeitc.class.isInstance(mappingItem)) {
+
+                        return iteratorItem(mappingItem, (PlainSelect) selectBody);
+
+                    } else if (Parentheses.class.isInstance(mappingItem)) {
+
+                        return iteratorItem(mappingItem, (PlainSelect) selectBody);
                     }
 
-                    if (froms.isEmpty()) {
-                        return Collections.emptyList();
-                    } else {
-                        return froms;
-                    }
-                } else if (Arithmeitc.class.isInstance(mappingItem)) {
+                }
+            } else if (SetOperationList.class.isInstance(selectBody)) {
+                SetOperationList setOperationList = (SetOperationList) selectBody;
 
-                    return iteratorItem(mappingItem, (PlainSelect) subSelect.getSelectBody());
-
-                } else if (Parentheses.class.isInstance(mappingItem)) {
-
-                    return iteratorItem(mappingItem, (PlainSelect) subSelect.getSelectBody());
+                List<Map.Entry<Field, From>> results = new ArrayList<>();
+                for (SelectBody setOperationBody : setOperationList.getSelects()) {
+                    results.addAll(doSearchFromPlainSelect(field, (PlainSelect) setOperationBody, true));
                 }
 
+                return results;
             }
 
 
@@ -198,8 +211,9 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
 
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> iteratorItem(Item item, PlainSelect select) {
-        List<AbstractMap.SimpleEntry<Field, From>> froms = new ArrayList();
+
+    private List<Map.Entry<Field, From>> iteratorItem(Item item, PlainSelect select) {
+        List<Map.Entry<Field, From>> froms = new ArrayList();
 
         Queue<Item> queue = new ArrayDeque<>();
         queue.add(item);
@@ -246,12 +260,12 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
         }
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> doSearchJoins(Field field, List<Join> joins, boolean equalsSubAlisa) {
+    private List<Map.Entry<Field, From>> doSearchJoins(Field field, List<Join> joins, boolean equalsSubAlisa) {
         if (joins == null) {
             return Collections.emptyList();
         }
 
-        List<AbstractMap.SimpleEntry<Field, From>> froms;
+        List<Map.Entry<Field, From>> froms;
         for (Join join : joins) {
             froms = doSearchFromItem(field, join.getRightItem(), equalsSubAlisa);
 

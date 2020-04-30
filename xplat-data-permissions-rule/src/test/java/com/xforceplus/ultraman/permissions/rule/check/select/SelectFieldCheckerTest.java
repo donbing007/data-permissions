@@ -470,6 +470,32 @@ public class SelectFieldCheckerTest {
             )
         );
 
+        data.put(new SearchRequest(
+                "select t.c1 from (select t.c1 from t1 t union select t.c1 from t2 t) t",
+                true,
+                Arrays.asList(new Field("t", "c1"))),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                Arrays.asList("t1", "t2"),
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "t1",
+                        Arrays.asList(
+                            new FieldRule("t1", "c1")
+                        )
+                    );
+
+                    put(
+                        new Authorization("r1", "t1").toString() + "t2",
+                        Arrays.asList(
+                            new FieldRule("t2", "c2")
+                        )
+                    );
+
+                }}
+            )
+        );
+
         return data;
     }
 }

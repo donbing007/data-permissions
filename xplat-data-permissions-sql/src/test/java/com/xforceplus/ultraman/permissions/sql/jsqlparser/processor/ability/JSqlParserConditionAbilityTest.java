@@ -553,4 +553,4 @@ public class JSqlParserConditionAbilityTest {
         return data;
     }
 
-} 
+}

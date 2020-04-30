@@ -13,10 +13,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 处理 delete 语句的字段来源查找.
@@ -33,11 +30,11 @@ public class JSqlParserDeleteFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
+    public List<Map.Entry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
         return searchRealTableName((Field) item);
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    private List<Map.Entry<Field, From>> searchRealTableName(Field field) {
 
         Expression where = getDelete().getWhere();
         if (where == null) {

@@ -1,6 +1,6 @@
+
 [![pipeline status](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/develop/pipeline.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/develop)  [![coverage report](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/develop/coverage.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/develop)
 
------
 #引言
 
 基于 SQL 提供通用的数据权限服务.
@@ -175,11 +175,33 @@ xplat:
 数据权限对于某些 SQL 语法规则有洁癖.会拒绝掉不合规的语句,规则如下.
 
 
-* 查询语句不可以使用"*".
+* 查询语句不可以使用"*". 
+```sql
+-- 返回值不可以用*.
+SELECT * FROM table
+```
 * 除 select 外不允许子查询.
-* From子查询必须有别名.
+```sql
+-- insert/update/delete 不可以有子查询.
+INSERT INTO table2 SELECT * FROM table1
+```
+* From子查询必须有别名. 
+```sql
+`` 最后一个 t 别名是必须的.
+SELECT t.id from (SELECT t.id FROM table1 t) t
+```
 * 如果是非简单字段必须设置别名,比如函数,表达式.
+```sql
+-- SUM 必须设置一个别名.这里是 id.
+SELECT SUM(t.c1 + t.C2) id FROM table t
+```
 * 必须设置来源表名或者表别名. ref.字段名.
+```sql
+-- 这里的 ref 是必须的.
+SELECT ref.c1, ref.c2 FROM table ref;
+```
+
+
 
 ##查询缓存
 如果你原先对数据库的查询做了查询缓存,那么现在将不再正确了.

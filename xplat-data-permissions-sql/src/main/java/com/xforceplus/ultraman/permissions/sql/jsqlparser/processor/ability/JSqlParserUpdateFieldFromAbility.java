@@ -13,11 +13,7 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.update.Update;
 
-import java.text.ParseException;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * update 语句的字段来源查询.
@@ -33,7 +29,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
     }
 
     @Override
-    public List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
+    public List<Map.Entry<Field, From>> searchRealTableName(Item item) throws ProcessorException {
         return searchRealTableName((Field) item);
     }
 
@@ -47,7 +43,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
      * @param field 查询的字段.
      * @return 结果.
      */
-    private List<AbstractMap.SimpleEntry<Field, From>> searchRealTableName(Field field) {
+    private List<Map.Entry<Field, From>> searchRealTableName(Field field) {
 
         if (!exist(field)) {
             return Collections.emptyList();
@@ -63,7 +59,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
             }
         } else {
 
-            List<AbstractMap.SimpleEntry<Field, From>> froms = null;
+            List<Map.Entry<Field, From>> froms = null;
             froms = doSearchFromTable(field, update.getTable());
 
             if (froms.isEmpty()) {
@@ -76,8 +72,8 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
         }
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> doSearchFromStartJoin(Field field, List<Join> startJoins) {
-        List<AbstractMap.SimpleEntry<Field, From>> froms;
+    private List<Map.Entry<Field, From>> doSearchFromStartJoin(Field field, List<Join> startJoins) {
+        List<Map.Entry<Field, From>> froms;
         for (Join join : startJoins) {
             froms = doSearchFromTable(field, (Table) join.getRightItem());
 
@@ -89,7 +85,7 @@ public class JSqlParserUpdateFieldFromAbility extends AbstractJSqlParserHandler 
         return Collections.emptyList();
     }
 
-    private List<AbstractMap.SimpleEntry<Field, From>> doSearchFromTable(Field field, Table table) {
+    private List<Map.Entry<Field, From>> doSearchFromTable(Field field, Table table) {
         if (table.getAlias() != null) {
             if (table.getAlias().getName().equals(field.getRef())) {
                 return Arrays.asList(new AbstractMap.SimpleEntry(field, ConversionHelper.convert(table)));

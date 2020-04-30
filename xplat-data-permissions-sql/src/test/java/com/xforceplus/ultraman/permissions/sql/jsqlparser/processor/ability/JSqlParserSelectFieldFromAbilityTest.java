@@ -40,11 +40,11 @@ public class JSqlParserSelectFieldFromAbilityTest {
 
                 JSqlParserSelectFieldFromAbility h = new JSqlParserSelectFieldFromAbility(CCJSqlParserUtil.parse(sql));
                 SearchPack pack = caseData.get(sql);
-                List<AbstractMap.SimpleEntry<Field, From>> froms = h.searchRealTableName(pack.item);
+                List<Map.Entry<Field, From>> froms = h.searchRealTableName(pack.item);
 
                 Assert.assertEquals(sql, pack.expectedFroms.size(), froms.size());
-                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new AbstractMap.SimpleEntry[0]),
-                    froms.toArray(new AbstractMap.SimpleEntry[0]));
+                Assert.assertArrayEquals(sql, pack.expectedFroms.toArray(new Map.Entry[0]),
+                    froms.toArray(new Map.Entry[0]));
 
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
@@ -142,6 +142,37 @@ public class JSqlParserSelectFieldFromAbilityTest {
             )
         );
 
+        data.put("select t.name from (select t.name from table1 t union all select t.name from table1 t) t",
+            new SearchPack(
+                new Field("t", "name"),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(
+                        new Field("t","name"),
+                        new From("table1", new Alias("t"))
+                    ),
+                    new AbstractMap.SimpleEntry(
+                        new Field("t","name"),
+                        new From("table1", new Alias("t"))
+                    )
+                )
+            )
+        );
+
+        data.put("select t.name from (select t.name from table1 t union select t.name from table1 t) t",
+            new SearchPack(
+                new Field("t", "name"),
+                Arrays.asList(
+                    new AbstractMap.SimpleEntry(
+                        new Field("t","name"),
+                        new From("table1", new Alias("t"))
+                    ),
+                    new AbstractMap.SimpleEntry(
+                        new Field("t","name"),
+                        new From("table1", new Alias("t"))
+                    )
+                )
+            )
+        );
 
         return data;
     }
