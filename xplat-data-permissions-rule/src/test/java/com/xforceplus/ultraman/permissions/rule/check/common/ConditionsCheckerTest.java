@@ -318,7 +318,9 @@ public class ConditionsCheckerTest {
                     );
 
                 }},
-                CCJSqlParserUtil.parse("select t.c1 from (select t.c1 from t1 t where t.c1 = 100 union select t.c1 from t2 t where t.c1 = 100) t").toString(),
+                CCJSqlParserUtil.parse("select t.c1 from (select t.c1 from t1 t where t.c1 = 100 " +
+                    "union " +
+                    "select t.c1 from t2 t where t.c1 = 100) t").toString(),
                 true
             )
         );

@@ -4,10 +4,10 @@ import com.xforceplus.ultraman.permissions.sql.define.*;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.Arithmeitc;
 import com.xforceplus.ultraman.permissions.sql.define.arithmetic.ArithmeticSymbol;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.*;
 
@@ -147,11 +147,11 @@ public class JSqlParserSelectFieldFromAbilityTest {
                 new Field("t", "name"),
                 Arrays.asList(
                     new AbstractMap.SimpleEntry(
-                        new Field("t","name"),
+                        new Field("t", "name"),
                         new From("table1", new Alias("t"))
                     ),
                     new AbstractMap.SimpleEntry(
-                        new Field("t","name"),
+                        new Field("t", "name"),
                         new From("table1", new Alias("t"))
                     )
                 )
@@ -163,11 +163,11 @@ public class JSqlParserSelectFieldFromAbilityTest {
                 new Field("t", "name"),
                 Arrays.asList(
                     new AbstractMap.SimpleEntry(
-                        new Field("t","name"),
+                        new Field("t", "name"),
                         new From("table1", new Alias("t"))
                     ),
                     new AbstractMap.SimpleEntry(
-                        new Field("t","name"),
+                        new Field("t", "name"),
                         new From("table1", new Alias("t"))
                     )
                 )
