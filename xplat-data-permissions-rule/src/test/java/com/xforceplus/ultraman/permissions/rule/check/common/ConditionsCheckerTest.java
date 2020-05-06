@@ -11,6 +11,8 @@ import com.xforceplus.ultraman.permissions.sql.jsqlparser.JSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -21,6 +23,8 @@ import static org.mockito.Mockito.when;
  * checker test.
  */
 public class ConditionsCheckerTest {
+
+    final Logger logger = LoggerFactory.getLogger(ConditionsCheckerTest.class);
 
     private SqlParser sqlParser = JSqlParser.getInstance();
 
@@ -55,6 +59,9 @@ public class ConditionsCheckerTest {
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
+
+            logger.info("Before: {}", s);
+            logger.info("After: {}", context.sql().toSqlString());
         });
 
     }
@@ -321,6 +328,33 @@ public class ConditionsCheckerTest {
                 CCJSqlParserUtil.parse("select t.c1 from (select t.c1 from t1 t where t.c1 = 100 " +
                     "union " +
                     "select t.c1 from t2 t where t.c1 = 100) t").toString(),
+                true
+            )
+        );
+
+        data.put(
+            "select a.id, a.name, b.name from A a left join (select joinB.name from B joinB) b on b.name = a.name",
+            new ConditionPack(
+                new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                    put(new Authorization("r1", "t1"),
+                        new HashMap() {{
+                            put("B", Arrays.asList(
+                                new DataRule("B", "name", Arrays.asList(
+                                    new DataRuleCondition(
+                                        RuleConditionOperation.EQUAL,
+                                        RuleConditionValueType.STRING,
+                                        RuleConditionRelationship.AND,
+                                        "dongbin")
+                                ))
+                            ));
+
+                        }}
+                    );
+
+                }},
+                CCJSqlParserUtil.parse(
+                    "select a.id, a.name, b.name from A a left join " +
+                        "(select joinB.name from B joinB where joinB.name = 'dongbin') b on b.name = a.name").toString(),
                 true
             )
         );
