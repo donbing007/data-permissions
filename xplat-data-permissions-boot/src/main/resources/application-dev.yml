@@ -21,9 +21,9 @@ spring:
     cache-names: rule
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&socketTimeout=6000&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://95.169.7.41:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&connectTimeout=600000&socketTimeout=600000&autoReconnect=true&failOverReadOnly=false
     username: root
-    password: root
+    password: don@820613
     hikari:
       connection-test-query: "select 1"
       connection-timeout: 10000

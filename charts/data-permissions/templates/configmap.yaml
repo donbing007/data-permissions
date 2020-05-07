@@ -61,7 +61,7 @@ data:
         j2cache:
           config-location: file:/xplat/j2cache/j2cache.properties
           open-spring-cache: true
-          cache-clean-mode: active
+          cache-clean-mode: {{ .Values.cache.cleanMode }}
           l2-cache-open: {{ .Values.cache.l2.enabled }}
           redis-client: lettuce
         logging:
@@ -70,7 +70,11 @@ data:
             io:
               opencensus: INFO
     j2cache.properties: |
+        {{- if .Values.cache.l2.enabled }}
         j2cache.broadcast = net.oschina.j2cache.cache.support.redis.SpringRedisPubSubPolicy
+        {{- else }}
+        j2cache.broadcast = none
+        {{- end }}
         j2cache.L1.provider_class = caffeine
         j2cache.L2.provider_class = net.oschina.j2cache.cache.support.redis.SpringRedisProvider
         j2cache.L2.config_section = lettuce

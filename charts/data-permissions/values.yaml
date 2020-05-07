@@ -74,11 +74,15 @@ grpc:
   heartbeatTimeoutSeconds: 30 # 心跳超时秒.
 
 cache:
+  # active:主动清除，二级缓存过期主动通知各节点清除，优点在于所有节点可以同时收到缓存清除.
+  # passive:被动清除，一级缓存过期进行通知各节点清除一二级缓存.
+  # blend:两种模式一起运作，对于各个节点缓存准确以及及时性要求高的可以使用，正常用前两种模式中一个就可.
+  cleanMode: active
   l1:
     size: 10000
     ttl: 30d
   l2:
-    enabled: true
+    enabled: false
     redis:
       # redis -> single redis server
       # rediss -> single redis server with ssl
@@ -87,7 +91,7 @@ cache:
       scheme: redis
       host: "redis"
       port: 6379
-      password: 666666
+      password:
       timeout: 1000
       pool:
         max: 100
