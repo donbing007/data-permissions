@@ -7,8 +7,11 @@ import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
 import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.sql.hint.Hint;
+import com.xforceplus.ultraman.permissions.sql.hint.parser.HintParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +20,9 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 处理 statement 类型.
@@ -36,13 +42,14 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
     private static final Class[] METHOD_PARAMETER_TYPE = new Class[]{String.class};
     private Statement statement;
 
-    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement) {
-        super(client, authorizations);
+    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement, HintParser hintParser) {
+        super(client, authorizations, hintParser);
         this.statement = statement;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
         if (MethodHelper.isTarget(method, "executeQuery", METHOD_PARAMETER_TYPE, ResultSet.class)
             || MethodHelper.isTarget(method, "executeUpdate", METHOD_PARAMETER_TYPE, Integer.TYPE)
             || MethodHelper.isTarget(method, "execute", METHOD_PARAMETER_TYPE, Boolean.TYPE)) {
@@ -60,56 +67,100 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
         String sql = (String) args[0];
 
         return doCheck(sql, method, args);
+
     }
 
     protected Object doCheck(String sql, Method method, Object[] args) throws Throwable {
-        CheckResult checkResult = getClient().check(sql, getAuthorization());
-        CheckStatus status = checkResult.getStatus();
+        Hint hint = getHintParser().parse(sql);
+        CheckStatus status;
+        CheckResult checkResult;
+        if (hint.isIgnore()) {
+
+            checkResult = new CheckResult(CheckStatus.PASS);
+
+            if (DebugStatus.isDebug()) {
+                logger.debug("Ignore: {}", sql);
+            }
+
+        } else {
+
+            checkResult = getClient().check(sql, getAuthorization());
+        }
+
+        status = checkResult.getStatus();
 
         if (DebugStatus.isDebug()) {
-            logger.info("Expected: {}", sql);
+            logger.debug("Expected: {}", sql);
         }
 
         switch (status) {
             case PASS: {
 
-                ResultSet target = (ResultSet) method.invoke(statement, args);
-
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}", sql);
+                    logger.debug("Actual: {}", sql);
                 }
 
-                return ProxyFactory.createInterfacetProxyFromObject(
-                    target,
-                    new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
+                if (!ResultSet.class.equals(method.getReturnType())) {
+
+                    return method.invoke(statement, args);
+
+                } else {
+
+                    ResultSet target = (ResultSet) method.invoke(statement, args);
+
+                    Optional<SqlChange> firstSqlChange = checkResult.findFirst();
+                    List<String> blackList = Collections.emptyList();
+                    if (firstSqlChange.isPresent()) {
+                        blackList = firstSqlChange.get().getBlackList();
+                    }
+
+                    return ProxyFactory.createInterfacetProxyFromObject(
+                        target,
+                        new PassResultSetProxy(blackList, target));
+                }
             }
             case UPDATE: {
 
-                String newSql = checkResult.findFirst().getNewSql();
+                String newSql = checkResult.findFirst().get().getNewSql();
                 if (newSql == null) {
                     throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                 }
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}", newSql);
+                    logger.debug("Actual: {}", newSql);
                 }
 
-                ResultSet target = (ResultSet) method.invoke(statement, new Object[]{checkResult.findFirst().getNewSql()});
-                return ProxyFactory.createInterfactProxy(
-                    ResultSet.class,
-                    new PassResultSetProxy(checkResult.findFirst().getBlackList(), target));
+                if (!ResultSet.class.equals(method.getReturnType())) {
+
+                    return method.invoke(statement, args);
+
+                } else {
+                    Optional<SqlChange> firstSqlChange = checkResult.findFirst();
+                    ResultSet target = (ResultSet) method.invoke(statement, new Object[]{firstSqlChange.get().getNewSql()});
+                    return ProxyFactory.createInterfactProxy(
+                        ResultSet.class,
+                        new PassResultSetProxy(firstSqlChange.get().getBlackList(), target));
+                }
             }
             case DENIAL: {
 
                 if (DebugStatus.isDebug()) {
-                    logger.info("Actual: DENIAL, cause {}", checkResult.getMessage());
+                    logger.debug("Actual: DENIAL, cause {}", checkResult.getMessage());
                 }
 
                 if (Integer.TYPE.equals(method.getReturnType())) {
+
                     return 0;
+
+                } else if (Boolean.TYPE.equals(method.getReturnType())) {
+
+                    return false;
+
                 } else {
+
                     ResultSet target = (ResultSet) method.invoke(statement, new Object[]{sql});
                     return ProxyFactory.createInterfactProxy(ResultSet.class, new DeniaResultSetProxy(target));
+
                 }
             }
             case ERROR: {

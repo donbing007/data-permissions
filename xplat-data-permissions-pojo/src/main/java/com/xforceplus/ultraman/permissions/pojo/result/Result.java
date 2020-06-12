@@ -76,13 +76,8 @@ public abstract class Result<C, V> implements Serializable {
         return values.stream();
     }
 
-    public V findFirst() {
-        Optional<V> v = values.stream().findFirst();
-        if (v.isPresent()) {
-            return v.get();
-        } else {
-            return null;
-        }
+    public Optional<V> findFirst() {
+        return values.stream().findFirst();
     }
 
     public boolean hasValue() {

@@ -1,18 +1,10 @@
 package com.xforceplus.ultraman.permissions.transfer.grpc.generate;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -27,30 +19,30 @@ public final class StatmentCheckServiceGrpc {
   public static final String SERVICE_NAME = "com.xforceplus.ultraman.permissions.StatmentCheckService";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment,
-      com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> getCheckMethod;
+  private static volatile io.grpc.MethodDescriptor<ForStatmentGrpc.Statment,
+      ForStatmentGrpc.StatmentResult> getCheckMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "check",
-      requestType = com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment.class,
-      responseType = com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult.class,
+      requestType = ForStatmentGrpc.Statment.class,
+      responseType = ForStatmentGrpc.StatmentResult.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment,
-      com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> getCheckMethod() {
-    io.grpc.MethodDescriptor<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment, com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> getCheckMethod;
+  public static io.grpc.MethodDescriptor<ForStatmentGrpc.Statment,
+      ForStatmentGrpc.StatmentResult> getCheckMethod() {
+      io.grpc.MethodDescriptor<ForStatmentGrpc.Statment, ForStatmentGrpc.StatmentResult> getCheckMethod;
     if ((getCheckMethod = StatmentCheckServiceGrpc.getCheckMethod) == null) {
       synchronized (StatmentCheckServiceGrpc.class) {
         if ((getCheckMethod = StatmentCheckServiceGrpc.getCheckMethod) == null) {
-          StatmentCheckServiceGrpc.getCheckMethod = getCheckMethod = 
-              io.grpc.MethodDescriptor.<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment, com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult>newBuilder()
+            StatmentCheckServiceGrpc.getCheckMethod = getCheckMethod =
+                io.grpc.MethodDescriptor.<ForStatmentGrpc.Statment, ForStatmentGrpc.StatmentResult>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "com.xforceplus.ultraman.permissions.StatmentCheckService", "check"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment.getDefaultInstance()))
+                  ForStatmentGrpc.Statment.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult.getDefaultInstance()))
+                  ForStatmentGrpc.StatmentResult.getDefaultInstance()))
                   .setSchemaDescriptor(new StatmentCheckServiceMethodDescriptorSupplier("check"))
                   .build();
           }
@@ -88,19 +80,20 @@ public final class StatmentCheckServiceGrpc {
 
     /**
      */
-    public void check(com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment request,
-        io.grpc.stub.StreamObserver<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> responseObserver) {
+    public void check(ForStatmentGrpc.Statment request,
+                      io.grpc.stub.StreamObserver<ForStatmentGrpc.StatmentResult> responseObserver) {
       asyncUnimplementedUnaryCall(getCheckMethod(), responseObserver);
     }
 
-    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
+      @Override
+      public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             getCheckMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment,
-                com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult>(
+                  ForStatmentGrpc.Statment,
+                  ForStatmentGrpc.StatmentResult>(
                   this, METHODID_CHECK)))
           .build();
     }
@@ -118,7 +111,7 @@ public final class StatmentCheckServiceGrpc {
       super(channel, callOptions);
     }
 
-    @java.lang.Override
+      @Override
     protected StatmentCheckServiceStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new StatmentCheckServiceStub(channel, callOptions);
@@ -126,8 +119,8 @@ public final class StatmentCheckServiceGrpc {
 
     /**
      */
-    public void check(com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment request,
-        io.grpc.stub.StreamObserver<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> responseObserver) {
+    public void check(ForStatmentGrpc.Statment request,
+                      io.grpc.stub.StreamObserver<ForStatmentGrpc.StatmentResult> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getCheckMethod(), getCallOptions()), request, responseObserver);
     }
@@ -145,7 +138,7 @@ public final class StatmentCheckServiceGrpc {
       super(channel, callOptions);
     }
 
-    @java.lang.Override
+      @Override
     protected StatmentCheckServiceBlockingStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new StatmentCheckServiceBlockingStub(channel, callOptions);
@@ -153,7 +146,7 @@ public final class StatmentCheckServiceGrpc {
 
     /**
      */
-    public com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult check(com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment request) {
+    public ForStatmentGrpc.StatmentResult check(ForStatmentGrpc.Statment request) {
       return blockingUnaryCall(
           getChannel(), getCheckMethod(), getCallOptions(), request);
     }
@@ -171,7 +164,7 @@ public final class StatmentCheckServiceGrpc {
       super(channel, callOptions);
     }
 
-    @java.lang.Override
+      @Override
     protected StatmentCheckServiceFutureStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new StatmentCheckServiceFutureStub(channel, callOptions);
@@ -179,8 +172,8 @@ public final class StatmentCheckServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult> check(
-        com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment request) {
+    public com.google.common.util.concurrent.ListenableFuture<ForStatmentGrpc.StatmentResult> check(
+        ForStatmentGrpc.Statment request) {
       return futureUnaryCall(
           getChannel().newCall(getCheckMethod(), getCallOptions()), request);
     }
@@ -201,21 +194,21 @@ public final class StatmentCheckServiceGrpc {
       this.methodId = methodId;
     }
 
-    @java.lang.Override
-    @java.lang.SuppressWarnings("unchecked")
+      @Override
+      @SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
         case METHODID_CHECK:
-          serviceImpl.check((com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.Statment) request,
-              (io.grpc.stub.StreamObserver<com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.StatmentResult>) responseObserver);
+            serviceImpl.check((ForStatmentGrpc.Statment) request,
+                (io.grpc.stub.StreamObserver<ForStatmentGrpc.StatmentResult>) responseObserver);
           break;
         default:
           throw new AssertionError();
       }
     }
 
-    @java.lang.Override
-    @java.lang.SuppressWarnings("unchecked")
+      @Override
+      @SuppressWarnings("unchecked")
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
@@ -229,12 +222,12 @@ public final class StatmentCheckServiceGrpc {
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     StatmentCheckServiceBaseDescriptorSupplier() {}
 
-    @java.lang.Override
+      @Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return com.xforceplus.ultraman.permissions.transfer.grpc.generate.ForStatmentGrpc.getDescriptor();
+          return ForStatmentGrpc.getDescriptor();
     }
 
-    @java.lang.Override
+      @Override
     public com.google.protobuf.Descriptors.ServiceDescriptor getServiceDescriptor() {
       return getFileDescriptor().findServiceByName("StatmentCheckService");
     }
@@ -254,7 +247,7 @@ public final class StatmentCheckServiceGrpc {
       this.methodName = methodName;
     }
 
-    @java.lang.Override
+      @Override
     public com.google.protobuf.Descriptors.MethodDescriptor getMethodDescriptor() {
       return getServiceDescriptor().findMethodByName(methodName);
     }

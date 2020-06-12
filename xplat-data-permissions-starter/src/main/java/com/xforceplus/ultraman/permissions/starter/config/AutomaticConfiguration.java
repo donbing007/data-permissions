@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import javax.annotation.Resource;
+
 /**
  * 自动配置.
  * @author dongbin
@@ -44,7 +46,8 @@ public class AutomaticConfiguration {
 
     private boolean debug = false;
 
-    private AuthSearcherConfig searcherConfig = new AuthSearcherConfig();
+    @Resource
+    private AuthSearcherConfig searcherConfig;
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     public StatmentCheckClientGrpc grpcStatmentCheckClient() {

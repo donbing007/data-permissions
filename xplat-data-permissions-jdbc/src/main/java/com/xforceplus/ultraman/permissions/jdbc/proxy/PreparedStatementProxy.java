@@ -7,8 +7,11 @@ import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
 import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
+import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
 import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
+import com.xforceplus.ultraman.permissions.sql.hint.Hint;
+import com.xforceplus.ultraman.permissions.sql.hint.parser.HintParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +20,9 @@ import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 处理 PrepareStatemtn 预处理词句.
@@ -36,10 +42,14 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
     private boolean refuse;
 
     public PreparedStatementProxy(
-        RuleCheckServiceClient client, Authorizations authorizations, PreparedStatementMaker maker, String sql)
+        RuleCheckServiceClient client,
+        Authorizations authorizations,
+        PreparedStatementMaker maker,
+        HintParser hintParser,
+        String sql)
         throws SQLException {
 
-        super(client, authorizations);
+        super(client, authorizations, hintParser);
         this.sql = sql;
         this.maker = maker;
 
@@ -59,50 +69,63 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
     }
 
     private void check() throws SQLException {
-        checkResult = getClient().check(sql, getAuthorization());
-        CheckStatus status = checkResult.getStatus();
-        switch (status) {
-            case PASS: {
+        Hint hint = getHintParser().parse(sql);
+        if (hint.isIgnore()) {
+            sourcePreparedStatement = maker.make(sql);
+            refuse = false;
+            checkResult = new CheckResult(CheckStatus.PASS);
 
-                if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}", sql);
+            if (DebugStatus.isDebug()) {
+                logger.debug("Ignore: {}", sql);
+            }
+
+        } else {
+
+            checkResult = getClient().check(sql, getAuthorization());
+            CheckStatus status = checkResult.getStatus();
+            switch (status) {
+                case PASS: {
+
+                    if (DebugStatus.isDebug()) {
+                        logger.debug("Actual: {}", sql);
+                    }
+
+                    sourcePreparedStatement = maker.make(sql);
+                    break;
                 }
+                case UPDATE: {
+                    String newSql = checkResult.findFirst().get().getNewSql();
+                    if (newSql == null) {
+                        throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
+                    }
 
-                sourcePreparedStatement = maker.make(sql);
-                break;
-            }
-            case UPDATE: {
-                String newSql = checkResult.findFirst().getNewSql();
-                if (newSql == null) {
-                    throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
+                    if (DebugStatus.isDebug()) {
+                        logger.debug("Actual: {}", newSql);
+                    }
+
+                    sourcePreparedStatement = maker.make(newSql);
+                    break;
                 }
+                case DENIAL: {
 
-                if (DebugStatus.isDebug()) {
-                    logger.info("Actual: {}", newSql);
+                    if (DebugStatus.isDebug()) {
+                        logger.debug("Actual: DENIAL, cause {}.", checkResult.getMessage());
+                    }
+
+                    sourcePreparedStatement = maker.make(sql);
+                    refuse = true;
+                    break;
                 }
-
-                sourcePreparedStatement = maker.make(newSql);
-                break;
-            }
-            case DENIAL: {
-
-                if (DebugStatus.isDebug()) {
-                    logger.info("Actual: DENIAL, cause {}.", checkResult.getMessage());
+                case ERROR: {
+                    String message = checkResult.getMessage();
+                    throw new SQLException(message != null ? message : "");
                 }
-
-                sourcePreparedStatement = maker.make(sql);
-                refuse = true;
-                break;
-            }
-            case ERROR: {
-                String message = checkResult.getMessage();
-                throw new SQLException(message != null ? message : "");
-            }
-            case NOT_SUPPORT: {
-                throw new SQLException("Unsupported SQL statements.");
-            }
-            default: {
-                throw new SQLException("Unknown permission check status.[" + status.name() + "]");
+                case NOT_SUPPORT: {
+                    throw new SQLException("Unsupported SQL statements.");
+                }
+                default: {
+                    throw new SQLException("Unknown permission check status.[" + status.name() + "]");
+                }
             }
         }
     }
@@ -110,6 +133,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
         if (MethodHelper.isTarget(method, "executeQuery", EXPECTED_PARAMETERS_TYPE, ResultSet.class)
             || MethodHelper.isTarget(method, "executeUpdate", EXPECTED_PARAMETERS_TYPE, Integer.TYPE)) {
 
@@ -129,8 +153,13 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
 
                 Object value = method.invoke(sourcePreparedStatement, args);
                 if (method.getReturnType().equals(ResultSet.class)) {
+                    Optional<SqlChange> sqlChangeOptional = checkResult.findFirst();
+                    List<String> blackList = Collections.emptyList();
+                    if (sqlChangeOptional.isPresent()) {
+                        blackList = sqlChangeOptional.get().getBlackList();
+                    }
                     return ProxyFactory.createInterfactProxy(ResultSet.class,
-                        new PassResultSetProxy(checkResult.findFirst().getBlackList(), (ResultSet) value));
+                        new PassResultSetProxy(blackList, (ResultSet) value));
                 } else {
 
                     return value;
