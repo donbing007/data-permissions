@@ -29,7 +29,6 @@ public class DeniaResultSetProxy extends AbstractResultSetProxy {
     protected Object doGetMethod(Method method, Object[] args) throws Exception {
 
         // return default null value.
-        Class returnType = method.getReturnType();
         return ConvertingHelper.convertInvalidValue(method.getReturnType());
 
     }

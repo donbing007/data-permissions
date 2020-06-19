@@ -5,6 +5,8 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.sql.hint.Hint;
 import com.xforceplus.ultraman.permissions.sql.hint.parser.HintParser;
 
+import java.lang.reflect.Method;
+
 /**
  * 所有proxy 超类.
  * @author dongbin
@@ -33,5 +35,15 @@ public abstract class AbstractStatementProxy {
 
     public HintParser getHintParser() {
         return hintParser;
+    }
+
+    protected boolean isForceMethod(Method method, String[] forceMethod) {
+        String methodName = method.getName();
+        for (String forceMethodName : forceMethod) {
+            if (forceMethodName.equals(methodName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -143,13 +143,15 @@ public class StatementProxyTest {
 
         Statement statement = mock(Statement.class);
         when(statement.executeQuery(sql)).thenReturn(rs);
+        when(statement.getResultSet()).thenReturn(rs);
 
         StatementProxy proxy = new StatementProxy(client, authorizations, statement, new SQL92HintParser());
         Method method = Statement.class.getMethod("executeQuery", new Class[]{String.class});
         ResultSet resultSet = (ResultSet) proxy.invoke(null, method, new Object[]{sql});
-
         Assert.assertFalse(resultSet.next());
 
+        method = Statement.class.getMethod("execute", new Class[]{String.class});
+        Assert.assertFalse((Boolean) proxy.invoke(null, method, new Object[]{sql}));
     }
 
     @Test

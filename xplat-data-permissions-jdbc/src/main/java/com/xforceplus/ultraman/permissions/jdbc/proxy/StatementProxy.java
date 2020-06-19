@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
@@ -38,8 +39,13 @@ import java.util.Optional;
  */
 public class StatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
+    private static final String[] FORCE_METHODS = new String[]{
+        "executeQuery",
+        "executeUpdate",
+        "execute"
+    };
+
     final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
-    private static final Class[] METHOD_PARAMETER_TYPE = new Class[]{String.class};
     private Statement statement;
 
     public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement, HintParser hintParser) {
@@ -50,17 +56,11 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        if (MethodHelper.isTarget(method, "executeQuery", METHOD_PARAMETER_TYPE, ResultSet.class)
-            || MethodHelper.isTarget(method, "executeUpdate", METHOD_PARAMETER_TYPE, Integer.TYPE)
-            || MethodHelper.isTarget(method, "execute", METHOD_PARAMETER_TYPE, Boolean.TYPE)) {
+        if (isForceMethod(method, FORCE_METHODS)) {
             return doExecute(method, args);
         } else {
             return method.invoke(statement, args);
         }
-    }
-
-    public Statement getStatement() {
-        return null;
     }
 
     private Object doExecute(Method method, Object[] args) throws Throwable {
@@ -148,17 +148,19 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     logger.debug("Actual: DENIAL, cause {}", checkResult.getMessage());
                 }
 
+                Object result = method.invoke(statement, new Object[]{sql});
+
                 if (Integer.TYPE.equals(method.getReturnType())) {
 
-                    return 0;
+                    return ResultSetInvalidValues.INT;
 
                 } else if (Boolean.TYPE.equals(method.getReturnType())) {
 
-                    return false;
+                    return ResultSetInvalidValues.BOOLEAN;
 
                 } else {
 
-                    ResultSet target = (ResultSet) method.invoke(statement, new Object[]{sql});
+                    ResultSet target = (ResultSet) result;
                     return ProxyFactory.createInterfactProxy(ResultSet.class, new DeniaResultSetProxy(target));
 
                 }

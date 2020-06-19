@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
@@ -33,8 +34,17 @@ import java.util.Optional;
  */
 public class PreparedStatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
+    private static final String[] FORCE_METHODS = new String[]{
+        "executeQuery",
+        "executeUpdate",
+        "execute",
+        "executeLargeUpdate",
+        "getResultSet",
+        "getUpdateCount",
+        "getMoreResults"
+    };
+
     final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
-    private static final Class[] EXPECTED_PARAMETERS_TYPE = new Class[0];
     private String sql;
     private PreparedStatementMaker maker;
     private CheckResult checkResult;
@@ -133,25 +143,28 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        /**
+         * 不管拒绝与否都会执行底层的.
+         */
+        Object executeResult = method.invoke(sourcePreparedStatement, args);
 
-        if (MethodHelper.isTarget(method, "executeQuery", EXPECTED_PARAMETERS_TYPE, ResultSet.class)
-            || MethodHelper.isTarget(method, "executeUpdate", EXPECTED_PARAMETERS_TYPE, Integer.TYPE)) {
+        if (isForceMethod(method, FORCE_METHODS)) {
 
             if (refuse) {
 
                 if (method.getReturnType().equals(Integer.TYPE)) {
-                    return 0;
+                    return ResultSetInvalidValues.INT;
+                } else if (method.getReturnType().equals(Boolean.TYPE)) {
+                    return ResultSetInvalidValues.BOOLEAN;
                 } else {
                     ResultSet resultSet = (ResultSet) method.invoke(sourcePreparedStatement, args);
                     return ProxyFactory.createInterfactProxy(
                         ResultSet.class,
                         new DeniaResultSetProxy(resultSet)
                     );
-
                 }
             } else {
 
-                Object value = method.invoke(sourcePreparedStatement, args);
                 if (method.getReturnType().equals(ResultSet.class)) {
                     Optional<SqlChange> sqlChangeOptional = checkResult.findFirst();
                     List<String> blackList = Collections.emptyList();
@@ -159,24 +172,18 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                         blackList = sqlChangeOptional.get().getBlackList();
                     }
                     return ProxyFactory.createInterfactProxy(ResultSet.class,
-                        new PassResultSetProxy(blackList, (ResultSet) value));
+                        new PassResultSetProxy(blackList, (ResultSet) executeResult));
+
                 } else {
 
-                    return value;
+                    return executeResult;
                 }
 
             }
+
         } else {
 
-            if (!refuse) {
-
-                return method.invoke(sourcePreparedStatement, args);
-
-            } else {
-
-                return null;
-
-            }
+            return executeResult;
         }
     }
 

@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.mock;
@@ -85,6 +86,7 @@ public class PreparedStatementProxyTest {
             innerSql -> {
                 PreparedStatement preparedStatement = mock(PreparedStatement.class);
                 when(preparedStatement.executeQuery()).thenReturn(rs);
+                when(preparedStatement.getResultSet()).thenReturn(rs);
                 return preparedStatement;
             },
             new SQL92HintParser(),
@@ -93,8 +95,28 @@ public class PreparedStatementProxyTest {
 
         Method method = PreparedStatement.class.getMethod("executeQuery", new Class[0]);
         ResultSet resultSet = (ResultSet) proxy.invoke(null, method, new Object[0]);
-
         Assert.assertFalse(resultSet.next());
+        ResultSetMetaData rsm = resultSet.getMetaData();
+        Assert.assertEquals(1, rsm.getColumnCount());
+
+
+        method = PreparedStatement.class.getMethod("getResultSet", new Class[0]);
+        resultSet = (ResultSet) proxy.invoke(null, method, new Object[0]);
+        Assert.assertFalse(resultSet.next());
+
+        method = PreparedStatement.class.getMethod("getMoreResults", new Class[0]);
+        Assert.assertFalse((Boolean) proxy.invoke(null, method, new Object[0]));
+
+        method = PreparedStatement.class.getMethod("execute", new Class[0]);
+        boolean result = (Boolean) proxy.invoke(null, method, new Object[0]);
+        Assert.assertFalse(result);
+        method = PreparedStatement.class.getMethod("getResultSet", new Class[0]);
+        resultSet = (ResultSet) proxy.invoke(null, method, new Object[0]);
+        Assert.assertFalse(resultSet.next());
+        rsm = resultSet.getMetaData();
+        Assert.assertEquals(1, rsm.getColumnCount());
+
+
     }
 
     @Test
