@@ -82,7 +82,7 @@ public abstract class AbstractResultSetProxy implements InvocationHandler {
     }
 
     private boolean isGetMethod(Method method) {
-        return method.getName().startsWith("get");
+        return method.getName().startsWith("get") && method.getParameterCount() == 1;
     }
 
     private boolean isUpdate(Method method) {

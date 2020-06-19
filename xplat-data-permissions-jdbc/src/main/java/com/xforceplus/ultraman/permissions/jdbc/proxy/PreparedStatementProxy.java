@@ -101,6 +101,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                     }
 
                     sourcePreparedStatement = maker.make(sql);
+                    refuse = false;
                     break;
                 }
                 case UPDATE: {
@@ -114,6 +115,8 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                     }
 
                     sourcePreparedStatement = maker.make(newSql);
+                    refuse = false;
+
                     break;
                 }
                 case DENIAL: {
@@ -128,12 +131,27 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                 }
                 case ERROR: {
                     String message = checkResult.getMessage();
+
+                    /**
+                     * 此段是为了兼容老的服务端.老服务端不会抛出 NOT_SUPPORT 状态,以 ERROR 方式提供.
+                     */
+                    if ("Unsupported SQL.".equals(message)) {
+                        logger.warn("Unsupported statement.[{}]", sql);
+                        refuse = false;
+                        break;
+                    }
+
+                    refuse = true;
+
                     throw new SQLException(message != null ? message : "");
                 }
                 case NOT_SUPPORT: {
-                    throw new SQLException("Unsupported SQL statements.");
+                    logger.warn("Unsupported statement.[{}]", sql);
+                    refuse = false;
+                    break;
                 }
                 default: {
+                    refuse = true;
                     throw new SQLException("Unknown permission check status.[" + status.name() + "]");
                 }
             }

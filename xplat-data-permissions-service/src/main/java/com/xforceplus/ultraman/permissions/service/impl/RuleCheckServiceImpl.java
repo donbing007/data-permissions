@@ -6,6 +6,7 @@ import com.xforceplus.ultraman.permissions.pojo.result.CheckStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.rule.assembly.Line;
 import com.xforceplus.ultraman.permissions.rule.assembly.LineFactory;
+import com.xforceplus.ultraman.permissions.rule.assembly.UnsupportLine;
 import com.xforceplus.ultraman.permissions.rule.context.DefaultContext;
 import com.xforceplus.ultraman.permissions.rule.searcher.Searcher;
 import com.xforceplus.ultraman.permissions.service.RuleCheckService;
@@ -55,6 +56,13 @@ public class RuleCheckServiceImpl implements RuleCheckService {
         }
 
         Line line = lineFactory.getLine(sql);
+
+        /**
+         * 不支持的 SQL.
+         */
+        if (UnsupportLine.class.isInstance(line)) {
+            return new CheckResult(CheckStatus.NOT_SUPPORT);
+        }
 
         DefaultContext context = new DefaultContext(sql, authorizations, searcher);
 

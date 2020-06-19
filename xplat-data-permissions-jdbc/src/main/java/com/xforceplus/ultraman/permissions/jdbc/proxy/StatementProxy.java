@@ -5,7 +5,6 @@ import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
-import com.xforceplus.ultraman.permissions.jdbc.utils.MethodHelper;
 import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
@@ -167,10 +166,19 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
             }
             case ERROR: {
                 String message = checkResult.getMessage();
+
+                /**
+                 * 此段是为了兼容老的服务端.老服务端不会抛出 NOT_SUPPORT 状态,以 ERROR 方式提供.
+                 */
+                if ("Unsupported SQL.".equals(message)) {
+                    logger.warn("Unsupported statement.[{}]", sql);
+                    return method.invoke(statement, args);
+                }
                 throw new SQLException(message != null ? message : "");
             }
             case NOT_SUPPORT: {
-                throw new SQLException("Unsupported SQL statements.");
+                logger.warn("Unsupported statement.[{}]", sql);
+                return method.invoke(statement, args);
             }
             default: {
                 throw new SQLException("Unknown permission check status.[" + status.name() + "]");
