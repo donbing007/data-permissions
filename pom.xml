@@ -73,9 +73,9 @@
         <dependencies>
 
             <dependency>
-                <groupId>com.xforceplus</groupId>
-                <artifactId>tenant-security-account-core</artifactId>
-                <version>1.1.2</version>
+                <groupId>com.xforceplus.tenant.security</groupId>
+                <artifactId>tenant-security-core-context</artifactId>
+                <version>2.1.21</version>
             </dependency>
 
             <dependency>

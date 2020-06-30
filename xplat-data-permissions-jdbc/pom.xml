@@ -43,8 +43,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.xforceplus</groupId>
-            <artifactId>tenant-security-account-core</artifactId>
+            <groupId>com.xforceplus.tenant.security</groupId>
+            <artifactId>tenant-security-core-context</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
