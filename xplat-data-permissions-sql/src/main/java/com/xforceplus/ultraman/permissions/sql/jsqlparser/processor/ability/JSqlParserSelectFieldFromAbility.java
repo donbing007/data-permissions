@@ -107,7 +107,7 @@ public class JSqlParserSelectFieldFromAbility extends AbstractJSqlParserHandler 
     private List<Map.Entry<Field, From>> doSearchFromItem(Field field, FromItem fromItem, boolean equalsSubAlisa) {
 
         if (fromItem == null) {
-            return null;
+            return Collections.emptyList();
         }
 
 

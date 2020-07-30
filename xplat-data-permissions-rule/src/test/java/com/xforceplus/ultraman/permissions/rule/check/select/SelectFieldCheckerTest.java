@@ -496,6 +496,53 @@ public class SelectFieldCheckerTest {
             )
         );
 
+        data.put(new SearchRequest(
+                "SELECT IFNULL(t.authCode, '已勾选') AS authCode, it.invoiceType AS invoiceType, it.invoiceName , " +
+                    "IFNULL(t.total, 0) AS total , IFNULL(t.tax_amount, 0) AS tax_amount , IFNULL(t.amount_without_tax, 0)" +
+                    " AS amount_without_tax FROM ( SELECT '已勾选' AS authCode, t1.invoice_type, COUNT(1) AS total , " +
+                    "SUM(t1.tax_amount) AS tax_amount, SUM(t1.amount_without_tax) AS amount_without_tax FROM " +
+                    "auth.aut_tax_invoice t1 WHERE (t1.auth_response_time >= 1593532800 AND t1.auth_response_time " +
+                    "<= 1596124800 AND t1.auth_status IN (4, 7, 8)) GROUP BY t1.invoice_type ) t RIGHT JOIN ( " +
+                    "SELECT 's' AS invoiceType, '专用发票' AS invoiceName FROM auth.aut_tax_invoice ts UNION SELECT 'v' " +
+                    "AS invoiceType, '机动车统一销售发票' AS invoiceName FROM auth.aut_tax_invoice tv UNION SELECT 'ct' " +
+                    "AS invoiceType, '通行费电子发票' AS invoiceName FROM auth.aut_tax_invoice tct UNION SELECT 'hg' " +
+                    "AS invoiceType, '海关缴款文书' AS invoiceName FROM auth.aut_tax_invoice thg ) it ON t.invoice_type" +
+                    " = it.invoiceType UNION ALL SELECT IFNULL(t.authCode, '未勾选') AS authCode, it.invoiceType AS " +
+                    "invoiceType, it.invoiceName , IFNULL(t.total, 0) AS total , IFNULL(t.tax_amount, 0) AS tax_amount " +
+                    ", IFNULL(t.amount_without_tax, 0) AS amount_without_tax FROM ( SELECT '未勾选' AS authCode, " +
+                    "t2.invoice_type, COUNT(1) AS total , SUM(t2.tax_amount) AS tax_amount, SUM(t2.amount_without_tax) " +
+                    "AS amount_without_tax FROM auth.aut_tax_invoice t2 WHERE t2.auth_status IN (0, 1, 2, 3, 5, 6) " +
+                    "GROUP BY t2.invoice_type ) t RIGHT JOIN ( SELECT 's' AS invoiceType, '专用发票' AS invoiceName " +
+                    "FROM auth.aut_tax_invoice ts UNION SELECT 'v' AS invoiceType, '机动车统一销售发票' AS invoiceName " +
+                    "FROM auth.aut_tax_invoice tv UNION SELECT 'ct' AS invoiceType, '通行费电子发票' AS invoiceName " +
+                    "FROM auth.aut_tax_invoice tct UNION SELECT 'hg' AS invoiceType, '海关缴款文书' AS invoiceName " +
+                    "FROM auth.aut_tax_invoice thg ) it ON t.invoice_type = it.invoiceType UNION ALL SELECT " +
+                    "IFNULL(t.authCode, '不抵扣') AS authCode, it.invoiceType AS invoiceType, it.invoiceName , " +
+                    "IFNULL(t.total, 0) AS total , IFNULL(t.tax_amount, 0) AS tax_amount , IFNULL(t.amount_without_tax," +
+                    " 0) AS amount_without_tax FROM ( SELECT '不抵扣' AS authCode, t3.invoice_type, COUNT(1) AS total , " +
+                    "SUM(t3.tax_amount) AS tax_amount, SUM(t3.amount_without_tax) AS amount_without_tax FROM " +
+                    "auth.aut_tax_invoice t3 WHERE (t3.auth_response_time >= 1593532800 AND t3.auth_response_time <= " +
+                    "1596124800 AND t3.auth_use = 2) GROUP BY t3.invoice_type ) t RIGHT JOIN ( SELECT 's' AS invoiceType," +
+                    " '专用发票' AS invoiceName FROM auth.aut_tax_invoice ts UNION SELECT 'v' AS invoiceType, " +
+                    "'机动车统一销售发票' AS invoiceName FROM auth.aut_tax_invoice tv UNION SELECT 'ct' AS invoiceType, " +
+                    "'通行费电子发票' AS invoiceName FROM auth.aut_tax_invoice ct UNION SELECT 'hg' AS invoiceType, " +
+                    "'海关缴款文书' AS invoiceName ) it ON t.invoice_type = it.invoiceType",
+                false,
+                Arrays.asList()),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                Arrays.asList("aut_tax_invoice"),
+                new HashMap() {{
+                    put(
+                        new Authorization("r1", "t1").toString() + "aut_tax_invoice",
+                        Arrays.asList(
+                            new FieldRule("aut_tax_invoice", "*")
+                        )
+                    );
+                }}
+            )
+        );
+
         return data;
     }
 }
