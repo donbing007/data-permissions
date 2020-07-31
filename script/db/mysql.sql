@@ -2,7 +2,9 @@ use xplat_data_permissions;
 create table if not exists data_scope
 (
     id     bigint auto_increment primary key,
-    entity varchar(64) not null comment '实体描述信息.'
+    role   varchar(128) not null comment '角色信息冗余.',
+    tenant varchar(128) not null comment '租户信息冗余.',
+    entity varchar(64)  not null comment '实体描述信息.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists data_scope_conditions
@@ -16,12 +18,12 @@ create table if not exists data_scope_sub_condition
 (
     id            bigint auto_increment primary key,
     conditions_id bigint                not null comment '主条件标识.',
-    value_type bigint                not null comment '值的数据类型.',
-    entity        varchar(64)          not null comment '实体信息,冗余.',
-    field         varchar(64)          not null comment '字段描述信息,一般为字段名称.冗余.',
-    operation     varchar(12)          not null comment '条件操作符',
+    value_type    tinyint               not null comment '值的数据类型.',
+    entity        varchar(64)           not null comment '实体信息,冗余.',
+    field         varchar(64)           not null comment '字段描述信息,一般为字段名称.冗余.',
+    operation     varchar(12)           not null comment '条件操作符',
     `index`       smallint(6) default 0 not null comment '当前条件在主条件中处于的位置,从0开始.',
-    `value`         varchar(255)          not null comment '操作目标数据.',
+    `value`       text                  not null comment '操作目标数据.',
     link          tinyint     default 0 not null comment '和上一子条件的连接方式,0表示 and,1表示 or.',
     role          varchar(128)          not null comment '角色,冗余.',
     tenant        varchar(128)          not null comment '租户,冗余.'
@@ -51,7 +53,7 @@ create table if not exists role_permissions
     scope_type tinyint default 0 not null comment '范围类型.是字段,还是数据范围.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP INDEX idx_data_scope_sub_condition_entity_role_tenant_index ON data_scope_sub_condition;
-DROP INDEX idx_field_scope_entity_role_tenant_index ON field_scope;
+#DROP INDEX idx_data_scope_sub_condition_entity_role_tenant_index ON data_scope_sub_condition;
+#DROP INDEX idx_field_scope_entity_role_tenant_index ON field_scope;
 alter table data_scope_sub_condition add index idx_data_scope_sub_condition_entity_role_tenant_index(entity, role(90), tenant(90));
 alter table field_scope add index idx_field_scope_entity_role_tenant_index(entity, role(90), tenant(90));

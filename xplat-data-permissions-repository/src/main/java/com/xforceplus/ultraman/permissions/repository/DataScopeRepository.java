@@ -57,8 +57,10 @@ public interface DataScopeRepository {
      * @mbg.generated
      */
     @Insert({
-        "insert into data_scope (entity)",
-        "values (#{entity,jdbcType=VARCHAR})"
+        "insert into data_scope (`role`, tenant, ",
+        "entity)",
+        "values (#{role,jdbcType=VARCHAR}, #{tenant,jdbcType=VARCHAR}, ",
+        "#{entity,jdbcType=VARCHAR})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insert(DataScope record);
@@ -82,6 +84,8 @@ public interface DataScopeRepository {
     @SelectProvider(type=DataScopeSqlProvider.class, method="selectByExample")
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column = "role", property = "role", jdbcType = JdbcType.VARCHAR),
+        @Result(column = "tenant", property = "tenant", jdbcType = JdbcType.VARCHAR),
         @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR)
     })
     List<DataScope> selectByExample(DataScopeExample example);
@@ -94,12 +98,14 @@ public interface DataScopeRepository {
      */
     @Select({
         "select",
-        "id, entity",
+        "id, `role`, tenant, entity",
         "from data_scope",
         "where id = #{id,jdbcType=BIGINT}"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column = "role", property = "role", jdbcType = JdbcType.VARCHAR),
+        @Result(column = "tenant", property = "tenant", jdbcType = JdbcType.VARCHAR),
         @Result(column="entity", property="entity", jdbcType=JdbcType.VARCHAR)
     })
     DataScope selectByPrimaryKey(Long id);
@@ -139,7 +145,9 @@ public interface DataScopeRepository {
      */
     @Update({
         "update data_scope",
-        "set entity = #{entity,jdbcType=VARCHAR}",
+        "set `role` = #{role,jdbcType=VARCHAR},",
+        "tenant = #{tenant,jdbcType=VARCHAR},",
+        "entity = #{entity,jdbcType=VARCHAR}",
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(DataScope record);

@@ -68,7 +68,7 @@ public class DefaultSearcherImpl implements Searcher {
             .andTenantEqualTo(auth.getTenant());
         example.setOrderByClause("conditions_id ASC, `index` ASC");
 
-        List<DataScopeSubCondition> conditions = dataScopeSubConditionRepository.selectByExample(example);
+        List<DataScopeSubCondition> conditions = dataScopeSubConditionRepository.selectByExampleWithBLOBs(example);
 
         // field 为 key.
         Map<String, DataRule> buffer = new LinkedHashMap<>();

@@ -34,7 +34,7 @@
 
         <!--数据库链接地址账号密码-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://xdp-mysql.dongbinls.svc.cluster.local:3306/xplat_data_permissions"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/xplat_data_permissions"
                         userId="root"
                         password="root" />
 
@@ -76,6 +76,7 @@
                enableSelectByExample="true"
                selectByExampleQueryId="true">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+            <columnOverride column="value" jdbcType="LONGVARCHAR"/>
         </table>
 
         <table schema="xplat_data_permissions" tableName="data_scope_conditions"

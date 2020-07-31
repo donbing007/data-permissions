@@ -68,7 +68,10 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
         }
 
         DataScopeExample dataScopeExample = new DataScopeExample();
-        dataScopeExample.createCriteria().andEntityEqualTo(rule.getEntity());
+        dataScopeExample.createCriteria()
+            .andEntityEqualTo(rule.getEntity())
+            .andEntityEqualTo(authorization.getRole())
+            .andEntityEqualTo(authorization.getTenant());
         List<DataScope> dataScopes = dataScopeRepository.selectByExample(dataScopeExample);
 
         DataScope dataScope;
@@ -77,6 +80,8 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
         if (dataScopes.size() == 0) {
             // 没有创建过 entity
             dataScope = new DataScope();
+            dataScope.setRole(authorization.getRole());
+            dataScope.setTenant(authorization.getTenant());
             dataScope.setEntity(rule.getEntity());
             dataScopeRepository.insert(dataScope);
 

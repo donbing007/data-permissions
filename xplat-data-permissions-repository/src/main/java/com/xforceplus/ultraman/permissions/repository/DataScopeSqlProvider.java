@@ -45,6 +45,14 @@ public class DataScopeSqlProvider {
     public String insertSelective(DataScope record) {
         SQL sql = new SQL();
         sql.INSERT_INTO("data_scope");
+
+        if (record.getRole() != null) {
+            sql.VALUES("`role`", "#{role,jdbcType=VARCHAR}");
+        }
+
+        if (record.getTenant() != null) {
+            sql.VALUES("tenant", "#{tenant,jdbcType=VARCHAR}");
+        }
         
         if (record.getEntity() != null) {
             sql.VALUES("entity", "#{entity,jdbcType=VARCHAR}");
@@ -66,6 +74,8 @@ public class DataScopeSqlProvider {
         } else {
             sql.SELECT("id");
         }
+        sql.SELECT("`role`");
+        sql.SELECT("tenant");
         sql.SELECT("entity");
         sql.FROM("data_scope");
         applyWhere(sql, example, false);
@@ -93,6 +103,14 @@ public class DataScopeSqlProvider {
         if (record.getId() != null) {
             sql.SET("id = #{record.id,jdbcType=BIGINT}");
         }
+
+        if (record.getRole() != null) {
+            sql.SET("`role` = #{record.role,jdbcType=VARCHAR}");
+        }
+
+        if (record.getTenant() != null) {
+            sql.SET("tenant = #{record.tenant,jdbcType=VARCHAR}");
+        }
         
         if (record.getEntity() != null) {
             sql.SET("entity = #{record.entity,jdbcType=VARCHAR}");
@@ -113,6 +131,8 @@ public class DataScopeSqlProvider {
         sql.UPDATE("data_scope");
         
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
+        sql.SET("`role` = #{record.role,jdbcType=VARCHAR}");
+        sql.SET("tenant = #{record.tenant,jdbcType=VARCHAR}");
         sql.SET("entity = #{record.entity,jdbcType=VARCHAR}");
         
         DataScopeExample example = (DataScopeExample) parameter.get("example");
@@ -129,6 +149,14 @@ public class DataScopeSqlProvider {
     public String updateByPrimaryKeySelective(DataScope record) {
         SQL sql = new SQL();
         sql.UPDATE("data_scope");
+
+        if (record.getRole() != null) {
+            sql.SET("`role` = #{role,jdbcType=VARCHAR}");
+        }
+
+        if (record.getTenant() != null) {
+            sql.SET("tenant = #{tenant,jdbcType=VARCHAR}");
+        }
         
         if (record.getEntity() != null) {
             sql.SET("entity = #{entity,jdbcType=VARCHAR}");
