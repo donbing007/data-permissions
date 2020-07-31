@@ -164,6 +164,34 @@ public class JSqlParserConditionAbilityTest {
             )
         );
 
+        data.put("select * from t1 where c1=2",
+            new AddConditionPack(
+                new Condition(
+                    new Field("c2"),
+                    ConditionOperator.IN, Arrays.asList(new LongValue(100), new LongValue(200), new LongValue(300))
+                ),
+                Conditional.AND,
+                CCJSqlParserUtil.parse(
+                    "select * from t1 where c1=2 and c2 in (100,200,300)")
+                    .toString(),
+                false
+            )
+        );
+
+        data.put("select * from t1 where c1=2",
+            new AddConditionPack(
+                new Condition(
+                    new Field("c2"),
+                    ConditionOperator.IN, Arrays.asList(new StringValue("v1"), new StringValue("v2"), new StringValue("v3"))
+                ),
+                Conditional.AND,
+                CCJSqlParserUtil.parse(
+                    "select * from t1 where c1=2 and c2 in ('v1','v2','v3')")
+                    .toString(),
+                false
+            )
+        );
+
         return data;
     }
 
