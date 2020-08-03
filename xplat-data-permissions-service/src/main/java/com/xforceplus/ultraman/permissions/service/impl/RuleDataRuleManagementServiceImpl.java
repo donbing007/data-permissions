@@ -180,7 +180,7 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
             .andIdGreaterThan(continuation.getStart());
 
         PageHelper.startPage(1, continuation.getSize());
-        List<DataScopeSubCondition> dataScopeSubConditions = dataScopeSubConditionRepository.selectByExample(example);
+        List<DataScopeSubCondition> dataScopeSubConditions = dataScopeSubConditionRepository.selectByExampleWithBLOBs(example);
 
         // field = rule
         Map<Long, DataRule> buff = new LinkedHashMap<>();
