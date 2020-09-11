@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.jdbc;
 
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.PreparedStatementProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.StatementProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.ProxyFactory;
@@ -27,13 +28,25 @@ public class PermissionsConnectionWrapper implements Connection {
     private AuthorizationSearcher authorizationSearcher;
     private Connection original;
     private HintParser hintParser;
+    private VariableParserManager variableParserManager;
 
     public PermissionsConnectionWrapper(
-        RuleCheckServiceClient client, AuthorizationSearcher authorizationSearcher, Connection original, HintParser hintParser) {
+            RuleCheckServiceClient client, AuthorizationSearcher authorizationSearcher, Connection original,
+            HintParser hintParser) {
         this.client = client;
         this.authorizationSearcher = authorizationSearcher;
         this.original = original;
         this.hintParser = hintParser;
+    }
+
+    public PermissionsConnectionWrapper(
+            RuleCheckServiceClient client, AuthorizationSearcher authorizationSearcher, Connection original,
+            HintParser hintParser, VariableParserManager manager) {
+        this.client = client;
+        this.authorizationSearcher = authorizationSearcher;
+        this.original = original;
+        this.hintParser = hintParser;
+        this.variableParserManager = manager;
     }
 
     @Override
@@ -41,19 +54,19 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement();
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-            source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 
@@ -67,19 +80,19 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency);
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-            source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql, resultSetType, resultSetConcurrency),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql, resultSetType, resultSetConcurrency),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 
@@ -93,19 +106,19 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-            source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql, resultSetType, resultSetConcurrency, resultSetHoldability),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql, resultSetType, resultSetConcurrency, resultSetHoldability),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 
@@ -117,39 +130,39 @@ public class PermissionsConnectionWrapper implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql, autoGeneratedKeys),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql, autoGeneratedKeys),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql, columnIndexes),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql, columnIndexes),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         return (PreparedStatement) ProxyFactory.createInterfactProxy(PreparedStatement.class,
-            new PreparedStatementProxy(
-                client,
-                authorizationSearcher.search(),
-                innerSql -> original.prepareStatement(innerSql, columnNames),
-                hintParser,
-                sql
-            )
+                new PreparedStatementProxy(
+                        client,
+                        authorizationSearcher.search(),
+                        innerSql -> original.prepareStatement(innerSql, columnNames),
+                        hintParser,
+                        sql, variableParserManager
+                )
         );
     }
 

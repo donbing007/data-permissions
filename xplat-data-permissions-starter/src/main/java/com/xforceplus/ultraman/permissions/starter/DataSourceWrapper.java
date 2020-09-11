@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.starter;
 import com.xforceplus.ultraman.permissions.jdbc.PermissionsDataSourceWrapper;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,29 +45,34 @@ public class DataSourceWrapper implements ApplicationContextAware {
             PermissionsDataSourceWrapper wrapper = (PermissionsDataSourceWrapper) dataSource;
 
             logger.error(
-                "Cannot enhance the already enhanced data source, the original data source type is {}..",
-                wrapper.getOriginal().getClass().getName());
+                    "Cannot enhance the already enhanced data source, the original data source type is {}..",
+                    wrapper.getOriginal().getClass().getName());
 
             return dataSource;
 
         }
 
         RuleCheckServiceClient ruleClient = (RuleCheckServiceClient) APPLICATION_CONTEXT.getBean(
-            BeanNameDefine.RULE_CHECK_CLIENT);
+                BeanNameDefine.RULE_CHECK_CLIENT);
 
         if (ruleClient == null) {
             throw new IllegalStateException("Did not find the right \"RuleCheckServiceClient\" instance.");
         }
 
         AuthorizationSearcher authorizationSearcher = (AuthorizationSearcher) APPLICATION_CONTEXT.getBean(
-            BeanNameDefine.AUTHORIZATION_SEARCHER);
+                BeanNameDefine.AUTHORIZATION_SEARCHER);
 
         if (authorizationSearcher == null) {
             throw new IllegalStateException("Did not find the right \"AuthorizationSearcher\" instance.");
         }
 
+        VariableParserManager manager = (VariableParserManager) APPLICATION_CONTEXT.getBean(BeanNameDefine.VARIABLE_PARSE_MANAGER);
+        if (manager == null) {
+            throw new IllegalStateException("Did not find the right \"VariableParserManager\" instance.");
+        }
+
         PermissionsDataSourceWrapper wrapper =
-            new PermissionsDataSourceWrapper(ruleClient, authorizationSearcher, dataSource);
+                new PermissionsDataSourceWrapper(ruleClient, authorizationSearcher, dataSource, manager);
 
 
         logger.info("Success enhancement {}.", dataSource.getClass().getName());

@@ -359,6 +359,28 @@ public class ConditionsCheckerTest {
             )
         );
 
+        data.put(
+                "select * from t1 where t1.c1=5000",
+                new ConditionPack(
+                        new HashMap<Authorization, Map<String, List<DataRule>>>() {{
+                            put(new Authorization("r1", "t1"),
+                                    new HashMap() {{
+                                        put("t1", Arrays.asList(
+                                                new DataRule("t1", "c1", Arrays.asList(
+                                                        new DataRuleCondition(
+                                                                RuleConditionOperation.LIST,
+                                                                RuleConditionValueType.STRING,
+                                                                RuleConditionRelationship.AND,
+                                                                "@TAX@")
+                                                ))
+                                        ));
+                                    }}
+                            );
+                        }},
+                        CCJSqlParserUtil.parse("select * from t1 where (t1.c1=5000) and (t1.c1 IN ('@TAX@'))").toString(),
+                        true
+                )
+        );
         return data;
     }
 

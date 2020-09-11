@@ -290,6 +290,8 @@
         </snapshotRepository>
     </distributionManagement>
 
+
+
     <modules>
         <module>xplat-data-permissions-sql-hint</module>
         <module>xplat-data-permissions-pojo</module>
@@ -314,5 +316,25 @@
         <checkstyle.skip>true</checkstyle.skip>
         <deploy.skip>false</deploy.skip>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>xplat-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://120.27.140.65:8081/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>xplat-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://120.27.140.65:8081/nexus/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

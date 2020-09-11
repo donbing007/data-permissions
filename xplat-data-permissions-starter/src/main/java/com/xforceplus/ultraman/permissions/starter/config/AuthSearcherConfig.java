@@ -1,6 +1,7 @@
 package com.xforceplus.ultraman.permissions.starter.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @since 1.8
  */
 @ConfigurationProperties(prefix = "xplat.data.permissions.searcher")
-@Component
+@Configuration
 public class AuthSearcherConfig {
 
     public static final String MOCK_NAME = "MOCK";

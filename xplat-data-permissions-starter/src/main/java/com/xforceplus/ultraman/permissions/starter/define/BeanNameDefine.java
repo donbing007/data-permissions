@@ -21,4 +21,19 @@ public class BeanNameDefine {
      * 数据源包装器.
      */
     public static final String DATA_SOURCE_WRAPPER = "data-source-wrapper";
+
+    /**
+     * 变量解析管理器
+     */
+    public static final String VARIABLE_PARSE_MANAGER = "variable-parse-manager";
+
+    /**
+     * 税号变量解析
+     */
+    public static final String TAX_NO_PARSER = "tax-no-parser";
+
+    /**
+     * 缓存管理器
+     */
+    public static final String XPLAT_CACHE_MANAGER = "xplat-cache-manager";
 }

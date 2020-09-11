@@ -1,6 +1,6 @@
 # 开发环境
 server:
-  port: 8080
+  port: 8088
 # grpc 配置.
 grpc:
   enabled: true
@@ -21,9 +21,9 @@ spring:
     cache-names: rule
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&connectTimeout=600000&socketTimeout=600000&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://db.bss-t.xforceplus.com:23305/xplat_data_permissions?useUnicode=true&characterEncoding=utf8&connectTimeout=600000&socketTimeout=600000&autoReconnect=true&failOverReadOnly=false
     username: root
-    password: root
+    password: wangmingjian123
     hikari:
       connection-test-query: "select 1"
       connection-timeout: 10000
@@ -42,3 +42,8 @@ logging:
     root: INFO
     io:
       opencensus: INFO
+    com:
+      xforceplus:
+        ultraman:
+          permissions:
+            repository: debug

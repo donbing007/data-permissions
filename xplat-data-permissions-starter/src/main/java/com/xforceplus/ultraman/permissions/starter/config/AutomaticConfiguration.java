@@ -1,15 +1,25 @@
 package com.xforceplus.ultraman.permissions.starter.config;
 
+import com.google.common.collect.Maps;
+import com.xforceplus.ultraman.permissions.cache.CaffeineCacheEnum;
+import com.xforceplus.ultraman.permissions.cache.XplatCacheManager;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.impl.ContextAuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.impl.MockAuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.GrpcRuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.AuthorizedUserService;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParser;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
+import com.xforceplus.ultraman.permissions.jdbc.parser.http.HttpClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.impl.AuthorizedUserServiceImpl;
+import com.xforceplus.ultraman.permissions.jdbc.parser.impl.TaxVariableParser;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.DataSourceInterceptor;
 import com.xforceplus.ultraman.permissions.starter.DataSourceWrapper;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
 import com.xforceplus.ultraman.permissions.transfer.grpc.client.StatmentCheckClientGrpc;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,8 +30,14 @@ import org.springframework.context.annotation.DependsOn;
 
 import javax.annotation.Resource;
 
+import java.util.Arrays;
+import java.util.Map;
+
+import static com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine.TAX_NO_PARSER;
+
 /**
  * 自动配置.
+ *
  * @author dongbin
  * @version 0.1 2019/10/23 14:31
  * @since 1.8
@@ -29,7 +45,7 @@ import javax.annotation.Resource;
 @Configuration
 @ConditionalOnClass(name = "org.springframework.boot.context.properties.bind.Binder")
 @ConfigurationProperties(prefix = "xplat.data.permissions")
-@EnableConfigurationProperties(AutomaticConfiguration.class)
+@EnableConfigurationProperties({AutomaticConfiguration.class})
 public class AutomaticConfiguration {
 
     private String host = "127.0.0.1";
@@ -45,6 +61,13 @@ public class AutomaticConfiguration {
     private String includeRex = "(.*)";
 
     private boolean debug = false;
+
+    @Value("${xplat.data.permissions.tenant.token-refresh-in-seconds:7200}")
+    private int MAX_TOKEN_LIFE;
+    @Value("${xplat.data.permissions.tenant.connection-time-out:10}")
+    private int CLIENT_CONN_TIMEOUT;
+    @Value("${xplat.data.permissions.tenant.read-time-out:60}")
+    private int CLIENT_READ_TIMEOUT;
 
     @Resource
     private AuthSearcherConfig searcherConfig;
@@ -99,11 +122,11 @@ public class AutomaticConfiguration {
 
     @Bean
     @DependsOn({
-        BeanNameDefine.DATA_SOURCE_WRAPPER,
-        BeanNameDefine.RULE_CHECK_CLIENT,
-        BeanNameDefine.AUTHORIZATION_SEARCHER
+            BeanNameDefine.DATA_SOURCE_WRAPPER,
+            BeanNameDefine.RULE_CHECK_CLIENT,
+            BeanNameDefine.AUTHORIZATION_SEARCHER
     })
-    @ConditionalOnProperty(prefix = "xplat.data.permissions", name = "manual", havingValue = "false",matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "xplat.data.permissions", name = "manual", havingValue = "false", matchIfMissing = true)
     public DataSourceInterceptor dataSourceInterceptor() {
         return new DataSourceInterceptor(includeRex);
     }
@@ -112,6 +135,40 @@ public class AutomaticConfiguration {
     public DataSourceWrapper dataSourceWrapper() {
         return new DataSourceWrapper();
     }
+
+    @Bean
+    public AuthorizedUserService authorizedUserService() {
+        return new AuthorizedUserServiceImpl();
+    }
+
+    @Bean(TAX_NO_PARSER)
+    public VariableParser variableParser(AuthorizedUserService service) {
+        return new TaxVariableParser(service);
+    }
+
+    @Bean(BeanNameDefine.VARIABLE_PARSE_MANAGER)
+    public VariableParserManager variableParserManager() {
+        return new VariableParserManager();
+    }
+
+    @Bean(BeanNameDefine.XPLAT_CACHE_MANAGER)
+    public XplatCacheManager xplatCacheManager() {
+        XplatCacheManager xplatCacheManager = new XplatCacheManager();
+        Map<String, String> caffeineSpecs = Maps.newHashMap();
+        Arrays.stream(CaffeineCacheEnum.values()).forEach(item -> {
+            caffeineSpecs.put(item.cacheName(), item.cacheSpec());
+        });
+        xplatCacheManager.setCacheSpecs(caffeineSpecs);
+        xplatCacheManager.setCacheSpecification(CaffeineCacheEnum.DEFAULT_CACHE_NAME.cacheSpec());
+        return xplatCacheManager;
+    }
+
+    @Bean
+    public HttpClient httpClient() {
+        HttpClient client = new HttpClient(CLIENT_CONN_TIMEOUT, CLIENT_READ_TIMEOUT, MAX_TOKEN_LIFE);
+        return client;
+    }
+
 
     public void setHost(String host) {
         this.host = host;

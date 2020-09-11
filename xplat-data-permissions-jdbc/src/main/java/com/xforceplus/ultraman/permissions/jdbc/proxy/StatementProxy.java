@@ -135,7 +135,7 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
 
                 } else {
                     Optional<SqlChange> firstSqlChange = checkResult.findFirst();
-                    ResultSet target = (ResultSet) method.invoke(statement, new Object[]{firstSqlChange.get().getNewSql()});
+                    ResultSet target = (ResultSet) method.invoke(statement, new Object[]{manager.parse(firstSqlChange.get().getNewSql())});
                     return ProxyFactory.createInterfactProxy(
                         ResultSet.class,
                         new PassResultSetProxy(firstSqlChange.get().getBlackList(), target));

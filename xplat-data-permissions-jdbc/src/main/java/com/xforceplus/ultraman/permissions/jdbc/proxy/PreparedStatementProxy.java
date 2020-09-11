@@ -2,6 +2,8 @@ package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
+import com.xforceplus.ultraman.permissions.jdbc.parser.Variable;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
@@ -35,13 +37,13 @@ import java.util.Optional;
 public class PreparedStatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
     private static final String[] FORCE_METHODS = new String[]{
-        "executeQuery",
-        "executeUpdate",
-        "execute",
-        "executeLargeUpdate",
-        "getResultSet",
-        "getUpdateCount",
-        "getMoreResults"
+            "executeQuery",
+            "executeUpdate",
+            "execute",
+            "executeLargeUpdate",
+            "getResultSet",
+            "getUpdateCount",
+            "getMoreResults"
     };
 
     final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
@@ -52,12 +54,32 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
     private boolean refuse;
 
     public PreparedStatementProxy(
-        RuleCheckServiceClient client,
-        Authorizations authorizations,
-        PreparedStatementMaker maker,
-        HintParser hintParser,
-        String sql)
-        throws SQLException {
+            RuleCheckServiceClient client,
+            Authorizations authorizations,
+            PreparedStatementMaker maker,
+            HintParser hintParser,
+            String sql,
+            VariableParserManager manager)
+            throws SQLException {
+
+        super(client, authorizations, hintParser, manager);
+        this.sql = sql;
+        this.maker = maker;
+
+        check();
+
+        if (DebugStatus.isDebug()) {
+            logger.debug("Expected: {}", sql);
+        }
+    }
+
+    public PreparedStatementProxy(
+            RuleCheckServiceClient client,
+            Authorizations authorizations,
+            PreparedStatementMaker maker,
+            HintParser hintParser,
+            String sql)
+            throws SQLException {
 
         super(client, authorizations, hintParser);
         this.sql = sql;
@@ -113,8 +135,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                     if (DebugStatus.isDebug()) {
                         logger.debug("Actual: {}", newSql);
                     }
-
-                    sourcePreparedStatement = maker.make(newSql);
+                    sourcePreparedStatement = maker.make(manager.parse(newSql));
                     refuse = false;
 
                     break;
@@ -177,8 +198,8 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                 } else {
                     ResultSet resultSet = (ResultSet) method.invoke(sourcePreparedStatement, args);
                     return ProxyFactory.createInterfactProxy(
-                        ResultSet.class,
-                        new DeniaResultSetProxy(resultSet)
+                            ResultSet.class,
+                            new DeniaResultSetProxy(resultSet)
                     );
                 }
             } else {
@@ -190,7 +211,7 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                         blackList = sqlChangeOptional.get().getBlackList();
                     }
                     return ProxyFactory.createInterfactProxy(ResultSet.class,
-                        new PassResultSetProxy(blackList, (ResultSet) executeResult));
+                            new PassResultSetProxy(blackList, (ResultSet) executeResult));
 
                 } else {
 
