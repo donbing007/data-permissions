@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.starter;
 import com.xforceplus.ultraman.permissions.jdbc.PermissionsDataSourceWrapper;
 import com.xforceplus.ultraman.permissions.jdbc.authorization.AuthorizationSearcher;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.result.service.CheckResult;
 import com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine;
@@ -61,6 +62,7 @@ public class DataSourceWrapperTest {
                 return null;
             }
         });
+        when(context.getBean(BeanNameDefine.VARIABLE_PARSE_MANAGER)).thenReturn(new VariableParserManager());
 
         wrapper.setApplicationContext(context);
         DataSource dataSource  = wrapper.wrap(new TestDataSource("d1"));
@@ -146,4 +148,4 @@ public class DataSourceWrapperTest {
     }
 
 
-} 
+}
