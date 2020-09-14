@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
 import com.xforceplus.ultraman.permissions.jdbc.define.ResultSetInvalidValues;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.DeniaResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.proxy.resultset.PassResultSetProxy;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
@@ -49,6 +50,11 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
 
     public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement, HintParser hintParser) {
         super(client, authorizations, hintParser);
+        this.statement = statement;
+    }
+
+    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement, HintParser hintParser,VariableParserManager manager) {
+        super(client, authorizations, hintParser,manager);
         this.statement = statement;
     }
 

@@ -2,6 +2,7 @@ package com.xforceplus.ultraman.permissions.jdbc.proxy;
 
 import com.mockrunner.mock.jdbc.MockResultSet;
 import com.xforceplus.ultraman.permissions.jdbc.client.RuleCheckServiceClient;
+import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorizations;
 import com.xforceplus.ultraman.permissions.pojo.check.SqlChange;
@@ -156,8 +157,12 @@ public class StatementProxyTest {
 
     @Test
     public void testExecuteResultUpdate() throws Throwable {
+
         String sql = "select t.id from table t";
         String newSql = "select t.id from table t where t.id > 200";
+
+        VariableParserManager manager = mock(VariableParserManager.class);
+        when(manager.parse(newSql)).thenReturn(newSql);
 
         RuleCheckServiceClient client = mock(RuleCheckServiceClient.class);
         when(client.check(sql, authorizations)).thenReturn(new CheckResult(CheckStatus.UPDATE, new SqlChange(newSql)));
@@ -168,7 +173,7 @@ public class StatementProxyTest {
         Statement statement = mock(Statement.class);
         when(statement.executeQuery(newSql)).thenReturn(rs);
 
-        StatementProxy proxy = new StatementProxy(client, authorizations, statement, new SQL92HintParser());
+        StatementProxy proxy = new StatementProxy(client, authorizations, statement, new SQL92HintParser(),manager);
         Method method = Statement.class.getMethod("executeQuery", new Class[]{String.class});
         ResultSet resultSet = (ResultSet) proxy.invoke(null, method, new Object[]{sql});
 
