@@ -4,7 +4,10 @@ import com.xforceplus.tenant.security.core.context.UserInfoHolder;
 import com.xforceplus.ultraman.permissions.jdbc.parser.AuthorizedUserService;
 import com.xforceplus.ultraman.permissions.jdbc.parser.Variable;
 import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
  * 创建时间: 2020/9/8 6:13 PM
  */
 public class TaxVariableParser implements VariableParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaxVariableParser.class);
 
     private AuthorizedUserService userService;
 
@@ -31,6 +36,7 @@ public class TaxVariableParser implements VariableParser {
     @Override
     public String parse(String sql) {
         Set<String> taxNums = userService.getUserTaxNums(UserInfoHolder.get().getId());
+        logger.info("User id : {},taxNums : {}", UserInfoHolder.get().getId(), String.join(",", taxNums));
         Set<String> formatTaxNums = taxNums.stream().map(item -> String.format("'%s'", item)).collect(Collectors.toSet());
         return sql.replace(String.format("'%s'", getName()), String.join(",", formatTaxNums));
     }
