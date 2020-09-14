@@ -29,7 +29,7 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
     @Autowired
     private TenantConfig config;
 
-    private static final String GET_USER_COMPANY_INFO_PATH = "api/global/v2/users/%s/tax-nums";
+    private static final String GET_USER_COMPANY_INFO_PATH = "/api/global/v2/users/%s/tax-nums";
 
 
     private static final String USER_AUTHORIZATION_TAX_CACHE = "USER_AUTHORIZATION_TAX_CACHE";
@@ -44,7 +44,7 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
         String response = client.doGet(String.format("%s%s", config.getApiBaseUrl()
                 , String.format(GET_USER_COMPANY_INFO_PATH, userId)), params, config.getAuthLoginName()
                 , config.getAuthPassword(), config.getAuthUrl());
-        HttpResponse<List<GetUserCompany>> companyResponse = GsonUtils.fromJsonString(response, GetUserCompany.class);
-        return companyResponse.getBody().stream().map(item -> item.getTaxNo()).collect(Collectors.toSet());
+        HttpResponse<List<String>> companyResponse = GsonUtils.fromJsonString(response, HttpResponse.class);
+        return companyResponse.getBody().stream().collect(Collectors.toSet());
     }
 }

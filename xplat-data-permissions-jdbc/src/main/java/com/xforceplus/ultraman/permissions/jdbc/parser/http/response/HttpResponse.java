@@ -10,23 +10,23 @@ package com.xforceplus.ultraman.permissions.jdbc.parser.http.response;
  */
 public class HttpResponse<T> {
 
-    private final int m_code;
-    private final T m_body;
-    private String m_message;
+    private final int code;
+    private final T result;
+    private String message;
 
     /**
      *
-     * @param m_code
+     * @param code
      * @param message
      */
-    public HttpResponse(int m_code, String message, T body) {
-        this.m_code = m_code;
-        this.m_body = body;
-        this.m_message = message;
+    public HttpResponse(int code, String message, T result) {
+        this.code = code;
+        this.result = result;
+        this.message = message;
     }
 
     public int getStatusCode() {
-        return m_code;
+        return code;
     }
 
     /**
@@ -34,7 +34,7 @@ public class HttpResponse<T> {
      * @return
      */
     public T getBody() {
-        return m_body;
+        return result;
     }
 
 }
