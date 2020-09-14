@@ -29,7 +29,7 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
     @Autowired
     private TenantConfig config;
 
-    private static final String GET_USER_COMPANY_INFO_PATH = "/users/%s/tax-nums";
+    private static final String GET_USER_COMPANY_INFO_PATH = "api/global/v2/users/%s/tax-nums";
 
 
     private static final String USER_AUTHORIZATION_TAX_CACHE = "USER_AUTHORIZATION_TAX_CACHE";
