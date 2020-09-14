@@ -36,8 +36,8 @@
 
     </dependencies>
 
-    <properties>
-        <deploy.skip>true</deploy.skip>
-    </properties>
+<!--    <properties>-->
+<!--        <deploy.skip>true</deploy.skip>-->
+<!--    </properties>-->
 
 </project>
