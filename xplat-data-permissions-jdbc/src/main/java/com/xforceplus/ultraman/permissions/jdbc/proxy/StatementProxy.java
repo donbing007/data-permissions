@@ -40,9 +40,9 @@ import java.util.Optional;
 public class StatementProxy extends AbstractStatementProxy implements InvocationHandler {
 
     private static final String[] FORCE_METHODS = new String[]{
-        "executeQuery",
-        "executeUpdate",
-        "execute"
+            "executeQuery",
+            "executeUpdate",
+            "execute"
     };
 
     final Logger logger = LoggerFactory.getLogger(StatementProxy.class);
@@ -53,8 +53,9 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
         this.statement = statement;
     }
 
-    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement, HintParser hintParser,VariableParserManager manager) {
-        super(client, authorizations, hintParser,manager);
+    public StatementProxy(RuleCheckServiceClient client, Authorizations authorizations, Statement statement,
+                          HintParser hintParser, VariableParserManager manager) {
+        super(client, authorizations, hintParser, manager);
         this.statement = statement;
     }
 
@@ -120,8 +121,8 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     }
 
                     return ProxyFactory.createInterfacetProxyFromObject(
-                        target,
-                        new PassResultSetProxy(blackList, target));
+                            target,
+                            new PassResultSetProxy(blackList, target));
                 }
             }
             case UPDATE: {
@@ -143,8 +144,8 @@ public class StatementProxy extends AbstractStatementProxy implements Invocation
                     Optional<SqlChange> firstSqlChange = checkResult.findFirst();
                     ResultSet target = (ResultSet) method.invoke(statement, new Object[]{manager.parse(firstSqlChange.get().getNewSql())});
                     return ProxyFactory.createInterfactProxy(
-                        ResultSet.class,
-                        new PassResultSetProxy(firstSqlChange.get().getBlackList(), target));
+                            ResultSet.class,
+                            new PassResultSetProxy(firstSqlChange.get().getBlackList(), target));
                 }
             }
             case DENIAL: {
