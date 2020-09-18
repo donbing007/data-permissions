@@ -54,7 +54,7 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement();
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser, variableParserManager));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency);
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser, variableParserManager));
     }
 
     @Override
@@ -106,7 +106,7 @@ public class PermissionsConnectionWrapper implements Connection {
         Statement source = original.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
 
         return (Statement) ProxyFactory.createInterfacetProxyFromObject(
-                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser));
+                source, new StatementProxy(client, authorizationSearcher.search(), source, hintParser, variableParserManager));
     }
 
     @Override
