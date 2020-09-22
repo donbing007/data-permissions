@@ -1,12 +1,16 @@
 package com.xforceplus.ultraman.permissions.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.DataRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleV2;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldAuthority;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 import com.xforceplus.ultraman.permissions.repository.FieldScopeRepository;
 import com.xforceplus.ultraman.permissions.repository.RolePermissionsRepository;
@@ -28,9 +32,13 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author dongbin
@@ -164,6 +172,35 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
             .collect(Collectors.toList());
 
         return new FieldRuleManagementResult(ManagementStatus.SUCCESS, rules, null);
+    }
+
+    @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    public FieldRuleManagementResultV2 listV2(Authorization authorization, String entity) {
+        FieldScopeExample example = new FieldScopeExample();
+        example.setOrderByClause("id ASC");
+        FieldScopeExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleEqualTo(authorization.getRole())
+            .andTenantEqualTo(authorization.getTenant());
+        if (entity != null) {
+            criteria.andEntityEqualTo(entity);
+        }
+        List<FieldScope> scopes = fieldScopeRepository.selectByExample(example);
+       Map<String,List<FieldScope>> mapScopes =  scopes.stream().collect(groupingBy(FieldScope::getEntity));
+       List<DataRuleV2> result = new ArrayList<>();
+       for(Map.Entry<String,List<FieldScope>> entry : mapScopes.entrySet()) {
+           DataRuleV2 ruleV2 = new DataRuleV2();
+           ruleV2.setEntity(entry.getKey());
+           List<FieldAuthority> fieldAuthorities = entry.getValue().stream().map(item->{
+               FieldAuthority fieldAuthority = new FieldAuthority();
+               fieldAuthority.setId(item.getId());
+               fieldAuthority.setName(item.getField());
+               return fieldAuthority;
+           }).collect(Collectors.toList());
+           ruleV2.setFields(fieldAuthorities);
+           result.add(ruleV2);
+       }
+        return new FieldRuleManagementResultV2(ManagementStatus.SUCCESS, result, null);
     }
 
     /**

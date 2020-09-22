@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
 import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.*;
 import com.xforceplus.ultraman.permissions.repository.DataScopeConditionsRepository;
 import com.xforceplus.ultraman.permissions.repository.DataScopeRepository;
@@ -14,6 +15,7 @@ import com.xforceplus.ultraman.permissions.repository.entity.*;
 import com.xforceplus.ultraman.permissions.service.RuleDataRuleManagementService;
 import com.xforceplus.ultraman.permissions.service.aop.AuthorizationCheck;
 import com.xforceplus.ultraman.permissions.service.aop.NoAuthorizationPlan;
+import com.xforceplus.ultraman.permissions.sql.define.Field;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,10 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author dongbin
@@ -69,9 +71,9 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
 
         DataScopeExample dataScopeExample = new DataScopeExample();
         dataScopeExample.createCriteria()
-            .andEntityEqualTo(rule.getEntity())
-            .andEntityEqualTo(authorization.getRole())
-            .andEntityEqualTo(authorization.getTenant());
+                .andEntityEqualTo(rule.getEntity())
+                .andEntityEqualTo(authorization.getRole())
+                .andEntityEqualTo(authorization.getTenant());
         List<DataScope> dataScopes = dataScopeRepository.selectByExample(dataScopeExample);
 
         DataScope dataScope;
@@ -107,10 +109,10 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
 
             DataScopeConditionsExample dataScopeConditionsExample = new DataScopeConditionsExample();
             dataScopeConditionsExample.createCriteria().andFieldEqualTo(rule.getField())
-                .andDataScopeIdEqualTo(dataScopes.get(0).getId());
+                    .andDataScopeIdEqualTo(dataScopes.get(0).getId());
 
             List<DataScopeConditions> dataScopeConditions =
-                dataScopeConditionsRepository.selectByExample(dataScopeConditionsExample);
+                    dataScopeConditionsRepository.selectByExample(dataScopeConditionsExample);
             if (dataScopeConditions.size() > 0) {
                 // 存在条件,删除之下的所有子条件,增加上新的条件.
                 conditions = dataScopeConditions.get(0);
@@ -176,8 +178,8 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
             criteria.andEntityEqualTo(entity);
         }
         criteria.andRoleEqualTo(authorization.getRole())
-            .andTenantEqualTo(authorization.getTenant())
-            .andIdGreaterThan(continuation.getStart());
+                .andTenantEqualTo(authorization.getTenant())
+                .andIdGreaterThan(continuation.getStart());
 
         PageHelper.startPage(1, continuation.getSize());
         List<DataScopeSubCondition> dataScopeSubConditions = dataScopeSubConditionRepository.selectByExampleWithBLOBs(example);
@@ -190,9 +192,9 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
             rule = buff.get(dataScopeSubCondition.getConditionsId());
             if (rule == null) {
                 rule = new DataRule(
-                    dataScopeSubCondition.getConditionsId(),
-                    dataScopeSubCondition.getEntity(),
-                    dataScopeSubCondition.getField());
+                        dataScopeSubCondition.getConditionsId(),
+                        dataScopeSubCondition.getEntity(),
+                        dataScopeSubCondition.getField());
                 buff.put(dataScopeSubCondition.getConditionsId(), rule);
             }
 
@@ -207,6 +209,52 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
 
         return new DataRuleManagementResult(ManagementStatus.SUCCESS, buff.values(), null);
 
+    }
+
+    @Override
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    public DataRuleManagementResultV2 listV2(Authorization authorization, String entity) {
+
+        DataScopeExample example = new DataScopeExample();
+        DataScopeExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleEqualTo(authorization.getRole())
+                .andTenantEqualTo(authorization.getTenant());
+//        PageHelper.startPage(page, size);
+        List<DataScope> dataScopes = dataScopeRepository.selectByExample(example);
+//        Long total = dataScopeRepository.countByExample(example);
+        List<String> entities = dataScopes.stream().map(item -> item.getEntity()).collect(Collectors.toList());
+        DataScopeSubConditionExample subExample = new DataScopeSubConditionExample();
+        DataScopeSubConditionExample.Criteria subCriteria = subExample.createCriteria();
+        subCriteria.andEntityIn(entities);
+        subCriteria.andRoleEqualTo(authorization.getRole())
+                .andTenantEqualTo(authorization.getTenant());
+        List<DataScopeSubCondition> dataScopeSubConditions = dataScopeSubConditionRepository.selectByExampleWithBLOBs(subExample);
+        Map<String, List<DataScopeSubCondition>> mapByEntity = dataScopeSubConditions.stream().collect(groupingBy(DataScopeSubCondition::getEntity));
+        List<DataRuleV2> dataRuleV2s = new ArrayList<>();
+        for (Map.Entry<String, List<DataScopeSubCondition>> entry : mapByEntity.entrySet()) {
+            DataRuleV2 rule = new DataRuleV2();
+            rule.setEntity(entry.getKey());
+            Map<String, List<DataScopeSubCondition>> mapByField = entry.getValue().stream().collect(groupingBy(DataScopeSubCondition::getField));
+            List<FieldAuthority> fieldAuthorities = new ArrayList<>();
+            for (Map.Entry<String, List<DataScopeSubCondition>> fieldEntry : mapByField.entrySet()) {
+                FieldAuthority fieldAuthority = new FieldAuthority();
+                fieldAuthority.setName(fieldEntry.getKey());
+                List<DataRuleCondition> conditions = fieldEntry.getValue().stream().map(item -> {
+                    DataRuleCondition condition = new DataRuleCondition();
+                    condition.setLink(RuleConditionRelationship.getInstance(item.getLink()));
+                    condition.setOperation(RuleConditionOperation.getInstance(item.getOperation()));
+                    condition.setType(RuleConditionValueType.getInstance(item.getValueType()));
+                    condition.setValue(item.getValue());
+                    return condition;
+                }).collect(Collectors.toList());
+                fieldAuthority.setConditions(conditions);
+                fieldAuthority.setId(fieldEntry.getValue().size() != 0 ? fieldEntry.getValue().get(0).getConditionsId() : 0);
+                fieldAuthorities.add(fieldAuthority);
+            }
+            rule.setFields(fieldAuthorities);
+            dataRuleV2s.add(rule);
+        }
+        return new DataRuleManagementResultV2(ManagementStatus.SUCCESS, dataRuleV2s, null);
     }
 
     /**

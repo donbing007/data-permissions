@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.service;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.rule.DataRule;
 
@@ -46,4 +47,12 @@ public interface RuleDataRuleManagementService {
      * @return
      */
     DataRuleManagementResult list(Authorization authorization, String entity, Continuation continuation);
+
+    /**
+     *
+     * @param authorization 授权信息
+     * @param entity  实体信息
+     * @return
+     */
+    DataRuleManagementResultV2 listV2(Authorization authorization, String entity);
 }

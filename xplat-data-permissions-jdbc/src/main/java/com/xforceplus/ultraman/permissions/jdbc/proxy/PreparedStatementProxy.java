@@ -131,11 +131,12 @@ public class PreparedStatementProxy extends AbstractStatementProxy implements In
                     if (newSql == null) {
                         throw new IllegalStateException("The status is updated, but no replacement SQL statement was found!");
                     }
-
+                    String variableSql = manager.parse(newSql);
                     if (DebugStatus.isDebug()) {
                         logger.debug("Actual: {}", newSql);
+                        logger.debug("Actual variable sql : {}", variableSql);
                     }
-                    sourcePreparedStatement = maker.make(manager.parse(newSql));
+                    sourcePreparedStatement = maker.make(variableSql);
                     refuse = false;
 
                     break;

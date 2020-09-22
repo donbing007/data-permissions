@@ -3,6 +3,7 @@ package com.xforceplus.ultraman.permissions.service;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
+import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
 
 import java.util.List;
@@ -46,5 +47,14 @@ public interface RuleFieldRuleManagementService {
      * @return 规则迭代器.
      */
     FieldRuleManagementResult list(Authorization authorization, String entity, Continuation continuation);
+
+
+    /**
+     * 迭代指定授权的指定 entity 规则 .
+     * @param authorization
+     * @param entity
+     * @return 规则迭代器.
+     */
+    FieldRuleManagementResultV2 listV2(Authorization authorization, String entity);
 
 }
