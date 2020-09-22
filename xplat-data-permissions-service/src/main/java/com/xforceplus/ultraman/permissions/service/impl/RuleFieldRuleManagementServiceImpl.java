@@ -1,14 +1,11 @@
 package com.xforceplus.ultraman.permissions.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
 import com.xforceplus.ultraman.permissions.pojo.auth.Authorization;
 import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.ManagementStatus;
-import com.xforceplus.ultraman.permissions.pojo.result.service.DataRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResultV2;
-import com.xforceplus.ultraman.permissions.pojo.rule.DataRule;
 import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldAuthority;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
