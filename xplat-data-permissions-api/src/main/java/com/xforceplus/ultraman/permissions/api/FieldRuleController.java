@@ -143,7 +143,7 @@ public class FieldRuleController {
             @ApiParam(name = "rule", value = "字段规则", required = true, example = "{entity='entity', field='*'}")
             @RequestBody FieldRuleRequest ruleRequest) {
         Authorization authorization = new Authorization(role, tenant);
-        ruleFieldRuleManagementService.removeBatch(authorization,ruleRequest.getEntity());
+        ruleFieldRuleManagementService.removeBatch(authorization, ruleRequest.getEntity());
         FieldRuleManagementResult result = ruleFieldRuleManagementService.insert(authorization, ruleRequest);
 
         return new ResponseEntity(result, HttpCodeAssembler.assemManagementStatus(result.getStatus(), HttpStatus.OK));
