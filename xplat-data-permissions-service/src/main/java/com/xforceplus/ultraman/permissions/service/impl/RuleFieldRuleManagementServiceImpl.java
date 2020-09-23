@@ -9,6 +9,7 @@ import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManageme
 import com.xforceplus.ultraman.permissions.pojo.rule.DataRuleV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldAuthority;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRuleRequest;
 import com.xforceplus.ultraman.permissions.repository.FieldScopeRepository;
 import com.xforceplus.ultraman.permissions.repository.RolePermissionsRepository;
 import com.xforceplus.ultraman.permissions.repository.entity.FieldScope;
@@ -25,6 +26,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
@@ -116,6 +118,39 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     }
 
     @Override
+    public FieldRuleManagementResult insert(Authorization authorization, FieldRuleRequest rules) {
+        if(StringUtils.isEmpty(rules.getEntity()) || rules.getFields().isEmpty()) {
+            throw new IllegalArgumentException("field or entity is empty!");
+        }
+        for(String field : rules.getFields()) {
+            FieldScope scope = new FieldScope();
+            scope.setEntity(rules.getEntity());
+            scope.setField(field);
+            scope.setRole(authorization.getRole());
+            scope.setTenant(authorization.getTenant());
+            fieldScopeRepository.insert(scope);
+            RolePermissions rolePermissions = new RolePermissions();
+            rolePermissions.setRoleId(authorization.getId());
+            rolePermissions.setScopeId(scope.getId());
+            rolePermissions.setScopeType(FieldRule.TYPE);
+            rolePermissionsRepository.insert(rolePermissions);
+        }
+        return new FieldRuleManagementResult(ManagementStatus.SUCCESS);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    public FieldRuleManagementResult update(Authorization authorization, FieldRuleRequest ruleRequest) {
+        if(StringUtils.isEmpty(ruleRequest.getEntity()) || ruleRequest.getFields().isEmpty()) {
+            throw new IllegalArgumentException("field or entity is empty!");
+        }
+        removeBatch(authorization,ruleRequest.getEntity());
+        insert(authorization,ruleRequest);
+        return new FieldRuleManagementResult(ManagementStatus.SUCCESS);
+    }
+
+    @Override
     @Transactional
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
     @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rule.entity != null")
@@ -140,6 +175,33 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
 
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         return new FieldRuleManagementResult(ManagementStatus.LOSS, "Unable to remove field rule.");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    public FieldRuleManagementResult removeBatch(Authorization authorization, String entity) {
+        FieldScopeExample example = new FieldScopeExample();
+        example.createCriteria().andEntityEqualTo(entity)
+                .andTenantEqualTo(authorization.getTenant())
+                .andRoleEqualTo(authorization.getRole());
+        List<FieldScope> fieldScopes =  fieldScopeRepository.selectByExample(example);
+        RolePermissionsExample roleExample = new RolePermissionsExample();
+        List<Long> fieldScopeIds = fieldScopes.stream().map(item->item.getId()).collect(Collectors.toList());
+        logger.info("prepare delete fieldScopeIds {}",fieldScopeIds.size());
+        roleExample.createCriteria().andRoleIdEqualTo(authorization.getId())
+                .andScopeIdIn(fieldScopeIds)
+                .andScopeTypeEqualTo(FieldRule.TYPE);
+        if (rolePermissionsRepository.deleteByExample(roleExample) > 0) {
+
+            FieldScopeExample delExample = new FieldScopeExample();
+            delExample.createCriteria().andIdIn(fieldScopeIds);
+            if (fieldScopeRepository.deleteByExample(delExample) > 0) {
+
+                return new FieldRuleManagementResult(ManagementStatus.SUCCESS);
+            }
+        }
+        return null;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRuleRequest;
 import com.xforceplus.ultraman.permissions.service.RuleFieldRuleManagementService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 字段规则.
@@ -103,6 +105,51 @@ public class FieldRuleController {
     }
 
     @ApiOperation(
+            httpMethod = "POST",
+            value = "新增新的字段规则.",
+            notes = "",
+            response = FieldRuleManagementResult.class,
+            tags = {"field"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "响应正确.", response = FieldRuleManagementResult.class)}
+    )
+    @PostMapping(value = "/{tenant}/xpermissions/v2/field/rule", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity insertBatch(
+            @ApiParam(name = "tenant", value = "租户", required = true) @PathVariable("tenant") String tenant,
+            @ApiParam(name = "role", value = "角色", required = true) @RequestParam("role") String role,
+            @ApiParam(name = "rule", value = "字段规则", required = true, example = "{entity='entity', field='*'}")
+            @RequestBody FieldRuleRequest ruleRequest) {
+        Authorization authorization = new Authorization(role, tenant);
+
+        FieldRuleManagementResult result = ruleFieldRuleManagementService.insert(authorization, ruleRequest);
+
+        return new ResponseEntity(result, HttpCodeAssembler.assemManagementStatus(result.getStatus(), HttpStatus.OK));
+    }
+
+
+    @ApiOperation(
+            httpMethod = "PUT",
+            value = "修改字段规则.",
+            notes = "",
+            response = FieldRuleManagementResult.class,
+            tags = {"field"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "响应正确.", response = FieldRuleManagementResult.class)}
+    )
+    @PutMapping(value = "/{tenant}/xpermissions/v2/field/rule", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity updateBatch(
+            @ApiParam(name = "tenant", value = "租户", required = true) @PathVariable("tenant") String tenant,
+            @ApiParam(name = "role", value = "角色", required = true) @RequestParam("role") String role,
+            @ApiParam(name = "rule", value = "字段规则", required = true, example = "{entity='entity', field='*'}")
+            @RequestBody FieldRuleRequest ruleRequest) {
+        Authorization authorization = new Authorization(role, tenant);
+        ruleFieldRuleManagementService.removeBatch(authorization,ruleRequest.getEntity());
+        FieldRuleManagementResult result = ruleFieldRuleManagementService.insert(authorization, ruleRequest);
+
+        return new ResponseEntity(result, HttpCodeAssembler.assemManagementStatus(result.getStatus(), HttpStatus.OK));
+    }
+
+    @ApiOperation(
             httpMethod = "DELETE",
             value = " 删除存在的规则..",
             notes = "",
@@ -119,6 +166,26 @@ public class FieldRuleController {
             @RequestBody FieldRule rule) {
         Authorization authorization = new Authorization(role, tenant);
         FieldRuleManagementResult result = ruleFieldRuleManagementService.remove(authorization, rule);
+        return new ResponseEntity(result, HttpCodeAssembler.assemManagementStatus(result.getStatus(), HttpStatus.OK));
+    }
+
+
+    @ApiOperation(
+            httpMethod = "DELETE",
+            value = " 删除存在的规则..",
+            notes = "",
+            response = FieldRuleManagementResult.class,
+            tags = {"field"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "响应正确.", response = FieldRuleManagementResult.class)}
+    )
+    @DeleteMapping(value = "/{tenant}/xpermissions/v2/field/rule", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity removeBatch(
+            @ApiParam(name = "tenant", value = "租户", required = true) @PathVariable("tenant") String tenant,
+            @ApiParam(name = "role", value = "角色", required = true) @RequestParam("role") String role,
+            @ApiParam(name = "entity", value = "表名", required = true) @RequestParam String entity) {
+        Authorization authorization = new Authorization(role, tenant);
+        FieldRuleManagementResult result = ruleFieldRuleManagementService.removeBatch(authorization, entity);
         return new ResponseEntity(result, HttpCodeAssembler.assemManagementStatus(result.getStatus(), HttpStatus.OK));
     }
 }

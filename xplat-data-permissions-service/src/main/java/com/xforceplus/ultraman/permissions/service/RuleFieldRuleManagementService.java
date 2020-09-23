@@ -5,6 +5,7 @@ import com.xforceplus.ultraman.permissions.pojo.page.Continuation;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResult;
 import com.xforceplus.ultraman.permissions.pojo.result.service.FieldRuleManagementResultV2;
 import com.xforceplus.ultraman.permissions.pojo.rule.FieldRule;
+import com.xforceplus.ultraman.permissions.pojo.rule.FieldRuleRequest;
 
 import java.util.List;
 
@@ -24,12 +25,36 @@ public interface RuleFieldRuleManagementService {
      */
     FieldRuleManagementResult save(Authorization authorization, FieldRule rule);
 
+
+    /**
+     * 创建字段规则.
+     * @param authorization 授权信息.
+     * @param ruleRequest 规则信息.
+     * @return 结果.
+     */
+    FieldRuleManagementResult insert(Authorization authorization, FieldRuleRequest ruleRequest);
+
+    /**
+     * 更新字段规则.
+     * @param authorization 授权信息.
+     * @param ruleRequest 规则信息.
+     * @return 结果.
+     */
+    FieldRuleManagementResult update(Authorization authorization, FieldRuleRequest ruleRequest);
+
     /**
      * 删除已经存在的规则.
      * @param authorization 授权信息.
      * @param rule 规则.
      */
     FieldRuleManagementResult remove(Authorization authorization, FieldRule rule);
+
+    /**
+     * 删除已经存在的规则.
+     * @param authorization 授权信息.
+     * @param entity 表名.
+     */
+    FieldRuleManagementResult removeBatch(Authorization authorization, String entity);
 
     /**
      * 迭代指定授权的字段规则.
