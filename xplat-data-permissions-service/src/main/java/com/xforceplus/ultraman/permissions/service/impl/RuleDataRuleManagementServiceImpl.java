@@ -72,8 +72,8 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
         DataScopeExample dataScopeExample = new DataScopeExample();
         dataScopeExample.createCriteria()
                 .andEntityEqualTo(rule.getEntity())
-                .andEntityEqualTo(authorization.getRole())
-                .andEntityEqualTo(authorization.getTenant());
+                .andRoleEqualTo(authorization.getRole())
+                .andTenantEqualTo(authorization.getTenant());
         List<DataScope> dataScopes = dataScopeRepository.selectByExample(dataScopeExample);
 
         DataScope dataScope;
