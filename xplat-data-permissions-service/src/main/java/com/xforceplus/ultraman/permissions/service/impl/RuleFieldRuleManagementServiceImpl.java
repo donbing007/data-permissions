@@ -234,7 +234,7 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     }
 
     @Override
-    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    @AuthorizationCheck(NoAuthorizationPlan.PASS)
     public FieldRuleManagementResultV2 listV2(Authorization authorization, String entity) {
         FieldScopeExample example = new FieldScopeExample();
         example.setOrderByClause("id ASC");
