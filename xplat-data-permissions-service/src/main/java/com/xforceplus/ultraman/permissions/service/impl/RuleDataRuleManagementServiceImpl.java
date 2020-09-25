@@ -211,7 +211,7 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
     }
 
     @Override
-    @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    @AuthorizationCheck(NoAuthorizationPlan.PASS)
     public DataRuleManagementResultV2 listV2(Authorization authorization, String entity) {
 
         DataScopeExample example = new DataScopeExample();
@@ -220,6 +220,9 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
                 .andTenantEqualTo(authorization.getTenant());
 //        PageHelper.startPage(page, size);
         List<DataScope> dataScopes = dataScopeRepository.selectByExample(example);
+        if(dataScopes.isEmpty()) {
+            return new DataRuleManagementResultV2(ManagementStatus.SUCCESS, new ArrayList<>() , null);
+        }
 //        Long total = dataScopeRepository.countByExample(example);
         List<String> entities = dataScopes.stream().map(item -> item.getEntity()).collect(Collectors.toList());
         DataScopeSubConditionExample subExample = new DataScopeSubConditionExample();

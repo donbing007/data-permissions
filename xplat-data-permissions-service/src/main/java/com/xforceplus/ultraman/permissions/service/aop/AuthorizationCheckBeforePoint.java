@@ -74,6 +74,8 @@ public class AuthorizationCheckBeforePoint {
                         switch (plan) {
                             case CREATE:
                                 return processorCreate((Authorization) arg, joinPoint);
+                            case PASS:
+                                break;
                             default:
                                 return processorErr((Authorization) arg, joinPoint);
                         }
