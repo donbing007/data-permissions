@@ -131,10 +131,9 @@ public class RuleDataRuleManagementServiceImpl implements RuleDataRuleManagement
             }
 
         }
-
+        rule.setId(conditions.getId());
         createSubConditions(authorization, rule, conditions);
-
-        return new DataRuleManagementResult(ManagementStatus.SUCCESS);
+        return new DataRuleManagementResult(ManagementStatus.SUCCESS,rule);
     }
 
     @Override
