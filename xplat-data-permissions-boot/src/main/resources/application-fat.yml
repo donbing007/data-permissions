@@ -44,3 +44,8 @@ logging:
     root: INFO
     io:
       opencensus: INFO
+    com:
+      xforceplus:
+        ultraman:
+          permissions:
+            repository: debug
