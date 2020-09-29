@@ -117,12 +117,14 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         return new FieldRuleManagementResult(ManagementStatus.FAIL);
     }
 
+
     @Override
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rules.entity != null")
     public FieldRuleManagementResult insert(Authorization authorization, FieldRuleRequest rules) {
-        if(StringUtils.isEmpty(rules.getEntity()) || rules.getFields().isEmpty()) {
+        if (StringUtils.isEmpty(rules.getEntity()) || rules.getFields().isEmpty()) {
             throw new IllegalArgumentException("field or entity is empty!");
         }
-        for(String field : rules.getFields()) {
+        for (String field : rules.getFields()) {
             FieldScope scope = new FieldScope();
             scope.setEntity(rules.getEntity());
             scope.setField(field);
@@ -141,12 +143,13 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     @Override
     @Transactional(rollbackFor = Throwable.class)
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#ruleRequest.entity != null")
     public FieldRuleManagementResult update(Authorization authorization, FieldRuleRequest ruleRequest) {
-        if(StringUtils.isEmpty(ruleRequest.getEntity()) || ruleRequest.getFields().isEmpty()) {
+        if (StringUtils.isEmpty(ruleRequest.getEntity()) || ruleRequest.getFields().isEmpty()) {
             throw new IllegalArgumentException("field or entity is empty!");
         }
-        removeBatch(authorization,ruleRequest.getEntity());
-        insert(authorization,ruleRequest);
+        removeBatch(authorization, ruleRequest.getEntity());
+        insert(authorization, ruleRequest);
         return new FieldRuleManagementResult(ManagementStatus.SUCCESS);
     }
 
@@ -162,8 +165,8 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
 
         RolePermissionsExample example = new RolePermissionsExample();
         example.createCriteria().andRoleIdEqualTo(authorization.getId())
-            .andScopeIdEqualTo(rule.getId())
-            .andScopeTypeEqualTo(FieldRule.TYPE);
+                .andScopeIdEqualTo(rule.getId())
+                .andScopeTypeEqualTo(FieldRule.TYPE);
         if (rolePermissionsRepository.deleteByExample(example) > 0) {
 
             if (fieldScopeRepository.deleteByPrimaryKey(rule.getId()) > 0) {
@@ -180,15 +183,16 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     @Override
     @Transactional(rollbackFor = Throwable.class)
     @AuthorizationCheck(NoAuthorizationPlan.ERROR)
+    @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#entity != null")
     public FieldRuleManagementResult removeBatch(Authorization authorization, String entity) {
         FieldScopeExample example = new FieldScopeExample();
         example.createCriteria().andEntityEqualTo(entity)
                 .andTenantEqualTo(authorization.getTenant())
                 .andRoleEqualTo(authorization.getRole());
-        List<FieldScope> fieldScopes =  fieldScopeRepository.selectByExample(example);
+        List<FieldScope> fieldScopes = fieldScopeRepository.selectByExample(example);
         RolePermissionsExample roleExample = new RolePermissionsExample();
-        List<Long> fieldScopeIds = fieldScopes.stream().map(item->item.getId()).collect(Collectors.toList());
-        logger.info("prepare delete fieldScopeIds {}",fieldScopeIds.size());
+        List<Long> fieldScopeIds = fieldScopes.stream().map(item -> item.getId()).collect(Collectors.toList());
+        logger.info("prepare delete fieldScopeIds {}", fieldScopeIds.size());
         roleExample.createCriteria().andRoleIdEqualTo(authorization.getId())
                 .andScopeIdIn(fieldScopeIds)
                 .andScopeTypeEqualTo(FieldRule.TYPE);
@@ -217,8 +221,8 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         example.setOrderByClause("id ASC");
         FieldScopeExample.Criteria criteria = example.createCriteria();
         criteria.andRoleEqualTo(authorization.getRole())
-            .andTenantEqualTo(authorization.getTenant())
-            .andIdGreaterThan(continuation.getStart());
+                .andTenantEqualTo(authorization.getTenant())
+                .andIdGreaterThan(continuation.getStart());
         if (entity != null) {
             criteria.andEntityEqualTo(entity);
         }
@@ -227,8 +231,8 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         List<FieldScope> scopes = fieldScopeRepository.selectByExample(example);
 
         List<FieldRule> rules = scopes.stream()
-            .map(scope -> new FieldRule(scope.getId(), scope.getEntity(), scope.getField()))
-            .collect(Collectors.toList());
+                .map(scope -> new FieldRule(scope.getId(), scope.getEntity(), scope.getField()))
+                .collect(Collectors.toList());
 
         return new FieldRuleManagementResult(ManagementStatus.SUCCESS, rules, null);
     }
@@ -240,25 +244,25 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
         example.setOrderByClause("id ASC");
         FieldScopeExample.Criteria criteria = example.createCriteria();
         criteria.andRoleEqualTo(authorization.getRole())
-            .andTenantEqualTo(authorization.getTenant());
+                .andTenantEqualTo(authorization.getTenant());
         if (entity != null) {
             criteria.andEntityEqualTo(entity);
         }
         List<FieldScope> scopes = fieldScopeRepository.selectByExample(example);
-       Map<String,List<FieldScope>> mapScopes =  scopes.stream().collect(groupingBy(FieldScope::getEntity));
-       List<DataRuleV2> result = new ArrayList<>();
-       for(Map.Entry<String,List<FieldScope>> entry : mapScopes.entrySet()) {
-           DataRuleV2 ruleV2 = new DataRuleV2();
-           ruleV2.setEntity(entry.getKey());
-           List<FieldAuthority> fieldAuthorities = entry.getValue().stream().map(item->{
-               FieldAuthority fieldAuthority = new FieldAuthority();
-               fieldAuthority.setId(item.getId());
-               fieldAuthority.setName(item.getField());
-               return fieldAuthority;
-           }).collect(Collectors.toList());
-           ruleV2.setFields(fieldAuthorities);
-           result.add(ruleV2);
-       }
+        Map<String, List<FieldScope>> mapScopes = scopes.stream().collect(groupingBy(FieldScope::getEntity));
+        List<DataRuleV2> result = new ArrayList<>();
+        for (Map.Entry<String, List<FieldScope>> entry : mapScopes.entrySet()) {
+            DataRuleV2 ruleV2 = new DataRuleV2();
+            ruleV2.setEntity(entry.getKey());
+            List<FieldAuthority> fieldAuthorities = entry.getValue().stream().map(item -> {
+                FieldAuthority fieldAuthority = new FieldAuthority();
+                fieldAuthority.setId(item.getId());
+                fieldAuthority.setName(item.getField());
+                return fieldAuthority;
+            }).collect(Collectors.toList());
+            ruleV2.setFields(fieldAuthorities);
+            result.add(ruleV2);
+        }
         return new FieldRuleManagementResultV2(ManagementStatus.SUCCESS, result, null);
     }
 
@@ -268,9 +272,9 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
     private boolean isExist(Authorization authorization, FieldRule rule) {
         FieldScopeExample example = new FieldScopeExample();
         example.createCriteria().andRoleEqualTo(authorization.getRole())
-            .andTenantEqualTo(authorization.getTenant())
-            .andEntityEqualTo(rule.getEntity())
-            .andFieldEqualTo(rule.getField());
+                .andTenantEqualTo(authorization.getTenant())
+                .andEntityEqualTo(rule.getEntity())
+                .andFieldEqualTo(rule.getField());
         return fieldScopeRepository.countByExample(example) > 0;
     }
 }
