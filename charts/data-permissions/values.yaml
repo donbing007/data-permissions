@@ -100,4 +100,4 @@ cache:
 
 
 logger:
-  level: DEBUG
+  level: INFO
