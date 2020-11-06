@@ -120,6 +120,7 @@ public class RuleFieldRuleManagementServiceImpl implements RuleFieldRuleManageme
 
     @Override
     @CacheEvict(keyGenerator = "ruleSearchKeyGenerator", condition = "#rules.entity != null")
+    @AuthorizationCheck(NoAuthorizationPlan.CREATE)
     public FieldRuleManagementResult insert(Authorization authorization, FieldRuleRequest rules) {
         if (StringUtils.isEmpty(rules.getEntity()) || rules.getFields().isEmpty()) {
             throw new IllegalArgumentException("field or entity is empty!");
