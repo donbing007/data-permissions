@@ -41,9 +41,9 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
     public ConditionsChecker() {
         super(new SqlType[]{
-            SqlType.UPDATE,
-            SqlType.DELETE,
-            SqlType.SELECT,
+                SqlType.UPDATE,
+                SqlType.DELETE,
+                SqlType.SELECT,
         });
     }
 
@@ -65,7 +65,10 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
                     queue.addAll(processor.buildSubSqlAbility().list());
 
-                    change = doCheck(processor.buildConditionAbility(), processor.buildFromAbility(), context);
+                    boolean loopChange = doCheck(processor.buildConditionAbility(), processor.buildFromAbility(), context);
+                    if (loopChange) {
+                        change = loopChange;
+                    }
                 }
                 break;
             }
@@ -104,7 +107,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             } else {
                 if (authConditions != null) {
                     allConditions = buildRelationship(
-                        new Parentheses(allConditions), new Parentheses(authConditions), RuleConditionRelationship.OR);
+                            new Parentheses(allConditions), new Parentheses(authConditions), RuleConditionRelationship.OR);
                 }
             }
         }
@@ -132,7 +135,7 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
     // 构造某个角色下的所有条件.
     private Item buildFieldConditionsByOneAuth(
-        FromAbility fromAbility, Searcher searcher, Authorization authorization) {
+            FromAbility fromAbility, Searcher searcher, Authorization authorization) {
         List<From> froms = fromAbility.list();
         //只保留非子 from.
         froms = froms.stream().filter(f -> !f.isSub()).collect(Collectors.toList());
@@ -163,8 +166,8 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
         if (ref == null) {
             throw new IllegalArgumentException(
-                String.format("The source of the field could not be found.[%s.%s]",
-                    rule.getEntity(), rule.getField()));
+                    String.format("The source of the field could not be found.[%s.%s]",
+                            rule.getEntity(), rule.getField()));
         }
 
         Field field = new Field(ref, rule.getField());
@@ -183,14 +186,14 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
             DataRuleCondition left = conditions.get(0);
             DataRuleCondition right = conditions.get(1);
             Relationship relationship = buildRelationship(
-                buildCondition(field, left), buildCondition(field, right), right.getLink());
+                    buildCondition(field, left), buildCondition(field, right), right.getLink());
 
             DataRuleCondition dataRuleCondition;
             for (int i = 2; i < conditions.size(); i++) {
                 dataRuleCondition = conditions.get(i);
 
                 relationship = buildRelationship(
-                    relationship, buildCondition(field, dataRuleCondition), dataRuleCondition.getLink());
+                        relationship, buildCondition(field, dataRuleCondition), dataRuleCondition.getLink());
             }
 
             return relationship;
@@ -199,13 +202,13 @@ public class ConditionsChecker extends AbstractTypeSafeChecker {
 
     private Condition buildCondition(Field field, DataRuleCondition rule) {
         return new Condition(
-            field,
-            ConditionOperationConvertingFactory.getConverting(rule.getOperation()).convert(rule.getOperation()),
-            ConditionValueConvertingFactory.getConverting(rule.getType()).convert(rule));
+                field,
+                ConditionOperationConvertingFactory.getConverting(rule.getOperation()).convert(rule.getOperation()),
+                ConditionValueConvertingFactory.getConverting(rule.getType()).convert(rule));
     }
 
     private Relationship buildRelationship(
-        Item left, Item right, RuleConditionRelationship link) {
+            Item left, Item right, RuleConditionRelationship link) {
 
         if (RuleConditionRelationship.AND == link) {
             return new And(left, right);
