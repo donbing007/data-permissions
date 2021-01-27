@@ -44,7 +44,6 @@ public class ConditionsFieldCheckerTest {
     }
 
 
-
     /**
      * Method: checkCondition(ConditionAbility conditionAbility, FieldFromAbility fieldFromAbility, Context context)
      */
@@ -119,6 +118,25 @@ public class ConditionsFieldCheckerTest {
 
     private Map<SearchRequest, RuleCheckPack> buildCase() {
         Map<SearchRequest, RuleCheckPack> data = new LinkedHashMap<>();
+
+        data.put(new SearchRequest(
+                "SELECT t1.c1 FROM t t1 WHERE (t1.c1 || (t1.c2 || t1.c3)) in ( 'a2','a1')",
+                false,
+                Collections.emptyList()),
+            new RuleCheckPack(
+                new Authorizations(Arrays.asList(new Authorization("r1", "t1"))),
+                "t",
+                new HashMap() {{
+                    put(new Authorization("r1", "t1").toString() + "t",
+                        Arrays.asList(
+                            new FieldRule("t", "c1"),
+                            new FieldRule("t", "c2"),
+                            new FieldRule("t", "c3")
+                        )
+                    );
+                }}
+            )
+        );
 
         data.put(new SearchRequest(
                 "select t.c1, t.c2 from t1 t",

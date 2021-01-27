@@ -11,6 +11,13 @@
 
     <artifactId>xplat-data-permissions-transfer-proto</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+    </dependencies>
+
 
     <build>
         <!--        <extensions>-->

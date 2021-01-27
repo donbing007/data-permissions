@@ -368,6 +368,42 @@ public class JSqlParserConditionAbilityTest {
     private Map<String, List<Condition>> buildIterCase() throws Exception {
         Map<String, List<Condition>> data = new LinkedHashMap<>();
 
+        data.put("SELECT t1.c0  FROM t as t1 WHERE concat(t1.c1,t1.c2) in ( 'a2','a1')",
+            Arrays.asList(
+                new Condition(
+                    new Func(
+                        "concat",
+                        Arrays.asList(
+                            new Field("t1", "c1"),
+                            new Field("t1", "c2")
+                        )
+                    ),
+                    ConditionOperator.IN,
+                    Arrays.asList(new StringValue("a2"), new StringValue("a1"))
+                )
+            )
+        );
+
+        data.put("SELECT t1.c0  FROM t as t1 WHERE (t1.c1 || (t1.c2 || t1.c3)) in ( 'a2','a1')",
+            Arrays.asList(
+                new Condition(
+                    new Arithmeitc(
+                        new Field("t1", "c1"),
+                        new Parentheses(
+                            new Arithmeitc(
+                                new Field("t1", "c2"),
+                                new Field("t1", "c3"),
+                                ArithmeticSymbol.CONCAT
+                            )
+                        ),
+                        ArithmeticSymbol.CONCAT
+                    ),
+                    ConditionOperator.IN,
+                    Arrays.asList(new StringValue("a2"), new StringValue("a1"))
+                )
+            )
+        );
+
         data.put("select * from t1", Collections.emptyList());
         data.put("select * from t1 where c1 = 10 and c2 != 'test' and c3 like 'test%' " +
                 "and c4 in ('1','2','3') and c5 between 20 and 50",

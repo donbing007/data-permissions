@@ -53,6 +53,9 @@ public class ConversionHelper {
     }
 
     public static Item convertSmart(Expression expr, Alias alias) {
+        if (expr == null) {
+            return UnknownValue.getInstance("UnSupport expr!");
+        }
         if (ValueHelper.isArithmeticExpr(expr)) {
 
             return convertArithmeitc(expr, alias);

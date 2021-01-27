@@ -11,6 +11,7 @@ import com.xforceplus.ultraman.permissions.sql.processor.ProcessorException;
 import com.xforceplus.ultraman.permissions.sql.processor.ability.ConditionAbility;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.*;
@@ -124,7 +125,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
     }
 
     /**
-     * 对于in 如果值是了查询,将用转换为字符串表示整个子句.
+     * 对于in 如果值是子查询,将用转换为字符串表示整个子句.
      * 对于 exists 将忽略,因为有专门的子句处理器.
      * 对于 any 和 some 会被当做一个普通的处理函数.
      */
@@ -135,106 +136,7 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
         }
 
         List<Condition> conditions = new ArrayList();
-        where.accept(new ExpressionVisitorAdapter() {
-
-            @Override
-            public void visit(Between expr) {
-                Column c = (Column) expr.getLeftExpression();
-
-                List<Item> values =
-                    Arrays.asList(ConversionHelper.convertSmart(expr.getBetweenExpressionStart()),
-                        ConversionHelper.convertSmart(expr.getBetweenExpressionEnd()));
-
-                conditions.add(buildCondition(c, values, ConditionOperator.BETWEEN));
-            }
-
-            @Override
-            public void visit(InExpression expr) {
-                Column c = (Column) expr.getLeftExpression();
-
-                // 子查询,使用字符串值表示,原因是有专门的子查询处理器.
-                if (SubSelect.class.isInstance(expr.getRightItemsList())) {
-                    conditions.add(
-                        buildCondition(
-                            c,
-                            Arrays.asList(
-                                new com.xforceplus.ultraman.permissions.sql.define.values.StringValue(
-                                    ((SubSelect) expr.getRightItemsList()).getSelectBody().toString())),
-                            expr.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN));
-                } else {
-
-                    ExpressionList expressionList = (ExpressionList) expr.getRightItemsList();
-                    List<Expression> expressions = expressionList.getExpressions();
-                    List<Item> values = expressions.stream()
-                        .map(e -> ConversionHelper.convertSmart(e)).collect(Collectors.toList());
-
-                    conditions.add(
-                        buildCondition(
-                            c, values, (expr.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN)));
-                }
-
-            }
-
-
-            @Override
-            public void visit(IsNullExpression expr) {
-                conditions.add(
-                    buildCondition(
-                        expr.getLeftExpression(),
-                        Arrays.asList(NullValue.getInstance()),
-                        expr.isNot() ? ConditionOperator.IS_NOT : ConditionOperator.IS));
-            }
-
-            @Override
-            public void visit(LikeExpression expr) {
-                conditions.add(
-                    buildCondition(
-                        expr.getLeftExpression(),
-                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
-                        ConditionOperator.LIKE));
-            }
-
-            @Override
-            public void visit(EqualsTo expr) {
-                doAddComparisionCondition(expr, ConditionOperator.EQUALS);
-            }
-
-            @Override
-            public void visit(GreaterThan expr) {
-                doAddComparisionCondition(expr, ConditionOperator.GREATER_THAN);
-            }
-
-            @Override
-            public void visit(GreaterThanEquals expr) {
-                doAddComparisionCondition(expr, ConditionOperator.GREATER_THAN_EQUALS);
-            }
-
-
-            @Override
-            public void visit(MinorThan expr) {
-                doAddComparisionCondition(expr, ConditionOperator.MINOR_THAN);
-            }
-
-            @Override
-            public void visit(MinorThanEquals expr) {
-                doAddComparisionCondition(expr, ConditionOperator.MINOR_THAN_EQUALS);
-            }
-
-            @Override
-            public void visit(NotEqualsTo expr) {
-                doAddComparisionCondition(expr, ConditionOperator.NOT_EQUALS);
-            }
-
-            private void doAddComparisionCondition(ComparisonOperator expr, ConditionOperator operator) {
-
-                conditions.add(
-                    buildCondition(
-                        expr.getLeftExpression(),
-                        Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())), operator));
-
-            }
-
-        });
+        where.accept(new WhereExpressionVisitorAdapter(conditions));
 
         return conditions;
     }
@@ -470,4 +372,142 @@ public class JSqlParserConditionAbility extends AbstractJSqlParserHandler implem
             operator,
             values);
     }
+
+    private void addInCondition(Expression left, ItemsList right, ConditionOperator operator, List<Condition> conditions) {
+        // 子查询,使用字符串值表示,原因是有专门的子查询处理器.
+        if (SubSelect.class.isInstance(right)) {
+            conditions.add(
+                buildCondition(
+                    left,
+                    Arrays.asList(
+                        new com.xforceplus.ultraman.permissions.sql.define.values.StringValue(
+                            ((SubSelect) right).getSelectBody().toString())), operator));
+        } else {
+
+            ExpressionList expressionList = (ExpressionList) right;
+            List<Expression> expressions = expressionList.getExpressions();
+            List<Item> values = expressions.stream()
+                .map(e -> ConversionHelper.convertSmart(e)).collect(Collectors.toList());
+
+            conditions.add(
+                buildCondition(left, values, operator));
+        }
+    }
+
+    class WhereExpressionVisitorAdapter extends ExpressionVisitorAdapter {
+        private List<Condition> conditions;
+
+        public WhereExpressionVisitorAdapter(List<Condition> conditions) {
+            this.conditions = conditions;
+        }
+
+        @Override
+        public void visit(Between expr) {
+            Column c = (Column) expr.getLeftExpression();
+
+            List<Item> values =
+                Arrays.asList(ConversionHelper.convertSmart(expr.getBetweenExpressionStart()),
+                    ConversionHelper.convertSmart(expr.getBetweenExpressionEnd()));
+
+            conditions.add(buildCondition(c, values, ConditionOperator.BETWEEN));
+        }
+
+        @Override
+        public void visit(InExpression inExpression) {
+            ConditionOperator operator = inExpression.isNot() ? ConditionOperator.NOT_IN : ConditionOperator.IN;
+            if (inExpression.getLeftExpression() != null) {
+                addInCondition(inExpression.getLeftExpression(), inExpression.getRightItemsList(), operator, conditions);
+            } else {
+                ItemsList itemsList = inExpression.getLeftItemsList();
+                itemsList.accept(new ItemsListVisitorAdapter() {
+                    @Override
+                    public void visit(ExpressionList expressionList) {
+                        List<Expression> expressions = expressionList.getExpressions();
+                        for (Expression expression : expressions) {
+                            expression.accept(new LeftItemListExpressionVisit(
+                                conditions, inExpression.getRightItemsList(), operator));
+                        }
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void visit(IsNullExpression expr) {
+            conditions.add(
+                buildCondition(
+                    expr.getLeftExpression(),
+                    Arrays.asList(NullValue.getInstance()),
+                    expr.isNot() ? ConditionOperator.IS_NOT : ConditionOperator.IS));
+        }
+
+        @Override
+        public void visit(LikeExpression expr) {
+            conditions.add(
+                buildCondition(
+                    expr.getLeftExpression(),
+                    Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())),
+                    ConditionOperator.LIKE));
+        }
+
+        @Override
+        public void visit(EqualsTo expr) {
+            doAddComparisionCondition(expr, ConditionOperator.EQUALS);
+        }
+
+        @Override
+        public void visit(GreaterThan expr) {
+            doAddComparisionCondition(expr, ConditionOperator.GREATER_THAN);
+        }
+
+        @Override
+        public void visit(GreaterThanEquals expr) {
+            doAddComparisionCondition(expr, ConditionOperator.GREATER_THAN_EQUALS);
+        }
+
+
+        @Override
+        public void visit(MinorThan expr) {
+            doAddComparisionCondition(expr, ConditionOperator.MINOR_THAN);
+        }
+
+        @Override
+        public void visit(MinorThanEquals expr) {
+            doAddComparisionCondition(expr, ConditionOperator.MINOR_THAN_EQUALS);
+        }
+
+        @Override
+        public void visit(NotEqualsTo expr) {
+            doAddComparisionCondition(expr, ConditionOperator.NOT_EQUALS);
+        }
+
+        private void doAddComparisionCondition(ComparisonOperator expr, ConditionOperator operator) {
+
+            conditions.add(
+                buildCondition(
+                    expr.getLeftExpression(),
+                    Arrays.asList(ConversionHelper.convertSmart(expr.getRightExpression())), operator));
+
+        }
+    }
+
+    // 左值非普通表达式访问器.
+    class LeftItemListExpressionVisit extends ExpressionVisitorAdapter {
+        private List<Condition> conditions;
+        private ItemsList values;
+        private ConditionOperator op;
+
+        public LeftItemListExpressionVisit(List<Condition> conditions, ItemsList values, ConditionOperator op) {
+            this.conditions = conditions;
+            this.values = values;
+            this.op = op;
+        }
+
+        @Override
+        public void visit(Concat concat) {
+            addInCondition(concat, values, op, conditions);
+        }
+
+    }
+
 }
