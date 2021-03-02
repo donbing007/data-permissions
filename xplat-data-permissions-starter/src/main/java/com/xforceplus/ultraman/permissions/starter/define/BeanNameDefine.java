@@ -32,6 +32,9 @@ public class BeanNameDefine {
      */
     public static final String TAX_NO_PARSER = "tax-no-parser";
 
+
+    public static final String COMPANY_ID_PARSER = "company-id-parser";
+
     /**
      * 缓存管理器
      */

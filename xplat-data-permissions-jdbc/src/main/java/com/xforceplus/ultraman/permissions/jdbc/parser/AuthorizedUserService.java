@@ -15,4 +15,12 @@ public interface AuthorizedUserService {
      * @return
      */
     Set<String> getUserTaxNums(Long user);
+
+
+    /**
+     * get user's company id collection
+     * @param user
+     * @return
+     */
+    Set<Long> getUserCompanyIds(Long user);
 }

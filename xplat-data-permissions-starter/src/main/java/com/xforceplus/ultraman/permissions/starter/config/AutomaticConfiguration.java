@@ -13,6 +13,7 @@ import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParser;
 import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParserManager;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.HttpClient;
 import com.xforceplus.ultraman.permissions.jdbc.parser.impl.AuthorizedUserServiceImpl;
+import com.xforceplus.ultraman.permissions.jdbc.parser.impl.CompanyVariableParser;
 import com.xforceplus.ultraman.permissions.jdbc.parser.impl.TaxVariableParser;
 import com.xforceplus.ultraman.permissions.jdbc.utils.DebugStatus;
 import com.xforceplus.ultraman.permissions.starter.DataSourceInterceptor;
@@ -33,6 +34,7 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Map;
 
+import static com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine.COMPANY_ID_PARSER;
 import static com.xforceplus.ultraman.permissions.starter.define.BeanNameDefine.TAX_NO_PARSER;
 
 /**
@@ -144,6 +146,11 @@ public class AutomaticConfiguration {
     @Bean(TAX_NO_PARSER)
     public VariableParser variableParser(AuthorizedUserService service) {
         return new TaxVariableParser(service);
+    }
+
+    @Bean(COMPANY_ID_PARSER)
+    public VariableParser companyVariable(AuthorizedUserService service) {
+        return new CompanyVariableParser(service);
     }
 
     @Bean(BeanNameDefine.VARIABLE_PARSE_MANAGER)

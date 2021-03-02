@@ -12,6 +12,10 @@ public interface Variable {
      * 税号变量
      */
     String TAX_VARIABLE = "@TAX@";
+    /**
+     * 公司变量
+     */
+    String COMPANY_VARIABLE = "@COMPANY@";
 
 
 }
