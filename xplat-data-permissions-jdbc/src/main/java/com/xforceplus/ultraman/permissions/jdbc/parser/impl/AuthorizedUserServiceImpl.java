@@ -36,6 +36,7 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
 
 
     private static final String USER_AUTHORIZATION_TAX_CACHE = "USER_AUTHORIZATION_TAX_CACHE";
+    private static final String USER_AUTHORIZATION_COMPANY_CACHE = "USER_AUTHORIZATION_COMPANY_CACHE";
 
     @Autowired
     private HttpClient client;
@@ -52,13 +53,15 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
     }
 
     @Override
+    @Cacheable(cacheNames = {USER_AUTHORIZATION_COMPANY_CACHE}, key = "#userId")
     public Set<Long> getUserCompanyIds(Long userId) {
         Map<String, String> params = Maps.newHashMap();
         String response = client.doGet(String.format("%s%s", config.getApiBaseUrl()
                 , String.format(GET_USER_COMPANY_ID_PATH, userId)), params, config.getAuthLoginName()
                 , config.getAuthPassword(), config.getAuthUrl());
         HttpResponse<List<CompanyInfo>> companyInfoHttpResponse =
-                GsonUtils.fromJsonString(response, new TypeToken<HttpResponse<List<CompanyInfo>>>(){}.getType());
+                GsonUtils.fromJsonString(response, new TypeToken<HttpResponse<List<CompanyInfo>>>() {
+                }.getType());
         return companyInfoHttpResponse.getBody().stream().map(item -> item.getCompanyId()).collect(Collectors.toSet());
     }
 }

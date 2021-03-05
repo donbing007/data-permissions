@@ -11,7 +11,8 @@ public enum CaffeineCacheEnum {
 
 
     DEFAULT_CACHE_NAME("DEFAULT_CACHE_NAME","initialCapacity=100,maximumSize=300,expireAfterWrite=300s"),
-    USER_AUTHORIZATION_TAX("USER_AUTHORIZATION_TAX_CACHE", "initialCapacity=50,maximumSize=500,expireAfterWrite=600s");
+    USER_AUTHORIZATION_TAX("USER_AUTHORIZATION_TAX_CACHE", "initialCapacity=50,maximumSize=500,expireAfterWrite=600s"),
+    USER_AUTHORIZATION_COMPANY("USER_AUTHORIZATION_COMPANY_CACHE", "initialCapacity=50,maximumSize=500,expireAfterWrite=600s");
 
     private String cacheName;
     private String cacheSpec;
