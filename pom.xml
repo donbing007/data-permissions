@@ -6,7 +6,7 @@
 
     <groupId>com.xforceplus.ultraman</groupId>
     <artifactId>xplat-data-permissions</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <packaging>pom</packaging>
 
     <build>
