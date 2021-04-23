@@ -23,4 +23,12 @@ public interface AuthorizedUserService {
      * @return
      */
     Set<Long> getUserCompanyIds(Long user);
+
+
+    /**
+     * Get user's org id collection
+     * @param userId
+     * @return
+     */
+    Set<Long> getUserOrgIds(Long userId);
 }

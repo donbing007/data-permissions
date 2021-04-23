@@ -35,6 +35,9 @@ public class BeanNameDefine {
 
     public static final String COMPANY_ID_PARSER = "company-id-parser";
 
+
+    public static final String ORG_ID_PARSER = "org-id-parser";
+
     /**
      * 缓存管理器
      */

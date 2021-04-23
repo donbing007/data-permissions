@@ -6,6 +6,7 @@ import com.xforceplus.ultraman.permissions.jdbc.parser.AuthorizedUserService;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.HttpClient;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.TenantConfig;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.dto.CompanyInfo;
+import com.xforceplus.ultraman.permissions.jdbc.parser.http.dto.OrgInfo;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.response.GetUserCompany;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.response.HttpResponse;
 import com.xforceplus.ultraman.permissions.jdbc.utils.GsonUtils;
@@ -33,13 +34,28 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
 
     private static final String GET_USER_COMPANY_INFO_PATH = "/api/global/v2/users/%s/tax-nums";
     private static final String GET_USER_COMPANY_ID_PATH = "/api/global/v2/users/%s/companies";
+    private static final String GET_USER_ORG_ID_PATH = "/api/current/v2/users/%s/orgs";
+
 
 
     private static final String USER_AUTHORIZATION_TAX_CACHE = "USER_AUTHORIZATION_TAX_CACHE";
     private static final String USER_AUTHORIZATION_COMPANY_CACHE = "USER_AUTHORIZATION_COMPANY_CACHE";
+    private static final String USER_AUTHORIZATION_ORG_CACHE = "USER_AUTHORIZATION_ORG_CACHE";
 
     @Autowired
     private HttpClient client;
+
+    @Override
+    @Cacheable(cacheNames = {USER_AUTHORIZATION_ORG_CACHE}, key = "#userId")
+    public Set<Long> getUserOrgIds(Long userId) {
+        Map<String, String> params = Maps.newHashMap();
+        String response = client.doGet(String.format("%s%s", config.getApiBaseUrl()
+                , String.format(GET_USER_ORG_ID_PATH, userId)), params, config.getAuthLoginName()
+                , config.getAuthPassword(), config.getAuthUrl());
+        HttpResponse<List<OrgInfo>> companyResponse = GsonUtils.fromJsonString(response,
+                new TypeToken<HttpResponse<List<OrgInfo>>>(){}.getType());
+        return companyResponse.getBody().stream().map(item->item.getOrgId()).collect(Collectors.toSet());
+    }
 
     @Override
     @Cacheable(cacheNames = {USER_AUTHORIZATION_TAX_CACHE}, key = "#userId")

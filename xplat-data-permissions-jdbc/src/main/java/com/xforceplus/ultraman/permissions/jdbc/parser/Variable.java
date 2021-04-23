@@ -17,5 +17,10 @@ public interface Variable {
      */
     String COMPANY_VARIABLE = "@COMPANY@";
 
+    /**
+     * 组织变量
+     */
+    String ORG_VARIABLE = "@ORG@";
+
 
 }
