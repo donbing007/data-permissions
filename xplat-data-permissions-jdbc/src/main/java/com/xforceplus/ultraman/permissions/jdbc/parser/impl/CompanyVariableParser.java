@@ -4,6 +4,7 @@ import com.xforceplus.tenant.security.core.context.UserInfoHolder;
 import com.xforceplus.ultraman.permissions.jdbc.parser.AuthorizedUserService;
 import com.xforceplus.ultraman.permissions.jdbc.parser.Variable;
 import com.xforceplus.ultraman.permissions.jdbc.parser.VariableParser;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,8 @@ public class CompanyVariableParser implements VariableParser {
 
     private AuthorizedUserService userService;
 
+    private static final String DEFAULT_COMPANY_ID = "0";
+
     public CompanyVariableParser(AuthorizedUserService service) {
         this.userService = service;
     }
@@ -36,8 +39,12 @@ public class CompanyVariableParser implements VariableParser {
     public String parse(String sql) {
         Set<Long> companyIds = userService.getUserCompanyIds(UserInfoHolder.get().getId());
         Set<String> formatCompanyIds = companyIds.stream().map(item -> item.toString()).collect(Collectors.toSet());
+        if (formatCompanyIds.size() == 0) {
+            formatCompanyIds.add(DEFAULT_COMPANY_ID);
+        }
         String formatStr = String.join(",", formatCompanyIds);
         logger.info("User id : {},companyIds : {}", UserInfoHolder.get().getId(), formatStr);
         return sql.replace(String.format("'%s'", getName()), formatStr);
     }
+
 }

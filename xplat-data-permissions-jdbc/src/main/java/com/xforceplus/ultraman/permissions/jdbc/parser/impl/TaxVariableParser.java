@@ -24,6 +24,8 @@ public class TaxVariableParser implements VariableParser {
 
     private AuthorizedUserService userService;
 
+    private static final String DEFAULT_TAX_NUM = "''";
+
     public TaxVariableParser(AuthorizedUserService userService) {
         this.userService = userService;
     }
@@ -38,6 +40,9 @@ public class TaxVariableParser implements VariableParser {
         Set<String> taxNums = userService.getUserTaxNums(UserInfoHolder.get().getId());
         logger.info("User id : {},taxNums : {}", UserInfoHolder.get().getId(), String.join(",", taxNums));
         Set<String> formatTaxNums = taxNums.stream().map(item -> String.format("'%s'", item)).collect(Collectors.toSet());
+        if (formatTaxNums.size() == 0) {
+            formatTaxNums.add(DEFAULT_TAX_NUM);
+        }
         return sql.replace(String.format("'%s'", getName()), String.join(",", formatTaxNums));
     }
 }

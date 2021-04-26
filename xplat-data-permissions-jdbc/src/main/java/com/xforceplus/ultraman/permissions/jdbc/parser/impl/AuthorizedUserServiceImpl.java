@@ -1,13 +1,13 @@
 package com.xforceplus.ultraman.permissions.jdbc.parser.impl;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.reflect.TypeToken;
 import com.xforceplus.ultraman.permissions.jdbc.parser.AuthorizedUserService;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.HttpClient;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.TenantConfig;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.dto.CompanyInfo;
-import com.xforceplus.ultraman.permissions.jdbc.parser.http.dto.OrgInfo;
-import com.xforceplus.ultraman.permissions.jdbc.parser.http.response.GetUserCompany;
+import com.xforceplus.ultraman.permissions.jdbc.parser.http.dto.OrgResult;
 import com.xforceplus.ultraman.permissions.jdbc.parser.http.response.HttpResponse;
 import com.xforceplus.ultraman.permissions.jdbc.utils.GsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,12 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
     @Autowired
     private TenantConfig config;
 
-    private static final String GET_USER_COMPANY_INFO_PATH = "/api/global/v2/users/%s/tax-nums";
-    private static final String GET_USER_COMPANY_ID_PATH = "/api/global/v2/users/%s/companies";
-    private static final String GET_USER_ORG_ID_PATH = "/api/current/v2/users/%s/orgs";
+    private static final String DEFAULT_ROW_SIZE = "1000";
+    private static final int DEFAULT_START_PAGE = 1;
+
+    private static final String GET_USER_COMPANY_INFO_PATH = "/api/global/users/%s/tax-nums";
+    private static final String GET_USER_COMPANY_ID_PATH = "/api/global/users/%s/companies";
+    private static final String GET_USER_ORG_ID_PATH = "/api/global/orgs";
 
 
 
@@ -49,12 +52,30 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
     @Cacheable(cacheNames = {USER_AUTHORIZATION_ORG_CACHE}, key = "#userId")
     public Set<Long> getUserOrgIds(Long userId) {
         Map<String, String> params = Maps.newHashMap();
+        int current = DEFAULT_START_PAGE;
+        params.put("page", String.valueOf(current));
+        params.put("row", DEFAULT_ROW_SIZE);
+        params.put("userId", String.valueOf(userId));
+        Set<Long> result = Sets.newHashSet();
         String response = client.doGet(String.format("%s%s", config.getApiBaseUrl()
-                , String.format(GET_USER_ORG_ID_PATH, userId)), params, config.getAuthLoginName()
+                , GET_USER_ORG_ID_PATH), params, config.getAuthLoginName()
                 , config.getAuthPassword(), config.getAuthUrl());
-        HttpResponse<List<OrgInfo>> companyResponse = GsonUtils.fromJsonString(response,
-                new TypeToken<HttpResponse<List<OrgInfo>>>(){}.getType());
-        return companyResponse.getBody().stream().map(item->item.getOrgId()).collect(Collectors.toSet());
+        HttpResponse<OrgResult> companyResponse = GsonUtils.fromJsonString(response,
+                new TypeToken<HttpResponse<OrgResult>>(){}.getType());
+        if(companyResponse.getBody() != null) {
+            result.addAll(companyResponse.getBody().getContent().stream().map(item -> item.getOrgId()).collect(Collectors.toSet()));
+        }
+        while (companyResponse.getBody() != null && !companyResponse.getBody().isLast()) {
+            current++;
+            params.put("page", String.valueOf(current));
+            String res = client.doGet(String.format("%s%s", config.getApiBaseUrl()
+                    , GET_USER_ORG_ID_PATH), params, config.getAuthLoginName()
+                    , config.getAuthPassword(), config.getAuthUrl());
+            companyResponse = GsonUtils.fromJsonString(res,
+                    new TypeToken<HttpResponse<OrgResult>>(){}.getType());
+            result.addAll(companyResponse.getBody().getContent().stream().map(item->item.getOrgId()).collect(Collectors.toSet()));
+        }
+        return result;
     }
 
     @Override
@@ -65,7 +86,12 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
                 , String.format(GET_USER_COMPANY_INFO_PATH, userId)), params, config.getAuthLoginName()
                 , config.getAuthPassword(), config.getAuthUrl());
         HttpResponse<List<String>> companyResponse = GsonUtils.fromJsonString(response, HttpResponse.class);
-        return companyResponse.getBody().stream().collect(Collectors.toSet());
+        if (companyResponse.getBody() != null) {
+            return companyResponse.getBody().stream().collect(Collectors.toSet());
+        }
+        else {
+            return Sets.newHashSet();
+        }
     }
 
     @Override
@@ -78,6 +104,11 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
         HttpResponse<List<CompanyInfo>> companyInfoHttpResponse =
                 GsonUtils.fromJsonString(response, new TypeToken<HttpResponse<List<CompanyInfo>>>() {
                 }.getType());
-        return companyInfoHttpResponse.getBody().stream().map(item -> item.getCompanyId()).collect(Collectors.toSet());
+        if (companyInfoHttpResponse.getBody() != null) {
+            return companyInfoHttpResponse.getBody().stream().map(item -> item.getCompanyId()).collect(Collectors.toSet());
+        }
+        else {
+            return Sets.newHashSet();
+        }
     }
 }

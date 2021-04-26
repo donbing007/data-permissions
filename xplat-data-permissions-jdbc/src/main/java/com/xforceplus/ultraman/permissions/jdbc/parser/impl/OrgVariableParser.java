@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 public class OrgVariableParser implements VariableParser {
 
     private static final Logger logger = LoggerFactory.getLogger(OrgVariableParser.class);
+    private static final String DEFAULT_ORG_ID = "0";
+
 
     private AuthorizedUserService userService;
 
@@ -36,8 +38,11 @@ public class OrgVariableParser implements VariableParser {
     public String parse(String sql) {
         Set<Long> orgIds = userService.getUserOrgIds(UserInfoHolder.get().getId());
         Set<String> formatOrgIds = orgIds.stream().map(item -> item.toString()).collect(Collectors.toSet());
+        if (formatOrgIds.size() == 0) {
+            formatOrgIds.add(DEFAULT_ORG_ID);
+        }
         String formatStr = String.join(",", formatOrgIds);
-        logger.info("User id : {},orgId : {}", UserInfoHolder.get().getId(),formatStr);
+        logger.info("User id : {},orgId : {}", UserInfoHolder.get().getId(), formatStr);
         return sql.replace(String.format("'%s'", getName()), formatStr);
     }
 }
