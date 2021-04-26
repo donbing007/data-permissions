@@ -62,7 +62,7 @@ public class AuthorizedUserServiceImpl implements AuthorizedUserService {
                 , config.getAuthPassword(), config.getAuthUrl());
         HttpResponse<OrgResult> companyResponse = GsonUtils.fromJsonString(response,
                 new TypeToken<HttpResponse<OrgResult>>(){}.getType());
-        if(companyResponse.getBody() != null) {
+        if (companyResponse.getBody() != null) {
             result.addAll(companyResponse.getBody().getContent().stream().map(item -> item.getOrgId()).collect(Collectors.toSet()));
         }
         while (companyResponse.getBody() != null && !companyResponse.getBody().isLast()) {
