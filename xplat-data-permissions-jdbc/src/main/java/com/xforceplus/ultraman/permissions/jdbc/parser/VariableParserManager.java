@@ -1,13 +1,11 @@
 package com.xforceplus.ultraman.permissions.jdbc.parser;
 
 import com.google.common.collect.Maps;
-import com.xforceplus.ultraman.permissions.jdbc.parser.impl.TaxVariableParser;
+import java.util.Map;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-import java.util.Map;
 
 /**
  * 项目名称: 票易通
