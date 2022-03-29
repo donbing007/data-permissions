@@ -52,7 +52,7 @@ jvm:
 
 jdbc:
   dbname: "xplat-data-permissions"
-  host: "x-mysql-56-b7960"
+  host: "x-mysql-56-b7960.n01101-fat.svc.cluster.local"
   port: 3306
   userName: root
   password: xplat
