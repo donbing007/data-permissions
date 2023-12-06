@@ -1,6 +1,3 @@
-
-[![pipeline status](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/develop/pipeline.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/develop)  [![coverage report](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/badges/develop/coverage.svg)](http://gitlab.developer.xforcecloud.com/ultraman-xplat-db/data-permissions/commits/develop)
-
 # 引言
 
 基于 SQL 提供通用的数据权限服务.
